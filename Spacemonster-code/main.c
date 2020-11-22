@@ -27,7 +27,7 @@ SDL_Cursor* mouse_opened;
 SDL_Cursor* mouse_closed;
 linkedList test_list;
 Uint8 left = 127;
-//Prototypes
+//Prototypes asdfasdf
 GLint CompileShader(char* shader_fname, GLenum type);
 void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type);
 void MoveShapeXY(float x, float y, int number_of_vertexes, int stride, float* vertex_data);

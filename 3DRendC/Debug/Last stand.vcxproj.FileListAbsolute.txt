@@ -1,2 +1,0 @@
-C:\Users\Light\source\repos\3DRendC\Debug\SpaceMonster.exe
-C:\Users\Light\source\repos\3DRendC\Debug\SpaceMonster.pdb

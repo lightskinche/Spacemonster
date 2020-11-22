@@ -1,0 +1,50 @@
+﻿  main.c
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
+C:\Users\Light\source\repos\3DRendC\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
+C:\Users\Light\source\repos\3DRendC\main.c(20,31): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(38,16): warning C4026: function declared with formal parameter list
+C:\Users\Light\source\repos\3DRendC\main.c(155,64): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(155,85): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(173,18): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(182,44): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(182,74): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(190,69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(190,139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(191,71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(191,141): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(194,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(194,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(242,23): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(250,24): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(261,43): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(261,51): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(157,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(157,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(161,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(161,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(170,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\3DRendC\main.c(253,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(254,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(255,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\3DRendC\main.c(287,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Light\source\repos\3DRendC\main.c(309,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(309,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(317,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(317,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(324,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(324,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(334,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(334,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(342,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(342,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(351,39): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\3DRendC\main.c(351,35): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\3DRendC\main.c(356,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\3DRendC\main.c(357,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+     Creating library C:\Users\Light\source\repos\3DRendC\Release\SpaceMonster.lib and object C:\Users\Light\source\repos\3DRendC\Release\SpaceMonster.exp
+  Generating code
+  4 of 878 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    7 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Last stand.vcxproj -> C:\Users\Light\source\repos\3DRendC\Release\SpaceMonster.exe

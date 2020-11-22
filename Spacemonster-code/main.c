@@ -264,11 +264,12 @@ int main(void) {
 		RENDER_Quad(test_colored3, 0, 0, 1);
 		RENDER_TexturedQuad(text_test_quad, 0.05, 1, 0.1, false);
 		RENDER_List(&test_list);
-		//render text
-		//printf("time:%f\n", delta_time);
 		SDL_GL_SwapWindow(window);
 		delta_time = clock() - start;
 		delta_time /= CLOCKS_PER_SEC;
+		if (key_input[SDL_SCANCODE_F]) {
+			printf("time:%f\n", delta_time);
+		}
 	}	
 SHUTDOWN:
 	return 0;

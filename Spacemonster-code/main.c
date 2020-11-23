@@ -302,7 +302,7 @@ void GAME_WaveInit(void) {
 		if (tmp)
 			active_en = FEDERATION_SCOUT << (wave / 3), printf("added %d\n", FEDERATION_SCOUT << (wave / 3));
 		else
-			active_en = FEDERATION_FLAGSHIP /*the next bit shift will make it a civilian rancher*/ << (wave / 3), printf("added %d\n", FEDERATION_FLAGSHIP << (wave / 3));
+			active_en = FEDERATION_FLAGSHIP << (wave / 3), printf("added %d\n", FEDERATION_FLAGSHIP << (wave / 3)); //the next bit shift will make it a civilian rancher
 		enemy_counter++;
 	}
 	if (!(wave % 5)) { //exotic shop appears every 5 waves

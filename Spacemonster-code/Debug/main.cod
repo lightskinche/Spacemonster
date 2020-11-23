@@ -1842,7 +1842,7 @@ $LN12@GAME_WaveI:
 $LN3@GAME_WaveI:
 
 ; 304  : 		else
-; 305  : 			active_en = FEDERATION_FLAGSHIP /*the next bit shift will make it a civilian rancher*/ << (wave / 3), printf("added %d\n", FEDERATION_FLAGSHIP << (wave / 3));
+; 305  : 			active_en = FEDERATION_FLAGSHIP << (wave / 3), printf("added %d\n", FEDERATION_FLAGSHIP << (wave / 3)); //the next bit shift will make it a civilian rancher
 
   000d9	a1 00 00 00 00	 mov	 eax, DWORD PTR _wave
   000de	33 d2		 xor	 edx, edx

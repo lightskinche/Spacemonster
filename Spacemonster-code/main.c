@@ -5,19 +5,25 @@ SDL_Window* window;
 SDL_GLContext glcontext;
 SDL_Surface* test_font_surface;
 unsigned int window_width = WINDOW_WIDTH_START, window_height = WINDOW_HEIGHT_START;
-unsigned int wave = 1, score = 0, cash, reserve = 0, active_en = FEDERATION_SCOUT, enemy_counter = 1;
+unsigned int wave = 1, score = 0, cash, active_en = FEDERATION_SCOUT, enemy_counter = 1;
+int reserve = 0;
 linkedList enemies;
 unsigned int texturesizeswh[2];
 //openGL stuff
-GLint texture[4];
+GLint texture[5];
 GLint VAO;
 GLint VERTEXES_VBO;
+//audio
+Mix_Chunk* overtime_bell_audio;
 //text renderering
 SDL_Color white = { 255,255,255,255 };
 TTF_Font* font_1;
 SDL_Surface* wave_text;
-text_quad wave_text_quad = { 0,1,0, 0.1 };
+SDL_Surface* overtime_text;
+text_quad wave_text_quad = { 0,1,0,0.1 };
+text_quad overtime_quad = { 0,0.8,0,0.1 };
 char wave_num[2];
+SDL_bool overtime_bell_rung = false;
 //shaders
 GLint shader_texturedobj;
 GLint shader_colored;
@@ -57,9 +63,11 @@ int main(void) {
 		printf("Failed to initilize mix, %s\n", Mix_GetError());
 	}
 	//set up fonts, load them and turn them into surfaces here
-	font_1 = TTF_OpenFont("font_1.ttf", 50);
+	font_1 = TTF_OpenFont("resources/font_1.ttf", 50);
 	wave_text = TTF_RenderText_Blended(font_1, "Wave:01", white);
-	wave_text_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("Wave: 1");
+	overtime_text = TTF_RenderText_Blended(font_1, "OVERTIME", white);
+	wave_text_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("Wave:01"), wave_text_quad.x = 0 - (QUAD_TEXTURE_RECT_TEXT_CAL("Wave:01") / 2);
+	overtime_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("OVERTIME"), overtime_quad.x = 0 - (QUAD_TEXTURE_RECT_TEXT_CAL("OVERTIME") / 2);
 	//set up audio
 	if(Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048) < 0) {
 		printf("Error opening audio device, %s\n", Mix_GetError());
@@ -70,7 +78,8 @@ int main(void) {
 	for (int i = 0; i < number_decoders; ++i)
 		printf("Sample chunk decoder %d is for %s\n", i, Mix_GetChunkDecoder(i));
 	//set up any audio loading here
-
+	overtime_bell_audio = Mix_LoadWAV("resources/overtime_bell.wav");
+	Mix_VolumeChunk(overtime_bell_audio, 64);
 	//print out the current hardware format
 	int freq, channels;
 	Uint16 format;
@@ -153,6 +162,7 @@ int main(void) {
 	player_quad.textid = texture[0];
 	wave_text_quad.textid = texture[3];
 	wave_num[0] = '0', wave_num[1] = '1';
+	overtime_quad.textid = texture[4];
 	glClearColor(0, 0, 0, 1);
 	//Stuff that needs to be outside of the while loop
 	Uint8* key_input = SDL_GetKeyboardState(NULL);
@@ -229,8 +239,15 @@ int main(void) {
 			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 1000 * wave);
 		GAME_AddEnemies();
 		RENDER_TexturedQuad(player_quad,1,1,1, false);
-		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
 		RENDER_List(&enemies);
+		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
+		if (reserve < 0) {
+			RENDER_TexturedQuad(overtime_quad, 1, 0.9, 0.1, false);
+			if (!overtime_bell_rung) {
+				Mix_PlayChannel(-1, overtime_bell_audio, 0);
+				overtime_bell_rung = true;
+			}
+		}
 		if (glGetError()) {
 			printf("Failed to do something, %x", glGetError());
 		}
@@ -277,6 +294,7 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 }
 void GAME_WaveInit(void) {
 	reserve = wave * 20;
+	overtime_bell_rung = false;
 	printf("reserve is %d\n", reserve);
 	if (!(wave % 3)) { // reforcement round
 		unsigned int tmp = rand() % 2;
@@ -302,11 +320,13 @@ void GAME_WaveInit(void) {
 	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL);
 }
 void GAME_AddEnemies(void) {
-	static amount = 0; //debug variable, should be removed after release
 	static float timer = 0;
+	static time_withoutreserve = 0;
 	clock_t time = clock() + 1000;
 	time /= CLOCKS_PER_SEC;
-	if (timer <= 0 && (!(time % (9 - enemy_counter)))) {
+	if ((timer <= 0 && (!(time % (9 - enemy_counter)))) && reserve > 0) {
+	ADDEN:
+		timer = 1000; //so that it doesn't place 500 enemys every 9 - enemy_count seconds
 		unsigned int tmp = rand() % enemy_counter, tmp_bitshift = 0;
 		tmp_bitshift = FEDERATION_SCOUT << tmp;
 		if (!(active_en & tmp_bitshift))
@@ -316,10 +336,16 @@ void GAME_AddEnemies(void) {
 		enemy* tmp_enemy = calloc(1, sizeof(enemy));
 		tmp_enemy->sprite = tmp_text_quad, tmp_enemy->health = 20 * tmp_bitshift, tmp_enemy->score = 10 * tmp_bitshift * 3, tmp_enemy->id = tmp_bitshift;
 		LIST_AddElement(&enemies, tmp_enemy);
-		++amount;
-		timer = 1000; //so that it doesn't place 500 enemys every 9 - enemy_count seconds
-		printf("number:%d\n", amount);
+		reserve -= tmp_bitshift;
+		printf("reserve:%d\n", reserve);
 	}
+	else if (time_withoutreserve >= 100 && !(time % 2) && timer <= 0) {
+		goto ADDEN;
+	}
+	else if (reserve <= 0) {
+		time_withoutreserve = time_withoutreserve + 1;
+	}
+		
 	--timer;
 }
 void RENDER_List(const linkedList* const list) {
@@ -394,7 +420,7 @@ void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surf
 }
 //here just so that it can clean up the main function, this is initlizing stuff that has to do with graphics
 void Init_GL(void){
-	SDL_Surface* tmp_surface = IMG_Load("character_1.png");
+	SDL_Surface* tmp_surface = IMG_Load("resources/character_1.png");
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glGenBuffers(1, &VERTEXES_VBO);
@@ -416,7 +442,7 @@ void Init_GL(void){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
 	//first bacground
-	tmp_surface = IMG_Load("background_1.png");
+	tmp_surface = IMG_Load("resources/background_1.png");
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -436,13 +462,19 @@ void Init_GL(void){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL); //but we want to keep the surface around so we can change the text after every wave
-	tmp_surface = IMG_Load("character_ic.png"); //for the program icon
+	glBindTexture(GL_TEXTURE_2D, texture[4]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	CreateTexture2D(overtime_text, GL_RGBA, true, NULL, NULL); 
+	tmp_surface = IMG_Load("resources/character_ic.png"); //for the program icon
 	SDL_SetWindowIcon(window, tmp_surface);
 	SDL_FreeSurface(tmp_surface);
-	tmp_surface = IMG_Load("cursor_f_open.png"); //for the mouse when left mouse button is not pressed
+	tmp_surface = IMG_Load("resources/cursor_f_open.png"); //for the mouse when left mouse button is not pressed
 	mouse_opened  = SDL_CreateColorCursor(tmp_surface, 0, 0);
 	SDL_FreeSurface(tmp_surface);
-	tmp_surface = IMG_Load("cursor_f_closed.png"); //for the mouse when left mouse button is pressed
+	tmp_surface = IMG_Load("resources/cursor_f_closed.png"); //for the mouse when left mouse button is pressed
 	mouse_closed = SDL_CreateColorCursor(tmp_surface, 0, 0);
 	SDL_FreeSurface(tmp_surface);
 

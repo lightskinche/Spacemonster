@@ -36,7 +36,7 @@ extern unsigned int window_height;
 #define FEDERATION_FIGHTER 2
 #define FEDERATION_CARGO 4
 #define FEDERATION_MISSILE_FIGHTER 8
-#define FEDERATION_PLANT_ARTY 16
+#define FEDERATION_PLANET_ARTY 16
 #define FEDERATION_CRUISER 32
 #define FEDERATION_FLAGSHIP 64
 //civilian - easyish

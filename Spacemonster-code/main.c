@@ -5,18 +5,25 @@ SDL_Window* window;
 SDL_GLContext glcontext;
 SDL_Surface* test_font_surface;
 unsigned int window_width = WINDOW_WIDTH_START, window_height = WINDOW_HEIGHT_START;
+unsigned int wave = 1, score = 0, cash, reserve = 0, active_en = FEDERATION_SCOUT, enemy_counter = 1;
+linkedList enemies;
+unsigned int texturesizeswh[2];
+//openGL stuff
+GLint texture[4];
+GLint VAO;
+GLint VERTEXES_VBO;
 //text renderering
 SDL_Color white = { 255,255,255,255 };
-TTF_Font* test_font;
+TTF_Font* font_1;
+SDL_Surface* wave_text;
+text_quad wave_text_quad = { 0,1,0, 0.1 };
+char wave_num[2];
 //shaders
 GLint shader_texturedobj;
 GLint shader_colored;
-//openGL stuff
-GLint texture[3];
-GLint VAO;
-GLint VERTEXES_VBO;
 //player stuff
 text_quad player_quad;
+quad source_rect_nothing = { 0,0,1,1 };
 float player_wasd_speed = 1.35;
 //syncing
 float delta_time = 0;
@@ -25,14 +32,13 @@ float start;
 float background_vertexes[32] = { -1,1,0,1,1,1,0,0, 1,1,0,1,1,1,1,0, 1,-1,0,1,1,1,1,1, -1,-1,0,1,1,1,0,1 };
 SDL_Cursor* mouse_opened;
 SDL_Cursor* mouse_closed;
-linkedList test_list;
-Uint8 left = 127;
 //Prototypes
 GLint CompileShader(char* shader_fname, GLenum type);
 void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type);
-void MoveShapeXY(float x, float y, int number_of_vertexes, int stride, float* vertex_data);
+void GAME_WaveInit(void);
+void GAME_AddEnemies(void);
 void RENDER_List(const linkedList* const list);
-void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface);
+void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h);
 void Init_GL(void);
 
 int main(void) {
@@ -50,16 +56,10 @@ int main(void) {
 	if ((Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3) != MIX_INIT_MP3) {
 		printf("Failed to initilize mix, %s\n", Mix_GetError());
 	}
-	//set up fonts
-	test_font = TTF_OpenFont("testfont.ttf", 50);
-	if (!test_font) {
-		puts("Error loading true type font");
-	}
-	char* test_text_string = "what do you want it to be?";
-	test_font_surface = TTF_RenderText_Blended(test_font, test_text_string, white);
-	if (!test_font_surface) {
-		puts("Failed to create SDL_Surface from TTF");
-	}
+	//set up fonts, load them and turn them into surfaces here
+	font_1 = TTF_OpenFont("font_1.ttf", 50);
+	wave_text = TTF_RenderText_Blended(font_1, "Wave:01", white);
+	wave_text_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("Wave: 1");
 	//set up audio
 	if(Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048) < 0) {
 		printf("Error opening audio device, %s\n", Mix_GetError());
@@ -69,18 +69,8 @@ int main(void) {
 	int number_decoders = Mix_GetNumChunkDecoders();
 	for (int i = 0; i < number_decoders; ++i)
 		printf("Sample chunk decoder %d is for %s\n", i, Mix_GetChunkDecoder(i));
+	//set up any audio loading here
 
-	Mix_Chunk* stero_test;
-	stero_test = Mix_LoadWAV("testa.wav");
-	Mix_PlayChannel(0, stero_test, -1);
-	//load in audio data, turns out you use Mix_Music for large files
-	Mix_Music* test, *other_test;
-	test = Mix_LoadMUS("test.wav"), other_test = Mix_LoadMUS("testb.wav");
-	if (!test) {
-		printf("Failed to load WAV, %s\n", Mix_GetError());
-	}
-	Mix_SetMusicPosition(60);
-	Mix_VolumeMusic(64);
 	//print out the current hardware format
 	int freq, channels;
 	Uint16 format;
@@ -104,8 +94,6 @@ int main(void) {
 	}
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
 	glViewport(0, 0, WINDOW_WIDTH_START, WINDOW_HEIGHT_START);
 	glOrtho(0, WINDOW_WIDTH_START, 0, WINDOW_HEIGHT_START, 1.0, -1.0);
 	mat4 ortho;
@@ -159,19 +147,12 @@ int main(void) {
 	}
 	glUseProgram(shader_texturedobj);
 	Init_GL();
+	GAME_WaveInit();
+	//other misc texture init
 	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.1, player_quad.h = 0.2;
 	player_quad.textid = texture[0];
-	text_quad text_test_quad = { 0,0,QUAD_TEXTURE_RECT_TEXT_CAL(test_text_string),0.1, texture[2] };
-	//create a lot of enemys
-	test_list.head = NULL;
-	for (int i = 0; i < 10; ++i) {
-		float tmp_vertexes[32] = { -0.2 + (float)i / 20,1,0,1,1,1,0,0, -0.25 + (float)i / 20,1,0,1,1,1,1,0, -0.25 + (float)i / 20,0.9,0,1,1,1,1,1, -0.2 + (float)i / 20,0.9,0,1,1,1,0,1 };
-		personMale* test_person = calloc(1, sizeof(personMale));
-		memcpy(test_person->vertexes, tmp_vertexes, 32 * sizeof(float));
-		test_person->health = 100;
-		LIST_AddElement(&test_list, test_person);
-	    
-	}
+	wave_text_quad.textid = texture[3];
+	wave_num[0] = '0', wave_num[1] = '1';
 	glClearColor(0, 0, 0, 1);
 	//Stuff that needs to be outside of the while loop
 	Uint8* key_input = SDL_GetKeyboardState(NULL);
@@ -208,21 +189,11 @@ int main(void) {
 		else {
 			SDL_SetCursor(mouse_opened);
 		}
-		if (key_input[SDL_SCANCODE_RIGHT]) {
-			text_test_quad.x = text_test_quad.x + player_wasd_speed * delta_time;
-		}
-		if (key_input[SDL_SCANCODE_LEFT]) {
-			text_test_quad.x = text_test_quad.x - player_wasd_speed * delta_time;
-		}
 		if (key_input[SDL_SCANCODE_UP]) {
-			left++;
+			++score;
 		}
 		if (key_input[SDL_SCANCODE_DOWN]) {
-			left--;
-		}
-		Mix_SetPanning(0, left, 255 - left);
-		if (key_input[SDL_SCANCODE_SPACE]) {
-			Mix_PlayMusic(test, 1);
+			printf("score is now: %d\n", score);
 		}
 		if (key_input[SDL_SCANCODE_D]) {
 			player_quad.x = player_quad.x + player_wasd_speed * delta_time;
@@ -233,7 +204,6 @@ int main(void) {
 		if (key_input[SDL_SCANCODE_S]) {
 			player_quad.y = player_quad.y - player_wasd_speed * delta_time;
 		}
-		//TODO ADD JUMP PYHSICS AND ACTUAL PYHSICS
 		if (key_input[SDL_SCANCODE_W]) {
 			player_quad.y = player_quad.y + player_wasd_speed * delta_time;
 		}
@@ -254,16 +224,16 @@ int main(void) {
 			player_quad.y = -0.8;
 
 		}
-		quad test_colored = { 0,0,0.2,0.2 };
-		quad test_colored2 = { 0,-0.2, 0.2, 0.2 };
-		quad test_colored3 = { 0,-0.4, 0.2, 0.2 };
-		quad source_rect = { 0,0,1,1 };
-		RENDER_TexturedQuadSheet(player_quad,source_rect,1,1,1, false);
-		RENDER_Quad(test_colored, 1, 0, 0);
-		RENDER_Quad(test_colored2, 0, 1, 0);
-		RENDER_Quad(test_colored3, 0, 0, 1);
-		RENDER_TexturedQuad(text_test_quad, 0.05, 1, 0.1, false);
-		RENDER_List(&test_list);
+		//check if wave should increase
+		if (score == (1000 * wave))
+			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 1000 * wave);
+		GAME_AddEnemies();
+		RENDER_TexturedQuad(player_quad,1,1,1, false);
+		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
+		RENDER_List(&enemies);
+		if (glGetError()) {
+			printf("Failed to do something, %x", glGetError());
+		}
 		SDL_GL_SwapWindow(window);
 		delta_time = clock() - start;
 		delta_time /= CLOCKS_PER_SEC;
@@ -305,14 +275,57 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 	free(shader_data);
 	return shader_obj;
 }
+void GAME_WaveInit(void) {
+	reserve = wave * 20;
+	printf("reserve is %d\n", reserve);
+	if (!(wave % 3)) { // reforcement round
+		unsigned int tmp = rand() % 2;
+		//can add federation ship or civilian ship based on chance, players should hope for civilian ships
+		if (tmp)
+			active_en = FEDERATION_SCOUT << (wave / 3), printf("added %d\n", FEDERATION_SCOUT << (wave / 3));
+		else
+			active_en = FEDERATION_FLAGSHIP /*the next bit shift will make it a civilian rancher*/ << (wave / 3), printf("added %d\n", FEDERATION_FLAGSHIP << (wave / 3));
+		enemy_counter++;
+	}
+	if (!(wave % 5)) { //exotic shop appears every 5 waves
+		puts("exotic shop");
+	}
+	else if (wave > 1) { //opens the normal shop, makes sure that it opens it after you complete the first wave 
+		puts("normal shop");
+	}
+	//update the wave counter onscreen
+	char tmp_buffer[8] = "Wave:\0";
+	sprintf(wave_num, "%d", wave);
+	strcat(tmp_buffer, wave_num);
+	wave_text = TTF_RenderText_Blended(font_1, tmp_buffer, white);
+	glBindTexture(GL_TEXTURE_2D, texture[3]);
+	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL);
+}
+void GAME_AddEnemies(void) {
+	static amount = 0; //debug variable, should be removed after release
+	static float timer = 0;
+	clock_t time = clock() + 1000;
+	time /= CLOCKS_PER_SEC;
+	if (timer <= 0 && (!(time % (9 - enemy_counter)))) {
+		unsigned int tmp = rand() % enemy_counter, tmp_bitshift = 0;
+		tmp_bitshift = FEDERATION_SCOUT << tmp;
+		if (!(active_en & tmp_bitshift))
+			tmp_bitshift = CIVILIAN_RANCHER << tmp;
+
+		text_quad tmp_text_quad = { 0.9,PIXEL_TO_NDCY((float)(rand() % window_height), window_height),0.1,0.1,texture[0],0,0 }; //texture width and height not relevant... yet
+		enemy* tmp_enemy = calloc(1, sizeof(enemy));
+		tmp_enemy->sprite = tmp_text_quad, tmp_enemy->health = 20 * tmp_bitshift, tmp_enemy->score = 10 * tmp_bitshift * 3, tmp_enemy->id = tmp_bitshift;
+		LIST_AddElement(&enemies, tmp_enemy);
+		++amount;
+		timer = 1000; //so that it doesn't place 500 enemys every 9 - enemy_count seconds
+		printf("number:%d\n", amount);
+	}
+	--timer;
+}
 void RENDER_List(const linkedList* const list) {
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glUseProgram(shader_texturedobj);
 	for (int i = 0; i < list->count; ++i) {
-		personMale* tmp_person_p = LIST_At(list, i);
-		float* tmp_float_p = tmp_person_p->vertexes;
-		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_float_p);
-		glDrawArrays(GL_QUADS, 0, 4);
+		enemy* tmp_enemy = LIST_At(&enemies, i);
+		RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, true); 
 	}
 }
 void RENDER_TexturedQuad(text_quad target, float r, float g, float b, SDL_bool reverse_rendering) {
@@ -332,10 +345,17 @@ void RENDER_TexturedQuad(text_quad target, float r, float g, float b, SDL_bool r
 		glDrawArrays(GL_QUADS, 0, 4);
 	}
 }
-void RENDER_TexturedQuadSheet(text_quad target, quad source_rect, float r, float g, float b, SDL_bool reverse_rendering) {
+void RENDER_TexturedQuadSheet(text_quad target, quad source_rect, float r, float g, float b, SDL_bool normalized, SDL_bool reverse_rendering) {
 	float x = target.x, y = target.y, w = target.w, h = target.h;
+	float textx, textw;
+	float texty, texth;
+	if (normalized)
+		textx = source_rect.x, texty = source_rect.y, textw = source_rect.w, texth = source_rect.h;
+	else
+		textx = source_rect.x / target.texw, texty = source_rect.y / target.texh, textw = source_rect.w / target.texw, texth = source_rect.h / target.texh;
+
 	if (reverse_rendering) {
-		float tmp_vertexes[32] = { x + w,y,0,r,g,b,source_rect.x,source_rect.y, x,y,0,r,g,b,source_rect.x + source_rect.w,source_rect.y, x,y - h,0,r,g,b,source_rect.x + source_rect.w,source_rect.y + source_rect.h, x + w,y - h,0,r,g,b,source_rect.x,source_rect.y + source_rect.h };
+		float tmp_vertexes[32] = { x + w,y,0,r,g,b,textx,texty, x,y,0,r,g,b,textx + textw,texty, x,y - h,0,r,g,b,textx + textw,textx + texth, x + w,y - h,0,r,g,b,textx,textx + texth};
 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
 		glBindTexture(GL_TEXTURE_2D, target.textid);
 		glUseProgram(shader_texturedobj);
@@ -343,7 +363,7 @@ void RENDER_TexturedQuadSheet(text_quad target, quad source_rect, float r, float
 	}
 	else {
 		//this is so unreadable, definitly clean this up later
-		float tmp_vertexes[32] = { x,y,0,r,g,b,source_rect.x,source_rect.y, x + w,y,0,r,g,b,source_rect.x + source_rect.w,source_rect.y, x + w,y - h,0,r,g,b,source_rect.x + source_rect.w,source_rect.y + source_rect.h, x,y - h,0,r,g,b,source_rect.x,source_rect.y + source_rect.h };
+		float tmp_vertexes[32] = { x,y,0,r,g,b,textx,texty, x + w,y,0,r,g,b,textx + textw,source_rect.y, x + w,y - h,0,r,g,b,textx + textw,texty + texth, x,y - h,0,r,g,b,textx,texty + texth };
 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
 		glBindTexture(GL_TEXTURE_2D, target.textid);
 		glUseProgram(shader_texturedobj);
@@ -363,21 +383,17 @@ void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repea
 	glTexParameteri(sampler_target, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameteri(sampler_target, GL_TEXTURE_MAG_FILTER, filter);
 }
-void MoveShapeXY(float x, float y, int number_of_vertexes, int stride, float* vertex_data) {
-	for (int i = 0; i <= number_of_vertexes; ++i) {
-	    vertex_data[stride * i] += x;
-		vertex_data[stride * i + 1] -= y;
-	}
-
-}
-void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface) {
+void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h) {
 	glTexImage2D(GL_TEXTURE_2D, 0, format, tmp_surface->w, tmp_surface->h, 0, format, GL_UNSIGNED_BYTE, tmp_surface->pixels);
+	if(w)
+		w = tmp_surface->w;
+	if(h)
+		h = tmp_surface->h;
 	if (free_surface)
 		SDL_FreeSurface(tmp_surface);
 }
-//here just so that it can clean up the main function
+//here just so that it can clean up the main function, this is initlizing stuff that has to do with graphics
 void Init_GL(void){
-	//TODO MAYBE ABSTRACT THE VBO SO ITS EASIER TO CREATE OBJECTS
 	SDL_Surface* tmp_surface = IMG_Load("character_1.png");
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -392,14 +408,13 @@ void Init_GL(void){
 	glEnableVertexAttribArray(2);
 	//textures, player texture
 	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(3, texture);
+	glGenTextures(4, texture);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tmp_surface->w, tmp_surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, tmp_surface->pixels);
-	SDL_FreeSurface(tmp_surface);
+	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
 	//first bacground
 	tmp_surface = IMG_Load("background_1.png");
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
@@ -407,15 +422,20 @@ void Init_GL(void){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tmp_surface->w, tmp_surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tmp_surface->pixels);
-	SDL_FreeSurface(tmp_surface);
-	//for the test text on screen
+	CreateTexture2D(tmp_surface, GL_RGB, true, NULL, NULL);
+	/*tmp_surface = IMG_Load("fed_scout.png");
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	CreateTexture2D(test_font_surface, GL_RGBA, true);
+	CreateTexture2D(tmp_surface, GL_RGBA, true);*/
+	glBindTexture(GL_TEXTURE_2D, texture[3]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL); //but we want to keep the surface around so we can change the text after every wave
 	tmp_surface = IMG_Load("character_ic.png"); //for the program icon
 	SDL_SetWindowIcon(window, tmp_surface);
 	SDL_FreeSurface(tmp_surface);

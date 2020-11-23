@@ -2,44 +2,40 @@
   main.c
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(20,31): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(38,16): warning C4026: function declared with formal parameter list
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(162,64): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(162,85): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(180,18): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(189,44): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(189,74): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(197,69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(197,139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(198,71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(198,141): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(201,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(201,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(249,23): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(257,24): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(268,43): warning C4305: 'function': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(268,51): warning C4305: 'function': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(164,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(164,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(168,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(168,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(177,1): warning C4090: 'initializing': different 'const' qualifiers
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(260,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(261,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(262,1): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(292,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(314,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(314,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(322,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(322,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(329,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(329,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(339,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(339,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(347,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(347,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(356,39): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(356,35): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(361,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(362,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(19,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(27,31): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(44,16): warning C4026: function declared with formal parameter list
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(62,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(152,64): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(152,85): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(161,18): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(170,44): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(170,74): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(178,69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(178,139): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(179,71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(179,141): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(182,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(182,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(216,23): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(224,24): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(232,45): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(232,50): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(158,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(262,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(315,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(335,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(335,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(342,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(342,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(359,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(359,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(367,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(367,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(376,39): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(376,35): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(381,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(382,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(389,21): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(391,21): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
   Last stand.vcxproj -> C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe

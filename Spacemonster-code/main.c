@@ -5,7 +5,7 @@ SDL_Window* window;
 SDL_GLContext glcontext;
 SDL_Surface* test_font_surface;
 unsigned int window_width = WINDOW_WIDTH_START, window_height = WINDOW_HEIGHT_START;
-unsigned int wave = 1, score = 0, cash, active_en = FEDERATION_SCOUT, enemy_counter = 1;
+unsigned int wave = 1, score = 0, cash, active_en = 0, enemy_counter = 1;
 int reserve = 0;
 linkedList enemies;
 unsigned int texturesizeswh[2];
@@ -43,6 +43,7 @@ GLint CompileShader(char* shader_fname, GLenum type);
 void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type);
 void GAME_WaveInit(void);
 void GAME_AddEnemies(void);
+void GAME_HandleEnemies(const linkedList* const list);
 void RENDER_List(const linkedList* const list);
 void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h);
 void Init_GL(void);
@@ -156,6 +157,7 @@ int main(void) {
 	}
 	glUseProgram(shader_texturedobj);
 	Init_GL();
+	active_en |= FEDERATION_SCOUT;
 	GAME_WaveInit();
 	//other misc texture init
 	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.1, player_quad.h = 0.2;
@@ -185,8 +187,8 @@ int main(void) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		//cycle the background
-		background_vertexes[6] = background_vertexes[6] + 0.5 * delta_time, background_vertexes[14] = background_vertexes[14] + 0.5 * delta_time;
-		background_vertexes[22] = background_vertexes[22] + 0.5 * delta_time, background_vertexes[30] = background_vertexes[30] + 0.5 * delta_time;
+		background_vertexes[6] = background_vertexes[6] + 1 * delta_time, background_vertexes[14] = background_vertexes[14] + 1 * delta_time;
+		background_vertexes[22] = background_vertexes[22] + 1 * delta_time, background_vertexes[30] = background_vertexes[30] + 1 * delta_time;
 		if (background_vertexes[6] > 1)
 			background_vertexes[6] = 0, background_vertexes[14] = 1, background_vertexes[22] = 1, background_vertexes[30] = 0;
 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), background_vertexes);
@@ -235,10 +237,11 @@ int main(void) {
 
 		}
 		//check if wave should increase
-		if (score == (1000 * wave))
-			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 1000 * wave);
+		if (score == (32 << wave))
+			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 32 << wave);
 		GAME_AddEnemies();
 		RENDER_TexturedQuad(player_quad,1,1,1, false);
+		GAME_HandleEnemies(&enemies);
 		RENDER_List(&enemies);
 		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
 		if (reserve < 0) {
@@ -257,6 +260,7 @@ int main(void) {
 		if (key_input[SDL_SCANCODE_F]) {
 			printf("time:%f\n", delta_time);
 		}
+		
 	}	
 SHUTDOWN:
 	return 0;
@@ -327,8 +331,10 @@ void GAME_AddEnemies(void) {
 	if ((timer <= 0 && (!(time % (9 - enemy_counter)))) && reserve > 0) {
 	ADDEN:
 		timer = 1000; //so that it doesn't place 500 enemys every 9 - enemy_count seconds
-		unsigned int tmp = rand() % enemy_counter, tmp_bitshift = 0;
-		tmp_bitshift = FEDERATION_SCOUT << tmp;
+		unsigned int tmp = 0;
+		if((enemy_counter - 1) != 0)
+			tmp = rand() % (enemy_counter - 1);
+		unsigned int tmp_bitshift = FEDERATION_SCOUT << tmp;
 		if (!(active_en & tmp_bitshift))
 			tmp_bitshift = CIVILIAN_RANCHER << tmp;
 
@@ -339,7 +345,7 @@ void GAME_AddEnemies(void) {
 		reserve -= tmp_bitshift;
 		printf("reserve:%d\n", reserve);
 	}
-	else if (time_withoutreserve >= 100 && !(time % 2) && timer <= 0) {
+	else if (time_withoutreserve >= 100 && !(time % 1) && timer <= 0) {
 		goto ADDEN;
 	}
 	else if (reserve <= 0) {
@@ -348,10 +354,26 @@ void GAME_AddEnemies(void) {
 		
 	--timer;
 }
-void RENDER_List(const linkedList* const list) {
+void GAME_HandleEnemies(const linkedList* const list) {
 	for (int i = 0; i < list->count; ++i) {
 		enemy* tmp_enemy = LIST_At(&enemies, i);
-		RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, true); 
+		if (tmp_enemy) {
+			text_quad* sprite = &tmp_enemy->sprite;
+			sprite->x = sprite->x - delta_time;
+		}
+	}
+}
+void RENDER_List(linkedList* const list) {
+	for (int i = 0; i < list->count; ++i) {
+		enemy* tmp_enemy = LIST_At(&enemies, i);
+		if (tmp_enemy) {
+			text_quad* sprite = &tmp_enemy->sprite;
+			RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, true);
+			if (tmp_enemy->sprite.x < -1) {//remove any enimies that are out of bounds
+				LIST_RemoveAt(list, i, 1);
+				continue;
+			}
+		}
 	}
 }
 void RENDER_TexturedQuad(text_quad target, float r, float g, float b, SDL_bool reverse_rendering) {
@@ -442,13 +464,13 @@ void Init_GL(void){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
 	//first bacground
-	tmp_surface = IMG_Load("resources/background_1.png");
+	tmp_surface = IMG_Load("resources/background_2.png");
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	CreateTexture2D(tmp_surface, GL_RGB, true, NULL, NULL);
+	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
 	/*tmp_surface = IMG_Load("fed_scout.png");
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

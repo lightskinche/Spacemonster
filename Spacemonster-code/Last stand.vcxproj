@@ -176,6 +176,7 @@
     <ClCompile Include="glmc\vec3.c" />
     <ClCompile Include="glmc\vec4.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="render.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glmc\config.h" />

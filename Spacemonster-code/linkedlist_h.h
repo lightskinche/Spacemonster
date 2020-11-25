@@ -46,8 +46,11 @@ int LIST_RemoveAt(linkedList* list, int location, bool remove_data) {
 		}
 		if (tmp_node->next && tmp_node->prev)
 			tmp_node->prev->next = tmp_node->next, tmp_node->next->prev = tmp_node->prev;
-		else if (list->head == tmp_node)
-			list->head = tmp_node->next, tmp_node->next->prev = NULL;
+		else if (list->head == tmp_node) {
+			list->head = tmp_node->next;
+			if (tmp_node->next)
+				tmp_node->next->prev = NULL;
+		}
 		else if (!tmp_node->next)
 			tmp_node->prev->next = NULL;
 		else
@@ -55,6 +58,7 @@ int LIST_RemoveAt(linkedList* list, int location, bool remove_data) {
 		if (remove_data)
 			free(tmp_node->data);
 		free(tmp_node);
+		list->count--;
 	}
 	return 0;
 }
@@ -67,7 +71,10 @@ void* LIST_At(const linkedList* const list, int location) {
 			//else
 			//	printf("element %d could not be found", location); return 2.0;
 		}
-		return tmp_node->data;
+		if (tmp_node)
+			return tmp_node->data;
+		else
+			return NULL;
 	}
 	else
 		return NULL;

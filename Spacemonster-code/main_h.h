@@ -13,7 +13,6 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <cglm.h>
-#include "linkedlist_h.h"
 #endif
 
 //window size stuff
@@ -50,8 +49,33 @@ extern unsigned int window_height;
 //samething, but they declare the w and h of the ships
 //TODO: Do that
 
+//misc
+extern float delta_time;
+extern SDL_bool overtime_bell_rung;
+extern SDL_Surface* wave_text, * overtime_text;
+extern TTF_Font* font_1;
+extern SDL_Color white;
+extern int reserve;
+extern char wave_num[2];
+extern unsigned int wave, score, cash, active_en, enemy_counter;
 
 //after you beat the civilian or federation flagship you move on to the next galaxy
+//linked list stuff
+typedef struct listNode listNode;
+extern struct listNode {
+	listNode* next, * prev;
+	void* data;
+
+};
+typedef struct linkedList linkedList;
+extern struct linkedList {
+	listNode* head;
+	int count;
+};
+//game function declarations
+extern void GAME_WaveInit(void);
+extern void GAME_AddEnemies(void);
+extern void GAME_HandleEnemies(const linkedList* const list);
 
 //shape abstractions
 typedef struct text_quad text_quad;
@@ -81,6 +105,13 @@ struct quad_v {
 extern void RENDER_TexturedQuad(text_quad target, float r, float g, float b, SDL_bool reverse_rendering);
 extern void RENDER_TexturedQuadSheet(text_quad target, quad source_rect, float r, float g, float b, SDL_bool normalized, SDL_bool reverse_rendering);
 extern void RENDER_Quad(quad target, float r, float g, float b);
+extern void RENDER_List(const linkedList* const list);
+
+//shaders
+extern GLint shader_texturedobj;
+extern GLint shader_colored;
+//texture list
+extern GLint texture[5];
 
 //enemys
 typedef struct personMale personMale;
@@ -89,6 +120,8 @@ struct personMale {
 	float vertexes[32];
 	int health;
 };
+//linked list for the enemies
+extern linkedList enemies;
 struct enemy {
 	text_quad sprite;
 	unsigned int health, score, id;

@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="game.c" />
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="glmc\affine.c" />
     <ClCompile Include="glmc\affine2d.c" />

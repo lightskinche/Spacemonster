@@ -1,4 +1,5 @@
 #include "main_h.h"
+#include "linkedlist_h.h" //here so that it doesn't get included in any other files and cause errors
 
 //Globals
 SDL_Window* window;
@@ -18,15 +19,14 @@ Mix_Chunk* overtime_bell_audio;
 //text renderering
 SDL_Color white = { 255,255,255,255 };
 TTF_Font* font_1;
-SDL_Surface* wave_text;
-SDL_Surface* overtime_text;
 text_quad wave_text_quad = { 0,1,0,0.1 };
 text_quad overtime_quad = { 0,0.8,0,0.1 };
-char wave_num[2];
 SDL_bool overtime_bell_rung = false;
+SDL_Surface* wave_text, * overtime_text;
+char wave_num[2];
 //shaders
 GLint shader_texturedobj;
-GLint shader_colored;
+GLint shader_colored;    
 //player stuff
 text_quad player_quad;
 quad source_rect_nothing = { 0,0,1,1 };
@@ -41,10 +41,6 @@ SDL_Cursor* mouse_closed;
 //Prototypes
 GLint CompileShader(char* shader_fname, GLenum type);
 void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type);
-void GAME_WaveInit(void);
-void GAME_AddEnemies(void);
-void GAME_HandleEnemies(const linkedList* const list);
-void RENDER_List(const linkedList* const list);
 void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h);
 void Init_GL(void);
 
@@ -296,135 +292,7 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 	free(shader_data);
 	return shader_obj;
 }
-void GAME_WaveInit(void) {
-	reserve = wave * 20;
-	overtime_bell_rung = false;
-	printf("reserve is %d\n", reserve);
-	if (!(wave % 3)) { // reforcement round
-		unsigned int tmp = rand() % 2;
-		//can add federation ship or civilian ship based on chance, players should hope for civilian ships
-		if (tmp)
-			active_en = FEDERATION_SCOUT << (wave / 3), printf("added %d\n", FEDERATION_SCOUT << (wave / 3));
-		else
-			active_en = FEDERATION_FLAGSHIP << (wave / 3), printf("added %d\n", FEDERATION_FLAGSHIP << (wave / 3)); //the next bit shift will make it a civilian rancher
-		enemy_counter++;
-	}
-	if (!(wave % 5)) { //exotic shop appears every 5 waves
-		puts("exotic shop");
-	}
-	else if (wave > 1) { //opens the normal shop, makes sure that it opens it after you complete the first wave 
-		puts("normal shop");
-	}
-	//update the wave counter onscreen
-	char tmp_buffer[8] = "Wave:\0";
-	sprintf(wave_num, "%d", wave);
-	strcat(tmp_buffer, wave_num);
-	wave_text = TTF_RenderText_Blended(font_1, tmp_buffer, white);
-	glBindTexture(GL_TEXTURE_2D, texture[3]);
-	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL);
-}
-void GAME_AddEnemies(void) {
-	static float timer = 0;
-	static time_withoutreserve = 0;
-	clock_t time = clock() + 1000;
-	time /= CLOCKS_PER_SEC;
-	if ((timer <= 0 && (!(time % (9 - enemy_counter)))) && reserve > 0) {
-	ADDEN:
-		timer = 1000; //so that it doesn't place 500 enemys every 9 - enemy_count seconds
-		unsigned int tmp = 0;
-		if((enemy_counter - 1) != 0)
-			tmp = rand() % (enemy_counter - 1);
-		unsigned int tmp_bitshift = FEDERATION_SCOUT << tmp;
-		if (!(active_en & tmp_bitshift))
-			tmp_bitshift = CIVILIAN_RANCHER << tmp;
 
-		text_quad tmp_text_quad = { 0.9,PIXEL_TO_NDCY((float)(rand() % window_height), window_height),0.1,0.1,texture[0],0,0 }; //texture width and height not relevant... yet
-		enemy* tmp_enemy = calloc(1, sizeof(enemy));
-		tmp_enemy->sprite = tmp_text_quad, tmp_enemy->health = 20 * tmp_bitshift, tmp_enemy->score = 10 * tmp_bitshift * 3, tmp_enemy->id = tmp_bitshift;
-		LIST_AddElement(&enemies, tmp_enemy);
-		reserve -= tmp_bitshift;
-		printf("reserve:%d\n", reserve);
-	}
-	else if (time_withoutreserve >= 100 && !(time % 1) && timer <= 0) {
-		goto ADDEN;
-	}
-	else if (reserve <= 0) {
-		time_withoutreserve = time_withoutreserve + 1;
-	}
-		
-	--timer;
-}
-void GAME_HandleEnemies(const linkedList* const list) {
-	for (int i = 0; i < list->count; ++i) {
-		enemy* tmp_enemy = LIST_At(&enemies, i);
-		if (tmp_enemy) {
-			text_quad* sprite = &tmp_enemy->sprite;
-			sprite->x = sprite->x - delta_time;
-		}
-	}
-}
-void RENDER_List(linkedList* const list) {
-	for (int i = 0; i < list->count; ++i) {
-		enemy* tmp_enemy = LIST_At(&enemies, i);
-		if (tmp_enemy) {
-			text_quad* sprite = &tmp_enemy->sprite;
-			RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, true);
-			if (tmp_enemy->sprite.x < -1) {//remove any enimies that are out of bounds
-				LIST_RemoveAt(list, i, 1);
-				continue;
-			}
-		}
-	}
-}
-void RENDER_TexturedQuad(text_quad target, float r, float g, float b, SDL_bool reverse_rendering) {
-	float x = target.x, y = target.y, w = target.w, h = target.h;
-	if (reverse_rendering) {
-		float tmp_vertexes[32] = { x+w,y,0,r,g,b,0,0, x,y,0,r,g,b,1,0, x,y - h,0,r,g,b,1,1, x + w,y - h,0,r,g,b,0,1 };
-		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
-		glBindTexture(GL_TEXTURE_2D, target.textid);
-		glUseProgram(shader_texturedobj);
-		glDrawArrays(GL_QUADS, 0, 4);
-	}
-	else {
-		float tmp_vertexes[32] = { x,y,0,r,g,b,0,0, x + w,y,0,r,g,b,1,0, x + w,y - h,0,r,g,b,1,1, x,y - h,0,r,g,b,0,1 };
-		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
-		glBindTexture(GL_TEXTURE_2D, target.textid);
-		glUseProgram(shader_texturedobj);
-		glDrawArrays(GL_QUADS, 0, 4);
-	}
-}
-void RENDER_TexturedQuadSheet(text_quad target, quad source_rect, float r, float g, float b, SDL_bool normalized, SDL_bool reverse_rendering) {
-	float x = target.x, y = target.y, w = target.w, h = target.h;
-	float textx, textw;
-	float texty, texth;
-	if (normalized)
-		textx = source_rect.x, texty = source_rect.y, textw = source_rect.w, texth = source_rect.h;
-	else
-		textx = source_rect.x / target.texw, texty = source_rect.y / target.texh, textw = source_rect.w / target.texw, texth = source_rect.h / target.texh;
-
-	if (reverse_rendering) {
-		float tmp_vertexes[32] = { x + w,y,0,r,g,b,textx,texty, x,y,0,r,g,b,textx + textw,texty, x,y - h,0,r,g,b,textx + textw,textx + texth, x + w,y - h,0,r,g,b,textx,textx + texth};
-		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
-		glBindTexture(GL_TEXTURE_2D, target.textid);
-		glUseProgram(shader_texturedobj);
-		glDrawArrays(GL_QUADS, 0, 4);
-	}
-	else {
-		//this is so unreadable, definitly clean this up later
-		float tmp_vertexes[32] = { x,y,0,r,g,b,textx,texty, x + w,y,0,r,g,b,textx + textw,source_rect.y, x + w,y - h,0,r,g,b,textx + textw,texty + texth, x,y - h,0,r,g,b,textx,texty + texth };
-		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
-		glBindTexture(GL_TEXTURE_2D, target.textid);
-		glUseProgram(shader_texturedobj);
-		glDrawArrays(GL_QUADS, 0, 4);
-	}
-}
-void RENDER_Quad(quad target, float r, float g, float b) {
-	float x = target.x, y = target.y, w = target.w, h = target.h;
-	float tmp_vertexes[32] = { x,y,0,r,g,b,0,0, x + w,y,0,r,g,b,1,0, x + w,y - h,0,r,g,b,1,1, x,y - h,0,r,g,b,0,1 };
-	glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
-	glUseProgram(shader_colored);
-	glDrawArrays(GL_QUADS, 0, 4);
-}
 void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type) {
 	glTexParameteri(sampler_target, GL_TEXTURE_WRAP_S, repeat_type);
 	glTexParameteri(sampler_target, GL_TEXTURE_WRAP_T, repeat_type);
@@ -441,7 +309,7 @@ void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surf
 		SDL_FreeSurface(tmp_surface);
 }
 //here just so that it can clean up the main function, this is initlizing stuff that has to do with graphics
-void Init_GL(void){
+void Init_GL(void) {
 	SDL_Surface* tmp_surface = IMG_Load("resources/character_1.png");
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -489,12 +357,12 @@ void Init_GL(void){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	CreateTexture2D(overtime_text, GL_RGBA, true, NULL, NULL); 
+	CreateTexture2D(overtime_text, GL_RGBA, true, NULL, NULL);
 	tmp_surface = IMG_Load("resources/character_ic.png"); //for the program icon
 	SDL_SetWindowIcon(window, tmp_surface);
 	SDL_FreeSurface(tmp_surface);
 	tmp_surface = IMG_Load("resources/cursor_f_open.png"); //for the mouse when left mouse button is not pressed
-	mouse_opened  = SDL_CreateColorCursor(tmp_surface, 0, 0);
+	mouse_opened = SDL_CreateColorCursor(tmp_surface, 0, 0);
 	SDL_FreeSurface(tmp_surface);
 	tmp_surface = IMG_Load("resources/cursor_f_closed.png"); //for the mouse when left mouse button is pressed
 	mouse_closed = SDL_CreateColorCursor(tmp_surface, 0, 0);

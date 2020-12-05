@@ -318,7 +318,7 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 				++linebreak_amount;
 			}
 		}
-		shader_data[size - linebreak_amount] = '\0'; //not really sure why it works but it does
+		shader_data[size - linebreak_amount] = '\0';
 		//printf("%s", shader_data);
 		//printf("%d", size);
 		//for debugging

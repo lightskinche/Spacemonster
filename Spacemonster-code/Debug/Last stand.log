@@ -1,2 +1,36 @@
+<<<<<<< HEAD
 ﻿  LINK : C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe not found or not built by the last incremental link; performing full link
+=======
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (3DRendC.vcxproj, Neon.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.c
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main_h.h(76,2): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main_h.h(81,2): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(26,40): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(27,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(39,31): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(56,16): warning C4026: function declared with formal parameter list
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(75,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(75,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(76,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(76,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(187,65): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(187,86): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(197,18): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(206,44): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(206,74): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(218,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(218,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(270,45): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(270,50): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(272,45): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(272,50): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(194,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(307,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(325,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(326,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(333,21): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(335,21): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
+>>>>>>> parent of 75ef36c... Cleaned up stuff
   Last stand.vcxproj -> C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe

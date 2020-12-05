@@ -42,7 +42,7 @@ void GAME_AddEnemies(void) {
 		if (!(active_en & tmp_bitshift))
 			tmp_bitshift = CIVILIAN_RANCHER << tmp;
 
-		text_quad tmp_text_quad = { 0.9,PIXEL_TO_NDCY((float)(rand() % window_height), window_height),0.1,0.1,texture[0],0,0 }; //texture width and height not relevant... yet
+		text_quad tmp_text_quad = { 0.9,PIXEL_TO_NDCY((float)(rand() % window_height), window_height),0.175,0.125,texture[2],0,0 }; //texture width and height not relevant... yet
 		enemy* tmp_enemy = calloc(1, sizeof(enemy));
 		tmp_enemy->sprite = tmp_text_quad, tmp_enemy->health = 20 * tmp_bitshift, tmp_enemy->score = 10 * tmp_bitshift * 3, tmp_enemy->id = tmp_bitshift;
 		LIST_AddElement(&enemies, tmp_enemy);

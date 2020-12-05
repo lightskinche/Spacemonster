@@ -13,6 +13,10 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <cglm.h>
+#include <lua/luaconf.h>
+#include <lua/lua.h>
+#include <lua/lauxlib.h>
+#include <lua/lualib.h>
 #endif
 
 //window size stuff
@@ -48,7 +52,10 @@ extern unsigned int window_height;
 
 //samething, but they declare the w and h of the ships
 //TODO: Do that
-
+//lua state, for lua
+extern lua_State* L;
+//lua prototypes and stuff
+extern void error(lua_State* L, const char* fmt, ...);
 //misc
 extern float delta_time;
 extern SDL_bool overtime_bell_rung;

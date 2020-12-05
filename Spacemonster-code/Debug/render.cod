@@ -150,7 +150,7 @@ $LN4@RENDER_Lis:
   0003a	8b 45 08	 mov	 eax, DWORD PTR _list$[ebp]
   0003d	8b 4d f8	 mov	 ecx, DWORD PTR _i$3[ebp]
   00040	3b 48 04	 cmp	 ecx, DWORD PTR [eax+4]
-  00043	0f 8d 8f 00 00
+  00043	0f 8d 9b 00 00
 	00		 jge	 $LN3@RENDER_Lis
 
 ; 5    : 		enemy* tmp_enemy = LIST_At(&enemies, i);
@@ -165,16 +165,16 @@ $LN4@RENDER_Lis:
 ; 6    : 		if (tmp_enemy) {
 
   0005d	83 7d ec 00	 cmp	 DWORD PTR _tmp_enemy$2[ebp], 0
-  00061	74 70		 je	 SHORT $LN6@RENDER_Lis
+  00061	74 7c		 je	 SHORT $LN6@RENDER_Lis
 
 ; 7    : 			text_quad* sprite = &tmp_enemy->sprite;
 
   00063	8b 45 ec	 mov	 eax, DWORD PTR _tmp_enemy$2[ebp]
   00066	89 45 e0	 mov	 DWORD PTR _sprite$1[ebp], eax
 
-; 8    : 			RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, true);
+; 8    : 			RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, false);
 
-  00069	6a 01		 push	 1
+  00069	6a 00		 push	 0
   0006b	51		 push	 ecx
   0006c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
@@ -195,48 +195,51 @@ $LN4@RENDER_Lis:
   000a4	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
   000a9	83 c4 2c	 add	 esp, 44			; 0000002cH
 
-; 9    : 			if (tmp_enemy->sprite.x < -1) {//remove any enimies that are out of bounds
+; 9    : 			if (tmp_enemy->sprite.x + tmp_enemy->sprite.w < -1) {//remove any enimies that are out of bounds
 
   000ac	8b 45 ec	 mov	 eax, DWORD PTR _tmp_enemy$2[ebp]
-  000af	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  000b7	0f 2f 00	 comiss	 xmm0, DWORD PTR [eax]
-  000ba	76 17		 jbe	 SHORT $LN6@RENDER_Lis
+  000af	8b 4d ec	 mov	 ecx, DWORD PTR _tmp_enemy$2[ebp]
+  000b2	f3 0f 10 00	 movss	 xmm0, DWORD PTR [eax]
+  000b6	f3 0f 58 41 08	 addss	 xmm0, DWORD PTR [ecx+8]
+  000bb	f3 0f 10 0d 00
+	00 00 00	 movss	 xmm1, DWORD PTR __real@bf800000
+  000c3	0f 2f c8	 comiss	 xmm1, xmm0
+  000c6	76 17		 jbe	 SHORT $LN6@RENDER_Lis
 
 ; 10   : 				LIST_RemoveAt(list, i, 1);
 
-  000bc	6a 01		 push	 1
-  000be	8b 45 f8	 mov	 eax, DWORD PTR _i$3[ebp]
-  000c1	50		 push	 eax
-  000c2	8b 4d 08	 mov	 ecx, DWORD PTR _list$[ebp]
-  000c5	51		 push	 ecx
-  000c6	e8 00 00 00 00	 call	 _LIST_RemoveAt
-  000cb	83 c4 0c	 add	 esp, 12			; 0000000cH
+  000c8	6a 01		 push	 1
+  000ca	8b 45 f8	 mov	 eax, DWORD PTR _i$3[ebp]
+  000cd	50		 push	 eax
+  000ce	8b 4d 08	 mov	 ecx, DWORD PTR _list$[ebp]
+  000d1	51		 push	 ecx
+  000d2	e8 00 00 00 00	 call	 _LIST_RemoveAt
+  000d7	83 c4 0c	 add	 esp, 12			; 0000000cH
 
 ; 11   : 				continue;
 
-  000ce	e9 5e ff ff ff	 jmp	 $LN2@RENDER_Lis
+  000da	e9 52 ff ff ff	 jmp	 $LN2@RENDER_Lis
 $LN6@RENDER_Lis:
 
 ; 12   : 			}
 ; 13   : 		}
 ; 14   : 	}
 
-  000d3	e9 59 ff ff ff	 jmp	 $LN2@RENDER_Lis
+  000df	e9 4d ff ff ff	 jmp	 $LN2@RENDER_Lis
 $LN3@RENDER_Lis:
 
 ; 15   : }
 
-  000d8	5f		 pop	 edi
-  000d9	5e		 pop	 esi
-  000da	5b		 pop	 ebx
-  000db	81 c4 e4 00 00
+  000e4	5f		 pop	 edi
+  000e5	5e		 pop	 esi
+  000e6	5b		 pop	 ebx
+  000e7	81 c4 e4 00 00
 	00		 add	 esp, 228		; 000000e4H
-  000e1	3b ec		 cmp	 ebp, esp
-  000e3	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  000e8	8b e5		 mov	 esp, ebp
-  000ea	5d		 pop	 ebp
-  000eb	c3		 ret	 0
+  000ed	3b ec		 cmp	 ebp, esp
+  000ef	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  000f4	8b e5		 mov	 esp, ebp
+  000f6	5d		 pop	 ebp
+  000f7	c3		 ret	 0
 _RENDER_List ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp /RTCsu /ZI

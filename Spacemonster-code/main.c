@@ -5,18 +5,22 @@
 SDL_Window* window;
 SDL_GLContext glcontext;
 SDL_Surface* test_font_surface;
+linkedList enemies;
+lua_State* L; //for lua
 unsigned int window_width = WINDOW_WIDTH_START, window_height = WINDOW_HEIGHT_START;
 unsigned int wave = 1, score = 0, cash, active_en = 0, enemy_counter = 1;
-int reserve = 0;
-linkedList enemies;
 unsigned int texturesizeswh[2];
+int reserve = 0;
+
 //openGL stuff
 GLint texture[5];
 GLint VAO;
 GLint VERTEXES_VBO;
+
 //audio
 Mix_Chunk* overtime_bell_audio;
 //text renderering
+
 SDL_Color white = { 255,255,255,255 };
 TTF_Font* font_1;
 text_quad wave_text_quad = { 0,1,0,0.1 };
@@ -24,20 +28,25 @@ text_quad overtime_quad = { 0,0.8,0,0.1 };
 SDL_bool overtime_bell_rung = false;
 SDL_Surface* wave_text, * overtime_text;
 char wave_num[2];
+
 //shaders
 GLint shader_texturedobj;
 GLint shader_colored;    
+
 //player stuff
 text_quad player_quad;
 quad source_rect_nothing = { 0,0,1,1 };
 float player_wasd_speed = 1.35;
+
 //syncing
 float delta_time = 0;
 float start;
 //misc
+
 float background_vertexes[32] = { -1,1,0,1,1,1,0,0, 1,1,0,1,1,1,1,0, 1,-1,0,1,1,1,1,1, -1,-1,0,1,1,1,0,1 };
 SDL_Cursor* mouse_opened;
 SDL_Cursor* mouse_closed;
+
 //Prototypes
 GLint CompileShader(char* shader_fname, GLenum type);
 void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type);
@@ -87,6 +96,25 @@ int main(void) {
 	{
 		printf("Something bad happened...%s\n", Mix_GetError());
 	}
+	//initilize lua and load scripts
+	L = lua_open();
+	luaL_openlibs(L);
+	FILE* fp = fopen("resources/lua/scripts/test.lua", "r+");
+	char buff[512];
+	int error;  
+	while (fgets(buff, sizeof(buff), fp) != NULL) {
+		error = luaL_loadbuffer(L, buff, strlen(buff), "line") || lua_pcall(L, 0, 0, 0);
+		if (error) {
+			fprintf(stderr, "%s\n", lua_tostring(L, -1));
+			lua_pop(L, 1);  /* pop error message from the stack */
+		}
+	}
+	lua_getglobal(L, "ab");
+	lua_pushstring(L, "b");
+	lua_gettable(L, -2);
+	double test = lua_tonumber(L, -1);
+	printf("%f\n", test);
+	fclose(fp);
 	window = SDL_CreateWindow("SpaceMonster", 0, 100, WINDOW_WIDTH_START, WINDOW_HEIGHT_START, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if (!window) {
 		puts("Window creation failed!");
@@ -112,8 +140,8 @@ int main(void) {
 	{
 		GLint shader_vertex;
 		GLint shader_fragment;
-		shader_vertex = CompileShader("vertex1.txt", GL_VERTEX_SHADER);
-		shader_fragment = CompileShader("fragment1.txt", GL_FRAGMENT_SHADER);
+		shader_vertex = CompileShader("resources/shaders/vertex1.txt", GL_VERTEX_SHADER);
+		shader_fragment = CompileShader("resources/shaders/fragment1.txt", GL_FRAGMENT_SHADER);
 		glAttachShader(shader_texturedobj, shader_vertex);
 		glAttachShader(shader_texturedobj, shader_fragment);
 		glDeleteShader(shader_vertex);
@@ -122,8 +150,8 @@ int main(void) {
 	{
 		GLint shader_vertex;
 		GLint shader_fragment;
-		shader_vertex = CompileShader("vertex2.txt", GL_VERTEX_SHADER);
-		shader_fragment = CompileShader("fragment2.txt", GL_FRAGMENT_SHADER);
+		shader_vertex = CompileShader("resources/shaders/vertex2.txt", GL_VERTEX_SHADER);
+		shader_fragment = CompileShader("resources/shaders/fragment2.txt", GL_FRAGMENT_SHADER);
 		glAttachShader(shader_colored, shader_vertex);
 		glAttachShader(shader_colored, shader_fragment);
 		glDeleteShader(shader_vertex);
@@ -156,7 +184,7 @@ int main(void) {
 	active_en |= FEDERATION_SCOUT;
 	GAME_WaveInit();
 	//other misc texture init
-	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.1, player_quad.h = 0.2;
+	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.05, player_quad.h = 0.1;
 	player_quad.textid = texture[0];
 	wave_text_quad.textid = texture[3];
 	wave_num[0] = '0', wave_num[1] = '1';
@@ -221,7 +249,7 @@ int main(void) {
 
 		}
 		else if (player_quad.x + player_quad.w > 1) {
-			player_quad.x = 0.9;
+			player_quad.x = 1 - player_quad.w;
 
 		}
 		if (player_quad.y > 1) {
@@ -229,16 +257,16 @@ int main(void) {
 
 		}
 		else if (player_quad.y < -1 + player_quad.h) {
-			player_quad.y = -0.8;
+			player_quad.y = -1 + player_quad.h;
 
 		}
 		//check if wave should increase
 		if (score == (32 << wave))
 			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 32 << wave);
 		GAME_AddEnemies();
-		RENDER_TexturedQuad(player_quad,1,1,1, false);
 		GAME_HandleEnemies(&enemies);
 		RENDER_List(&enemies);
+		RENDER_TexturedQuad(player_quad, 1, 1, 1, false);
 		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
 		if (reserve < 0) {
 			RENDER_TexturedQuad(overtime_quad, 1, 0.9, 0.1, false);
@@ -339,13 +367,13 @@ void Init_GL(void) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
-	/*tmp_surface = IMG_Load("fed_scout.png");
+	tmp_surface = IMG_Load("resources/fed_scout.png");
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	CreateTexture2D(tmp_surface, GL_RGBA, true);*/
+	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
 	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

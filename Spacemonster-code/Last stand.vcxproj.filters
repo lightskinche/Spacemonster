@@ -16,6 +16,9 @@
     <Filter Include="Source Files\shaders">
       <UniqueIdentifier>{39c984db-be68-425c-8778-55a9bb0e1def}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\lua">
+      <UniqueIdentifier>{e275685b-7273-494d-89e4-e2e0b111148d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glmc\affine.c">
@@ -93,6 +96,9 @@
     <ClCompile Include="game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lua.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glmc\config.h">
@@ -118,5 +124,10 @@
     <Text Include="vertex2.txt">
       <Filter>Source Files\shaders</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\lua\scripts\test.lua">
+      <Filter>Source Files\lua</Filter>
+    </None>
   </ItemGroup>
 </Project>

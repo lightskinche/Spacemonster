@@ -5,8 +5,8 @@ void RENDER_List(linkedList* const list) {
 		enemy* tmp_enemy = LIST_At(&enemies, i);
 		if (tmp_enemy) {
 			text_quad* sprite = &tmp_enemy->sprite;
-			RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, true);
-			if (tmp_enemy->sprite.x < -1) {//remove any enimies that are out of bounds
+			RENDER_TexturedQuad(tmp_enemy->sprite, 1, 1, 1, false);
+			if (tmp_enemy->sprite.x + tmp_enemy->sprite.w < -1) {//remove any enimies that are out of bounds
 				LIST_RemoveAt(list, i, 1);
 				continue;
 			}

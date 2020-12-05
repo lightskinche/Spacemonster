@@ -1,0 +1,2 @@
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.pdb

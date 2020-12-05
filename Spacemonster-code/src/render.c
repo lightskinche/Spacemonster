@@ -37,8 +37,7 @@ void RENDER_TexturedQuadSheet(text_quad target, quad source_rect, float r, float
 	if (normalized)
 		textx = source_rect.x, texty = source_rect.y, textw = source_rect.w, texth = source_rect.h;
 	else
-		textx = source_rect.x / target.texw, texty = source_rect.y / target.texh, textw = source_rect.w / target.texw, texth = source_rect.h / target.texh;
-
+		textx = source_rect.x / target.texw, texty = source_rect.y / target.texh, textw = (source_rect.w - 1) / target.texw, texth = source_rect.h / target.texh;
 	if (reverse_rendering) {
 		float tmp_vertexes[32] = { x + w,y,0,r,g,b,textx,texty, x,y,0,r,g,b,textx + textw,texty, x,y - h,0,r,g,b,textx + textw,textx + texth, x + w,y - h,0,r,g,b,textx,textx + texth };
 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);

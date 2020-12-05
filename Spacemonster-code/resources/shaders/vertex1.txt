@@ -13,4 +13,4 @@ void main()
     gl_Position = vec4(pos, 1.0);
     vertexColor = vec4(color * global_light, 1.0);
     outTexture = inTexture;
-} 
+}

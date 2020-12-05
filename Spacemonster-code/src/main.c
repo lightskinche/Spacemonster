@@ -13,7 +13,7 @@ unsigned int texturesizeswh[2];
 int reserve = 0;
 
 //openGL stuff
-GLint texture[5];
+GLint texture[6];
 GLint VAO;
 GLint VERTEXES_VBO;
 
@@ -35,6 +35,8 @@ GLint shader_colored;
 
 //player stuff
 text_quad player_quad;
+text_quad player_tongue = { 0,0,0.5,0.15 };
+quad player_tongue_srect = { 0,0,128,12 };
 quad source_rect_nothing = { 0,0,1,1 };
 float player_wasd_speed = 1.35;
 
@@ -161,6 +163,10 @@ int main(void) {
 		glAttachShader(shader_colored, shader_fragment);
 		glDeleteShader(shader_vertex);
 		glDeleteShader(shader_fragment);
+		glGetShaderInfoLog(shader_vertex, 512, NULL, buf);
+		puts(buf);
+		glGetShaderInfoLog(shader_fragment, 512, NULL, buf);
+		puts(buf);
 	}
 	glLinkProgram(shader_texturedobj);
 	glLinkProgram(shader_colored);
@@ -191,8 +197,11 @@ int main(void) {
 	active_en |= FEDERATION_SCOUT;
 	GAME_WaveInit();
 	//other misc texture init
+	//player stuff
 	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.05, player_quad.h = 0.1;
 	player_quad.textid = texture[0];
+	player_tongue.textid = texture[5];
+	//text stuff
 	wave_text_quad.textid = texture[3];
 	wave_num[0] = '0', wave_num[1] = '1';
 	overtime_quad.textid = texture[4];
@@ -273,6 +282,7 @@ int main(void) {
 		GAME_AddEnemies();
 		GAME_HandleEnemies(&enemies);
 		RENDER_List(&enemies);
+		RENDER_TexturedQuadSheet(player_tongue, player_tongue_srect, 1, 1, 1, false, false);
 		RENDER_TexturedQuad(player_quad, 1, 1, 1, false);
 		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
 		if (reserve < 0) {
@@ -298,23 +308,17 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 	char* shader_data;
 	GLint shader_obj;
 	size_t size;
-	int linebreak_amount = 0;
 	{
 		FILE* fp; 
 		fp = fopen(shader_fname, "r");
 		fseek(fp, SEEK_SET, SEEK_END);
 		size = ftell(fp);
 		fseek(fp, SEEK_SET, SEEK_SET);
-		shader_data = calloc(1, size);
+		shader_data = calloc(1, size + 1);
 		fread(shader_data, 1, size, fp);
 		fclose(fp);
-		for (int i = 0; i < size; ++i) {
-			if (shader_data[i] == '\n') {
-				++linebreak_amount;
-			}
-		}
 		//add a space at the end of each shader or this causes a problem
-		shader_data[size - 1] = '\0'; //not really sure why it works but it does
+		shader_data[size] = '\0'; //not really sure why it works but it does
 		//printf("%s", shader_data);
 		//printf("%d", size);
 		//for debugging
@@ -332,12 +336,12 @@ void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repea
 	glTexParameteri(sampler_target, GL_TEXTURE_MIN_FILTER, filter);
 	glTexParameteri(sampler_target, GL_TEXTURE_MAG_FILTER, filter);
 }
-void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h) {
+void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, float* w, float* h) {
 	glTexImage2D(GL_TEXTURE_2D, 0, format, tmp_surface->w, tmp_surface->h, 0, format, GL_UNSIGNED_BYTE, tmp_surface->pixels);
-	if(w)
-		w = tmp_surface->w;
+	if (w)
+		*w = tmp_surface->w;
 	if(h)
-		h = tmp_surface->h;
+		*h = tmp_surface->h;
 	if (free_surface)
 		SDL_FreeSurface(tmp_surface);
 }
@@ -357,13 +361,21 @@ void Init_GL(void) {
 	glEnableVertexAttribArray(2);
 	//textures, player texture
 	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(4, texture);
+	glGenTextures(6, texture);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
+	//player tongue
+	tmp_surface = IMG_Load("resources/tongue.png");
+	glBindTexture(GL_TEXTURE_2D, texture[5]); //at position 5 since I dont want to reorder all of the textures right now
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_tongue.texw, &player_tongue.texh);
 	//first bacground
 	tmp_surface = IMG_Load("resources/background_2.png");
 	glBindTexture(GL_TEXTURE_2D, texture[1]);

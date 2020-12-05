@@ -93,7 +93,7 @@ typedef struct quad_v quad_v;
 struct text_quad {
 	float x, y, w, h;
 	GLint textid;
-	int texw, texh;
+	float texw, texh;
 };
 
 struct text_quad_v {
@@ -118,7 +118,7 @@ extern void RENDER_List(const linkedList* const list);
 extern GLint shader_texturedobj;
 extern GLint shader_colored;
 //texture list
-extern GLint texture[5];
+extern GLint texture[6];
 
 //enemys
 typedef struct personMale personMale;

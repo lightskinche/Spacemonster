@@ -258,7 +258,7 @@ _g$ = 28						; size = 4
 _b$ = 32						; size = 4
 _RENDER_Quad PROC					; COMDAT
 
-; 58   : void RENDER_Quad(quad target, float r, float g, float b) {
+; 57   : void RENDER_Quad(quad target, float r, float g, float b) {
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -278,7 +278,7 @@ _RENDER_Quad PROC					; COMDAT
   00028	b9 00 00 00 00	 mov	 ecx, OFFSET __2888D4F6_render@c
   0002d	e8 00 00 00 00	 call	 @__CheckForDebuggerJustMyCode@4
 
-; 59   : 	float x = target.x, y = target.y, w = target.w, h = target.h;
+; 58   : 	float x = target.x, y = target.y, w = target.w, h = target.h;
 
   00032	f3 0f 10 45 08	 movss	 xmm0, DWORD PTR _target$[ebp]
   00037	f3 0f 11 45 f4	 movss	 DWORD PTR _x$[ebp], xmm0
@@ -289,7 +289,7 @@ _RENDER_Quad PROC					; COMDAT
   00050	f3 0f 10 45 14	 movss	 xmm0, DWORD PTR _target$[ebp+12]
   00055	f3 0f 11 45 d0	 movss	 DWORD PTR _h$[ebp], xmm0
 
-; 60   : 	float tmp_vertexes[32] = { x,y,0,r,g,b,0,0, x + w,y,0,r,g,b,1,0, x + w,y - h,0,r,g,b,1,1, x,y - h,0,r,g,b,0,1 };
+; 59   : 	float tmp_vertexes[32] = { x,y,0,r,g,b,0,0, x + w,y,0,r,g,b,1,0, x + w,y - h,0,r,g,b,1,1, x,y - h,0,r,g,b,0,1 };
 
   0005a	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
   0005f	f3 0f 11 85 48
@@ -378,7 +378,7 @@ _RENDER_Quad PROC					; COMDAT
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
   001cf	f3 0f 11 45 c4	 movss	 DWORD PTR _tmp_vertexes$[ebp+124], xmm0
 
-; 61   : 	glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
+; 60   : 	glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
 
   001d4	8b f4		 mov	 esi, esp
   001d6	8d 85 48 ff ff
@@ -392,7 +392,7 @@ _RENDER_Quad PROC					; COMDAT
   001ef	3b f4		 cmp	 esi, esp
   001f1	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 62   : 	glUseProgram(shader_colored);
+; 61   : 	glUseProgram(shader_colored);
 
   001f6	8b f4		 mov	 esi, esp
   001f8	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_colored
@@ -402,7 +402,7 @@ _RENDER_Quad PROC					; COMDAT
   00204	3b f4		 cmp	 esi, esp
   00206	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 63   : 	glDrawArrays(GL_QUADS, 0, 4);
+; 62   : 	glDrawArrays(GL_QUADS, 0, 4);
 
   0020b	8b f4		 mov	 esi, esp
   0020d	6a 04		 push	 4
@@ -413,7 +413,7 @@ _RENDER_Quad PROC					; COMDAT
   00219	3b f4		 cmp	 esi, esp
   0021b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 64   : }
+; 63   : }
 
   00220	52		 push	 edx
   00221	8b cd		 mov	 ecx, ebp
@@ -532,408 +532,405 @@ _RENDER_TexturedQuadSheet PROC				; COMDAT
   00079	f3 0f 11 45 b8	 movss	 DWORD PTR _textw$[ebp], xmm0
   0007e	f3 0f 10 45 30	 movss	 xmm0, DWORD PTR _source_rect$[ebp+12]
   00083	f3 0f 11 45 a0	 movss	 DWORD PTR _texth$[ebp], xmm0
-  00088	eb 4c		 jmp	 SHORT $LN3@RENDER_Tex
+  00088	eb 44		 jmp	 SHORT $LN3@RENDER_Tex
 $LN2@RENDER_Tex:
 
 ; 39   : 	else
-; 40   : 		textx = source_rect.x / target.texw, texty = source_rect.y / target.texh, textw = source_rect.w / target.texw, texth = source_rect.h / target.texh;
+; 40   : 		textx = source_rect.x / target.texw, texty = source_rect.y / target.texh, textw = (source_rect.w - 1) / target.texw, texth = source_rect.h / target.texh;
 
-  0008a	f3 0f 2a 45 1c	 cvtsi2ss xmm0, DWORD PTR _target$[ebp+20]
-  0008f	f3 0f 10 4d 24	 movss	 xmm1, DWORD PTR _source_rect$[ebp]
-  00094	f3 0f 5e c8	 divss	 xmm1, xmm0
-  00098	f3 0f 11 4d c4	 movss	 DWORD PTR _textx$[ebp], xmm1
-  0009d	f3 0f 2a 45 20	 cvtsi2ss xmm0, DWORD PTR _target$[ebp+24]
-  000a2	f3 0f 10 4d 28	 movss	 xmm1, DWORD PTR _source_rect$[ebp+4]
-  000a7	f3 0f 5e c8	 divss	 xmm1, xmm0
-  000ab	f3 0f 11 4d ac	 movss	 DWORD PTR _texty$[ebp], xmm1
-  000b0	f3 0f 2a 45 1c	 cvtsi2ss xmm0, DWORD PTR _target$[ebp+20]
-  000b5	f3 0f 10 4d 2c	 movss	 xmm1, DWORD PTR _source_rect$[ebp+8]
-  000ba	f3 0f 5e c8	 divss	 xmm1, xmm0
-  000be	f3 0f 11 4d b8	 movss	 DWORD PTR _textw$[ebp], xmm1
-  000c3	f3 0f 2a 45 20	 cvtsi2ss xmm0, DWORD PTR _target$[ebp+24]
-  000c8	f3 0f 10 4d 30	 movss	 xmm1, DWORD PTR _source_rect$[ebp+12]
-  000cd	f3 0f 5e c8	 divss	 xmm1, xmm0
-  000d1	f3 0f 11 4d a0	 movss	 DWORD PTR _texth$[ebp], xmm1
+  0008a	f3 0f 10 45 24	 movss	 xmm0, DWORD PTR _source_rect$[ebp]
+  0008f	f3 0f 5e 45 1c	 divss	 xmm0, DWORD PTR _target$[ebp+20]
+  00094	f3 0f 11 45 c4	 movss	 DWORD PTR _textx$[ebp], xmm0
+  00099	f3 0f 10 45 28	 movss	 xmm0, DWORD PTR _source_rect$[ebp+4]
+  0009e	f3 0f 5e 45 20	 divss	 xmm0, DWORD PTR _target$[ebp+24]
+  000a3	f3 0f 11 45 ac	 movss	 DWORD PTR _texty$[ebp], xmm0
+  000a8	f3 0f 10 45 2c	 movss	 xmm0, DWORD PTR _source_rect$[ebp+8]
+  000ad	f3 0f 5c 05 00
+	00 00 00	 subss	 xmm0, DWORD PTR __real@3f800000
+  000b5	f3 0f 5e 45 1c	 divss	 xmm0, DWORD PTR _target$[ebp+20]
+  000ba	f3 0f 11 45 b8	 movss	 DWORD PTR _textw$[ebp], xmm0
+  000bf	f3 0f 10 45 30	 movss	 xmm0, DWORD PTR _source_rect$[ebp+12]
+  000c4	f3 0f 5e 45 20	 divss	 xmm0, DWORD PTR _target$[ebp+24]
+  000c9	f3 0f 11 45 a0	 movss	 DWORD PTR _texth$[ebp], xmm0
 $LN3@RENDER_Tex:
 
-; 41   : 
-; 42   : 	if (reverse_rendering) {
+; 41   : 	if (reverse_rendering) {
 
-  000d6	83 7d 44 00	 cmp	 DWORD PTR _reverse_rendering$[ebp], 0
-  000da	0f 84 17 02 00
+  000ce	83 7d 44 00	 cmp	 DWORD PTR _reverse_rendering$[ebp], 0
+  000d2	0f 84 17 02 00
 	00		 je	 $LN4@RENDER_Tex
 
-; 43   : 		float tmp_vertexes[32] = { x + w,y,0,r,g,b,textx,texty, x,y,0,r,g,b,textx + textw,texty, x,y - h,0,r,g,b,textx + textw,textx + texth, x + w,y - h,0,r,g,b,textx,textx + texth };
+; 42   : 		float tmp_vertexes[32] = { x + w,y,0,r,g,b,textx,texty, x,y,0,r,g,b,textx + textw,texty, x,y - h,0,r,g,b,textx + textw,textx + texth, x + w,y - h,0,r,g,b,textx,textx + texth };
 
-  000e0	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  000e5	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
-  000ea	f3 0f 11 85 18
+  000d8	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  000dd	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
+  000e2	f3 0f 11 85 18
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp], xmm0
-  000f2	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  000f7	f3 0f 11 85 1c
+  000ea	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  000ef	f3 0f 11 85 1c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+4], xmm0
-  000ff	0f 57 c0	 xorps	 xmm0, xmm0
-  00102	f3 0f 11 85 20
+  000f7	0f 57 c0	 xorps	 xmm0, xmm0
+  000fa	f3 0f 11 85 20
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+8], xmm0
-  0010a	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  0010f	f3 0f 11 85 24
+  00102	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  00107	f3 0f 11 85 24
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+12], xmm0
-  00117	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  0011c	f3 0f 11 85 28
+  0010f	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  00114	f3 0f 11 85 28
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+16], xmm0
-  00124	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  00129	f3 0f 11 85 2c
+  0011c	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  00121	f3 0f 11 85 2c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+20], xmm0
-  00131	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  00136	f3 0f 11 85 30
+  00129	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  0012e	f3 0f 11 85 30
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+24], xmm0
-  0013e	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
-  00143	f3 0f 11 85 34
+  00136	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
+  0013b	f3 0f 11 85 34
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+28], xmm0
-  0014b	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  00150	f3 0f 11 85 38
+  00143	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  00148	f3 0f 11 85 38
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+32], xmm0
-  00158	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  0015d	f3 0f 11 85 3c
+  00150	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  00155	f3 0f 11 85 3c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+36], xmm0
-  00165	0f 57 c0	 xorps	 xmm0, xmm0
-  00168	f3 0f 11 85 40
+  0015d	0f 57 c0	 xorps	 xmm0, xmm0
+  00160	f3 0f 11 85 40
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+40], xmm0
-  00170	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  00175	f3 0f 11 85 44
+  00168	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  0016d	f3 0f 11 85 44
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+44], xmm0
-  0017d	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  00182	f3 0f 11 85 48
+  00175	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  0017a	f3 0f 11 85 48
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+48], xmm0
-  0018a	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  0018f	f3 0f 11 85 4c
+  00182	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  00187	f3 0f 11 85 4c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+52], xmm0
-  00197	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  0019c	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
-  001a1	f3 0f 11 85 50
+  0018f	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00194	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
+  00199	f3 0f 11 85 50
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+56], xmm0
-  001a9	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
-  001ae	f3 0f 11 85 54
+  001a1	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
+  001a6	f3 0f 11 85 54
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+60], xmm0
-  001b6	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  001bb	f3 0f 11 85 58
+  001ae	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  001b3	f3 0f 11 85 58
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+64], xmm0
-  001c3	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  001c8	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
-  001cd	f3 0f 11 85 5c
+  001bb	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  001c0	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
+  001c5	f3 0f 11 85 5c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+68], xmm0
-  001d5	0f 57 c0	 xorps	 xmm0, xmm0
-  001d8	f3 0f 11 85 60
+  001cd	0f 57 c0	 xorps	 xmm0, xmm0
+  001d0	f3 0f 11 85 60
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+72], xmm0
-  001e0	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  001e5	f3 0f 11 85 64
+  001d8	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  001dd	f3 0f 11 85 64
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+76], xmm0
-  001ed	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  001f2	f3 0f 11 85 68
+  001e5	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  001ea	f3 0f 11 85 68
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+80], xmm0
-  001fa	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  001ff	f3 0f 11 85 6c
+  001f2	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  001f7	f3 0f 11 85 6c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+84], xmm0
-  00207	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  0020c	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
-  00211	f3 0f 11 85 70
+  001ff	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00204	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
+  00209	f3 0f 11 85 70
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+88], xmm0
-  00219	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  0021e	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
-  00223	f3 0f 11 85 74
+  00211	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00216	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
+  0021b	f3 0f 11 85 74
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+92], xmm0
-  0022b	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  00230	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
-  00235	f3 0f 11 85 78
+  00223	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  00228	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
+  0022d	f3 0f 11 85 78
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+96], xmm0
-  0023d	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  00242	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
-  00247	f3 0f 11 85 7c
+  00235	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  0023a	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
+  0023f	f3 0f 11 85 7c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$2[ebp+100], xmm0
-  0024f	0f 57 c0	 xorps	 xmm0, xmm0
-  00252	f3 0f 11 45 80	 movss	 DWORD PTR _tmp_vertexes$2[ebp+104], xmm0
-  00257	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  0025c	f3 0f 11 45 84	 movss	 DWORD PTR _tmp_vertexes$2[ebp+108], xmm0
-  00261	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  00266	f3 0f 11 45 88	 movss	 DWORD PTR _tmp_vertexes$2[ebp+112], xmm0
-  0026b	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  00270	f3 0f 11 45 8c	 movss	 DWORD PTR _tmp_vertexes$2[ebp+116], xmm0
-  00275	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  0027a	f3 0f 11 45 90	 movss	 DWORD PTR _tmp_vertexes$2[ebp+120], xmm0
-  0027f	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  00284	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
-  00289	f3 0f 11 45 94	 movss	 DWORD PTR _tmp_vertexes$2[ebp+124], xmm0
+  00247	0f 57 c0	 xorps	 xmm0, xmm0
+  0024a	f3 0f 11 45 80	 movss	 DWORD PTR _tmp_vertexes$2[ebp+104], xmm0
+  0024f	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  00254	f3 0f 11 45 84	 movss	 DWORD PTR _tmp_vertexes$2[ebp+108], xmm0
+  00259	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  0025e	f3 0f 11 45 88	 movss	 DWORD PTR _tmp_vertexes$2[ebp+112], xmm0
+  00263	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  00268	f3 0f 11 45 8c	 movss	 DWORD PTR _tmp_vertexes$2[ebp+116], xmm0
+  0026d	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00272	f3 0f 11 45 90	 movss	 DWORD PTR _tmp_vertexes$2[ebp+120], xmm0
+  00277	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  0027c	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
+  00281	f3 0f 11 45 94	 movss	 DWORD PTR _tmp_vertexes$2[ebp+124], xmm0
 
-; 44   : 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
+; 43   : 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
 
-  0028e	8b f4		 mov	 esi, esp
-  00290	8d 85 18 ff ff
+  00286	8b f4		 mov	 esi, esp
+  00288	8d 85 18 ff ff
 	ff		 lea	 eax, DWORD PTR _tmp_vertexes$2[ebp]
-  00296	50		 push	 eax
-  00297	68 80 00 00 00	 push	 128			; 00000080H
-  0029c	6a 00		 push	 0
-  0029e	68 92 88 00 00	 push	 34962			; 00008892H
-  002a3	ff 15 00 00 00
+  0028e	50		 push	 eax
+  0028f	68 80 00 00 00	 push	 128			; 00000080H
+  00294	6a 00		 push	 0
+  00296	68 92 88 00 00	 push	 34962			; 00008892H
+  0029b	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBufferSubData
-  002a9	3b f4		 cmp	 esi, esp
-  002ab	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  002a1	3b f4		 cmp	 esi, esp
+  002a3	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 45   : 		glBindTexture(GL_TEXTURE_2D, target.textid);
+; 44   : 		glBindTexture(GL_TEXTURE_2D, target.textid);
 
-  002b0	8b f4		 mov	 esi, esp
-  002b2	8b 45 18	 mov	 eax, DWORD PTR _target$[ebp+16]
-  002b5	50		 push	 eax
-  002b6	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  002bb	ff 15 00 00 00
+  002a8	8b f4		 mov	 esi, esp
+  002aa	8b 45 18	 mov	 eax, DWORD PTR _target$[ebp+16]
+  002ad	50		 push	 eax
+  002ae	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  002b3	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  002c1	3b f4		 cmp	 esi, esp
-  002c3	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  002b9	3b f4		 cmp	 esi, esp
+  002bb	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 46   : 		glUseProgram(shader_texturedobj);
+; 45   : 		glUseProgram(shader_texturedobj);
 
-  002c8	8b f4		 mov	 esi, esp
-  002ca	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
-  002cf	50		 push	 eax
-  002d0	ff 15 00 00 00
+  002c0	8b f4		 mov	 esi, esp
+  002c2	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
+  002c7	50		 push	 eax
+  002c8	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glUseProgram
-  002d6	3b f4		 cmp	 esi, esp
-  002d8	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  002ce	3b f4		 cmp	 esi, esp
+  002d0	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 47   : 		glDrawArrays(GL_QUADS, 0, 4);
+; 46   : 		glDrawArrays(GL_QUADS, 0, 4);
 
-  002dd	8b f4		 mov	 esi, esp
-  002df	6a 04		 push	 4
-  002e1	6a 00		 push	 0
-  002e3	6a 07		 push	 7
-  002e5	ff 15 00 00 00
+  002d5	8b f4		 mov	 esi, esp
+  002d7	6a 04		 push	 4
+  002d9	6a 00		 push	 0
+  002db	6a 07		 push	 7
+  002dd	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDrawArrays
-  002eb	3b f4		 cmp	 esi, esp
-  002ed	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  002e3	3b f4		 cmp	 esi, esp
+  002e5	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 48   : 	}
+; 47   : 	}
 
-  002f2	e9 24 02 00 00	 jmp	 $LN5@RENDER_Tex
+  002ea	e9 24 02 00 00	 jmp	 $LN5@RENDER_Tex
 $LN4@RENDER_Tex:
 
-; 49   : 	else {
-; 50   : 		//this is so unreadable, definitly clean this up later
-; 51   : 		float tmp_vertexes[32] = { x,y,0,r,g,b,textx,texty, x + w,y,0,r,g,b,textx + textw,source_rect.y, x + w,y - h,0,r,g,b,textx + textw,texty + texth, x,y - h,0,r,g,b,textx,texty + texth };
+; 48   : 	else {
+; 49   : 		//this is so unreadable, definitly clean this up later
+; 50   : 		float tmp_vertexes[32] = { x,y,0,r,g,b,textx,texty, x + w,y,0,r,g,b,textx + textw,source_rect.y, x + w,y - h,0,r,g,b,textx + textw,texty + texth, x,y - h,0,r,g,b,textx,texty + texth };
 
-  002f7	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  002fc	f3 0f 11 85 90
+  002ef	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  002f4	f3 0f 11 85 90
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp], xmm0
-  00304	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  00309	f3 0f 11 85 94
+  002fc	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  00301	f3 0f 11 85 94
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+4], xmm0
-  00311	0f 57 c0	 xorps	 xmm0, xmm0
-  00314	f3 0f 11 85 98
+  00309	0f 57 c0	 xorps	 xmm0, xmm0
+  0030c	f3 0f 11 85 98
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+8], xmm0
-  0031c	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  00321	f3 0f 11 85 9c
+  00314	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  00319	f3 0f 11 85 9c
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+12], xmm0
-  00329	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  0032e	f3 0f 11 85 a0
+  00321	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  00326	f3 0f 11 85 a0
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+16], xmm0
-  00336	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  0033b	f3 0f 11 85 a4
+  0032e	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  00333	f3 0f 11 85 a4
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+20], xmm0
-  00343	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  00348	f3 0f 11 85 a8
+  0033b	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00340	f3 0f 11 85 a8
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+24], xmm0
-  00350	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
-  00355	f3 0f 11 85 ac
+  00348	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
+  0034d	f3 0f 11 85 ac
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+28], xmm0
-  0035d	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  00362	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
-  00367	f3 0f 11 85 b0
+  00355	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  0035a	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
+  0035f	f3 0f 11 85 b0
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+32], xmm0
-  0036f	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  00374	f3 0f 11 85 b4
+  00367	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  0036c	f3 0f 11 85 b4
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+36], xmm0
-  0037c	0f 57 c0	 xorps	 xmm0, xmm0
-  0037f	f3 0f 11 85 b8
+  00374	0f 57 c0	 xorps	 xmm0, xmm0
+  00377	f3 0f 11 85 b8
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+40], xmm0
-  00387	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  0038c	f3 0f 11 85 bc
+  0037f	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  00384	f3 0f 11 85 bc
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+44], xmm0
-  00394	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  00399	f3 0f 11 85 c0
+  0038c	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  00391	f3 0f 11 85 c0
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+48], xmm0
-  003a1	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  003a6	f3 0f 11 85 c4
+  00399	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  0039e	f3 0f 11 85 c4
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+52], xmm0
-  003ae	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  003b3	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
-  003b8	f3 0f 11 85 c8
+  003a6	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  003ab	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
+  003b0	f3 0f 11 85 c8
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+56], xmm0
-  003c0	f3 0f 10 45 28	 movss	 xmm0, DWORD PTR _source_rect$[ebp+4]
-  003c5	f3 0f 11 85 cc
+  003b8	f3 0f 10 45 28	 movss	 xmm0, DWORD PTR _source_rect$[ebp+4]
+  003bd	f3 0f 11 85 cc
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+60], xmm0
-  003cd	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  003d2	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
-  003d7	f3 0f 11 85 d0
+  003c5	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  003ca	f3 0f 58 45 dc	 addss	 xmm0, DWORD PTR _w$[ebp]
+  003cf	f3 0f 11 85 d0
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+64], xmm0
-  003df	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  003e4	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
-  003e9	f3 0f 11 85 d4
+  003d7	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  003dc	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
+  003e1	f3 0f 11 85 d4
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+68], xmm0
-  003f1	0f 57 c0	 xorps	 xmm0, xmm0
-  003f4	f3 0f 11 85 d8
+  003e9	0f 57 c0	 xorps	 xmm0, xmm0
+  003ec	f3 0f 11 85 d8
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+72], xmm0
-  003fc	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  00401	f3 0f 11 85 dc
+  003f4	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  003f9	f3 0f 11 85 dc
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+76], xmm0
-  00409	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  0040e	f3 0f 11 85 e0
+  00401	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  00406	f3 0f 11 85 e0
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+80], xmm0
-  00416	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  0041b	f3 0f 11 85 e4
+  0040e	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  00413	f3 0f 11 85 e4
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+84], xmm0
-  00423	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  00428	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
-  0042d	f3 0f 11 85 e8
+  0041b	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00420	f3 0f 58 45 b8	 addss	 xmm0, DWORD PTR _textw$[ebp]
+  00425	f3 0f 11 85 e8
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+88], xmm0
-  00435	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
-  0043a	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
-  0043f	f3 0f 11 85 ec
+  0042d	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
+  00432	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
+  00437	f3 0f 11 85 ec
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+92], xmm0
-  00447	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
-  0044c	f3 0f 11 85 f0
+  0043f	f3 0f 10 45 f4	 movss	 xmm0, DWORD PTR _x$[ebp]
+  00444	f3 0f 11 85 f0
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+96], xmm0
-  00454	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
-  00459	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
-  0045e	f3 0f 11 85 f4
+  0044c	f3 0f 10 45 e8	 movss	 xmm0, DWORD PTR _y$[ebp]
+  00451	f3 0f 5c 45 d0	 subss	 xmm0, DWORD PTR _h$[ebp]
+  00456	f3 0f 11 85 f4
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+100], xmm0
-  00466	0f 57 c0	 xorps	 xmm0, xmm0
-  00469	f3 0f 11 85 f8
+  0045e	0f 57 c0	 xorps	 xmm0, xmm0
+  00461	f3 0f 11 85 f8
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+104], xmm0
-  00471	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
-  00476	f3 0f 11 85 fc
+  00469	f3 0f 10 45 34	 movss	 xmm0, DWORD PTR _r$[ebp]
+  0046e	f3 0f 11 85 fc
 	fe ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+108], xmm0
-  0047e	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
-  00483	f3 0f 11 85 00
+  00476	f3 0f 10 45 38	 movss	 xmm0, DWORD PTR _g$[ebp]
+  0047b	f3 0f 11 85 00
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+112], xmm0
-  0048b	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
-  00490	f3 0f 11 85 04
+  00483	f3 0f 10 45 3c	 movss	 xmm0, DWORD PTR _b$[ebp]
+  00488	f3 0f 11 85 04
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+116], xmm0
-  00498	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
-  0049d	f3 0f 11 85 08
+  00490	f3 0f 10 45 c4	 movss	 xmm0, DWORD PTR _textx$[ebp]
+  00495	f3 0f 11 85 08
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+120], xmm0
-  004a5	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
-  004aa	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
-  004af	f3 0f 11 85 0c
+  0049d	f3 0f 10 45 ac	 movss	 xmm0, DWORD PTR _texty$[ebp]
+  004a2	f3 0f 58 45 a0	 addss	 xmm0, DWORD PTR _texth$[ebp]
+  004a7	f3 0f 11 85 0c
 	ff ff ff	 movss	 DWORD PTR _tmp_vertexes$1[ebp+124], xmm0
 
-; 52   : 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
+; 51   : 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), tmp_vertexes);
 
-  004b7	8b f4		 mov	 esi, esp
-  004b9	8d 85 90 fe ff
+  004af	8b f4		 mov	 esi, esp
+  004b1	8d 85 90 fe ff
 	ff		 lea	 eax, DWORD PTR _tmp_vertexes$1[ebp]
-  004bf	50		 push	 eax
-  004c0	68 80 00 00 00	 push	 128			; 00000080H
-  004c5	6a 00		 push	 0
-  004c7	68 92 88 00 00	 push	 34962			; 00008892H
-  004cc	ff 15 00 00 00
+  004b7	50		 push	 eax
+  004b8	68 80 00 00 00	 push	 128			; 00000080H
+  004bd	6a 00		 push	 0
+  004bf	68 92 88 00 00	 push	 34962			; 00008892H
+  004c4	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBufferSubData
-  004d2	3b f4		 cmp	 esi, esp
-  004d4	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  004ca	3b f4		 cmp	 esi, esp
+  004cc	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 53   : 		glBindTexture(GL_TEXTURE_2D, target.textid);
+; 52   : 		glBindTexture(GL_TEXTURE_2D, target.textid);
 
-  004d9	8b f4		 mov	 esi, esp
-  004db	8b 45 18	 mov	 eax, DWORD PTR _target$[ebp+16]
-  004de	50		 push	 eax
-  004df	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  004e4	ff 15 00 00 00
+  004d1	8b f4		 mov	 esi, esp
+  004d3	8b 45 18	 mov	 eax, DWORD PTR _target$[ebp+16]
+  004d6	50		 push	 eax
+  004d7	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  004dc	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  004ea	3b f4		 cmp	 esi, esp
-  004ec	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  004e2	3b f4		 cmp	 esi, esp
+  004e4	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 54   : 		glUseProgram(shader_texturedobj);
+; 53   : 		glUseProgram(shader_texturedobj);
 
-  004f1	8b f4		 mov	 esi, esp
-  004f3	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
-  004f8	50		 push	 eax
-  004f9	ff 15 00 00 00
+  004e9	8b f4		 mov	 esi, esp
+  004eb	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
+  004f0	50		 push	 eax
+  004f1	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glUseProgram
-  004ff	3b f4		 cmp	 esi, esp
-  00501	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  004f7	3b f4		 cmp	 esi, esp
+  004f9	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 55   : 		glDrawArrays(GL_QUADS, 0, 4);
+; 54   : 		glDrawArrays(GL_QUADS, 0, 4);
 
-  00506	8b f4		 mov	 esi, esp
-  00508	6a 04		 push	 4
-  0050a	6a 00		 push	 0
-  0050c	6a 07		 push	 7
-  0050e	ff 15 00 00 00
+  004fe	8b f4		 mov	 esi, esp
+  00500	6a 04		 push	 4
+  00502	6a 00		 push	 0
+  00504	6a 07		 push	 7
+  00506	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDrawArrays
-  00514	3b f4		 cmp	 esi, esp
-  00516	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0050c	3b f4		 cmp	 esi, esp
+  0050e	e8 00 00 00 00	 call	 __RTC_CheckEsp
 $LN5@RENDER_Tex:
 
-; 56   : 	}
-; 57   : }
+; 55   : 	}
+; 56   : }
 
-  0051b	52		 push	 edx
-  0051c	8b cd		 mov	 ecx, ebp
-  0051e	50		 push	 eax
-  0051f	8d 15 00 00 00
+  00513	52		 push	 edx
+  00514	8b cd		 mov	 ecx, ebp
+  00516	50		 push	 eax
+  00517	8d 15 00 00 00
 	00		 lea	 edx, DWORD PTR $LN10@RENDER_Tex
-  00525	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
-  0052a	58		 pop	 eax
-  0052b	5a		 pop	 edx
-  0052c	5f		 pop	 edi
-  0052d	5e		 pop	 esi
-  0052e	5b		 pop	 ebx
-  0052f	8b 4d fc	 mov	 ecx, DWORD PTR __$ArrayPad$[ebp]
-  00532	33 cd		 xor	 ecx, ebp
-  00534	e8 00 00 00 00	 call	 @__security_check_cookie@4
-  00539	81 c4 34 02 00
+  0051d	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
+  00522	58		 pop	 eax
+  00523	5a		 pop	 edx
+  00524	5f		 pop	 edi
+  00525	5e		 pop	 esi
+  00526	5b		 pop	 ebx
+  00527	8b 4d fc	 mov	 ecx, DWORD PTR __$ArrayPad$[ebp]
+  0052a	33 cd		 xor	 ecx, ebp
+  0052c	e8 00 00 00 00	 call	 @__security_check_cookie@4
+  00531	81 c4 34 02 00
 	00		 add	 esp, 564		; 00000234H
-  0053f	3b ec		 cmp	 ebp, esp
-  00541	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  00546	8b e5		 mov	 esp, ebp
-  00548	5d		 pop	 ebp
-  00549	c3		 ret	 0
-  0054a	66 90		 npad	 2
+  00537	3b ec		 cmp	 ebp, esp
+  00539	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0053e	8b e5		 mov	 esp, ebp
+  00540	5d		 pop	 ebp
+  00541	c3		 ret	 0
+  00542	66 90		 npad	 2
 $LN10@RENDER_Tex:
-  0054c	02 00 00 00	 DD	 2
-  00550	00 00 00 00	 DD	 $LN9@RENDER_Tex
+  00544	02 00 00 00	 DD	 2
+  00548	00 00 00 00	 DD	 $LN9@RENDER_Tex
 $LN9@RENDER_Tex:
-  00554	18 ff ff ff	 DD	 -232			; ffffff18H
-  00558	80 00 00 00	 DD	 128			; 00000080H
-  0055c	00 00 00 00	 DD	 $LN7@RENDER_Tex
-  00560	90 fe ff ff	 DD	 -368			; fffffe90H
-  00564	80 00 00 00	 DD	 128			; 00000080H
-  00568	00 00 00 00	 DD	 $LN8@RENDER_Tex
+  0054c	18 ff ff ff	 DD	 -232			; ffffff18H
+  00550	80 00 00 00	 DD	 128			; 00000080H
+  00554	00 00 00 00	 DD	 $LN7@RENDER_Tex
+  00558	90 fe ff ff	 DD	 -368			; fffffe90H
+  0055c	80 00 00 00	 DD	 128			; 00000080H
+  00560	00 00 00 00	 DD	 $LN8@RENDER_Tex
 $LN8@RENDER_Tex:
-  0056c	74		 DB	 116			; 00000074H
-  0056d	6d		 DB	 109			; 0000006dH
-  0056e	70		 DB	 112			; 00000070H
-  0056f	5f		 DB	 95			; 0000005fH
-  00570	76		 DB	 118			; 00000076H
-  00571	65		 DB	 101			; 00000065H
-  00572	72		 DB	 114			; 00000072H
-  00573	74		 DB	 116			; 00000074H
-  00574	65		 DB	 101			; 00000065H
-  00575	78		 DB	 120			; 00000078H
-  00576	65		 DB	 101			; 00000065H
-  00577	73		 DB	 115			; 00000073H
-  00578	00		 DB	 0
+  00564	74		 DB	 116			; 00000074H
+  00565	6d		 DB	 109			; 0000006dH
+  00566	70		 DB	 112			; 00000070H
+  00567	5f		 DB	 95			; 0000005fH
+  00568	76		 DB	 118			; 00000076H
+  00569	65		 DB	 101			; 00000065H
+  0056a	72		 DB	 114			; 00000072H
+  0056b	74		 DB	 116			; 00000074H
+  0056c	65		 DB	 101			; 00000065H
+  0056d	78		 DB	 120			; 00000078H
+  0056e	65		 DB	 101			; 00000065H
+  0056f	73		 DB	 115			; 00000073H
+  00570	00		 DB	 0
 $LN7@RENDER_Tex:
-  00579	74		 DB	 116			; 00000074H
-  0057a	6d		 DB	 109			; 0000006dH
-  0057b	70		 DB	 112			; 00000070H
-  0057c	5f		 DB	 95			; 0000005fH
-  0057d	76		 DB	 118			; 00000076H
-  0057e	65		 DB	 101			; 00000065H
-  0057f	72		 DB	 114			; 00000072H
-  00580	74		 DB	 116			; 00000074H
-  00581	65		 DB	 101			; 00000065H
-  00582	78		 DB	 120			; 00000078H
-  00583	65		 DB	 101			; 00000065H
-  00584	73		 DB	 115			; 00000073H
-  00585	00		 DB	 0
+  00571	74		 DB	 116			; 00000074H
+  00572	6d		 DB	 109			; 0000006dH
+  00573	70		 DB	 112			; 00000070H
+  00574	5f		 DB	 95			; 0000005fH
+  00575	76		 DB	 118			; 00000076H
+  00576	65		 DB	 101			; 00000065H
+  00577	72		 DB	 114			; 00000072H
+  00578	74		 DB	 116			; 00000074H
+  00579	65		 DB	 101			; 00000065H
+  0057a	78		 DB	 120			; 00000078H
+  0057b	65		 DB	 101			; 00000065H
+  0057c	73		 DB	 115			; 00000073H
+  0057d	00		 DB	 0
 _RENDER_TexturedQuadSheet ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp /RTCsu /ZI

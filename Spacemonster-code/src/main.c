@@ -171,7 +171,7 @@ int main(void) {
 		loc = glGetUniformLocation(shader_texturedobj, "global_light");
 		glUniform3f(loc, 1, 1, 1);
 		if (glGetError()) {
-			printf("Failed to initilize shader uniforms, %x", glGetError());
+			printf("Failed to initilize shader uniforms, %x\n", glGetError());
 		}
 		//unless you need it for somereason
 		//GLint tex0 = glGetUniformLocation(shader_texturedobj, "Texture0");
@@ -274,9 +274,6 @@ int main(void) {
 				Mix_PlayChannel(-1, overtime_bell_audio, 0);
 				overtime_bell_rung = true;
 			}
-		}
-		if (glGetError()) {
-			printf("Failed to do something, %x", glGetError());
 		}
 		SDL_GL_SwapWindow(window);
 		delta_time = clock() - start;

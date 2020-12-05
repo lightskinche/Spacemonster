@@ -21,10 +21,9 @@ PUBLIC	_active_en
 PUBLIC	_enemy_counter
 PUBLIC	_wave_text_quad
 PUBLIC	_overtime_quad
-PUBLIC	_player_wasd_speed
-PUBLIC	_powerups
-PUBLIC	_background_vertexes
 PUBLIC	_source_rect_nothing
+PUBLIC	_player_wasd_speed
+PUBLIC	_background_vertexes
 _DATA	SEGMENT
 COMM	_L:DWORD
 _DATA	ENDS
@@ -55,7 +54,7 @@ _BSS	ENDS
 _DATA	SEGMENT
 COMM	_shader_texturedobj:DWORD
 COMM	_shader_colored:DWORD
-COMM	_texture:DWORD:06H
+COMM	_texture:DWORD:05H
 COMM	_enemies:QWORD
 COMM	_window:DWORD
 COMM	_glcontext:DWORD
@@ -65,12 +64,6 @@ COMM	_VAO:DWORD
 COMM	_VERTEXES_VBO:DWORD
 COMM	_overtime_bell_audio:DWORD
 COMM	_player_quad:BYTE:01cH
-COMM	_player_tongue:BYTE:01cH
-_DATA	ENDS
-_BSS	SEGMENT
-_powerups DD	01H DUP (?)
-_BSS	ENDS
-_DATA	SEGMENT
 COMM	_start:DWORD
 COMM	_mouse_opened:DWORD
 COMM	_mouse_closed:DWORD
@@ -146,6 +139,10 @@ _overtime_quad DD 000000000r			; 0
 	DD	000000000r			; 0
 	DD	03dcccccdr			; 0.1
 	ORG $+12
+_source_rect_nothing DD 000000000r		; 0
+	DD	000000000r			; 0
+	DD	03f800000r			; 1
+	DD	03f800000r			; 1
 _player_wasd_speed DD 03faccccdr		; 1.35
 _background_vertexes DD 0bf800000r		; -1
 	DD	03f800000r			; 1
@@ -178,10 +175,6 @@ _background_vertexes DD 0bf800000r		; -1
 	DD	03f800000r			; 1
 	DD	03f800000r			; 1
 	DD	000000000r			; 0
-	DD	03f800000r			; 1
-_source_rect_nothing DD 000000000r		; 0
-	DD	000000000r			; 0
-	DD	03f800000r			; 1
 	DD	03f800000r			; 1
 _DATA	ENDS
 PUBLIC	___local_stdio_printf_options
@@ -253,8 +246,6 @@ PUBLIC	__real@40000000
 PUBLIC	__real@4000000000000000
 PUBLIC	__real@4086800000000000
 PUBLIC	__real@4094000000000000
-PUBLIC	__real@41400000
-PUBLIC	__real@43000000
 PUBLIC	__real@44340000
 PUBLIC	__real@447a0000
 PUBLIC	__real@44a00000
@@ -317,7 +308,6 @@ EXTRN	_GAME_WaveInit:PROC
 EXTRN	_GAME_AddEnemies:PROC
 EXTRN	_GAME_HandleEnemies:PROC
 EXTRN	_RENDER_TexturedQuad:PROC
-EXTRN	_RENDER_TexturedQuadSheet:PROC
 EXTRN	_RENDER_List:PROC
 EXTRN	@_RTC_CheckStackVars@8:PROC
 EXTRN	@__CheckForDebuggerJustMyCode@4:PROC
@@ -390,14 +380,6 @@ CONST	ENDS
 ;	COMDAT __real@44340000
 CONST	SEGMENT
 __real@44340000 DD 044340000r			; 720
-CONST	ENDS
-;	COMDAT __real@43000000
-CONST	SEGMENT
-__real@43000000 DD 043000000r			; 128
-CONST	ENDS
-;	COMDAT __real@41400000
-CONST	SEGMENT
-__real@41400000 DD 041400000r			; 12
 CONST	ENDS
 ;	COMDAT __real@4094000000000000
 CONST	SEGMENT
@@ -663,7 +645,7 @@ _TEXT	SEGMENT
 _tmp_surface$ = -8					; size = 4
 _Init_GL PROC						; COMDAT
 
-; 349  : void Init_GL(void) {
+; 340  : void Init_GL(void) {
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -680,14 +662,14 @@ _Init_GL PROC						; COMDAT
   0001e	b9 00 00 00 00	 mov	 ecx, OFFSET __E7DCAAE8_main@c
   00023	e8 00 00 00 00	 call	 @__CheckForDebuggerJustMyCode@4
 
-; 350  : 	SDL_Surface* tmp_surface = IMG_Load("resources/character_1.png");
+; 341  : 	SDL_Surface* tmp_surface = IMG_Load("resources/character_1.png");
 
   00028	68 00 00 00 00	 push	 OFFSET ??_C@_0BK@EBIFNHNF@resources?1character_1?4png@
   0002d	e8 00 00 00 00	 call	 _IMG_Load
   00032	83 c4 04	 add	 esp, 4
   00035	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
 
-; 351  : 	glGenVertexArrays(1, &VAO);
+; 342  : 	glGenVertexArrays(1, &VAO);
 
   00038	8b f4		 mov	 esi, esp
   0003a	68 00 00 00 00	 push	 OFFSET _VAO
@@ -697,7 +679,7 @@ _Init_GL PROC						; COMDAT
   00047	3b f4		 cmp	 esi, esp
   00049	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 352  : 	glBindVertexArray(VAO);
+; 343  : 	glBindVertexArray(VAO);
 
   0004e	8b f4		 mov	 esi, esp
   00050	a1 00 00 00 00	 mov	 eax, DWORD PTR _VAO
@@ -707,7 +689,7 @@ _Init_GL PROC						; COMDAT
   0005c	3b f4		 cmp	 esi, esp
   0005e	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 353  : 	glGenBuffers(1, &VERTEXES_VBO);
+; 344  : 	glGenBuffers(1, &VERTEXES_VBO);
 
   00063	8b f4		 mov	 esi, esp
   00065	68 00 00 00 00	 push	 OFFSET _VERTEXES_VBO
@@ -717,7 +699,7 @@ _Init_GL PROC						; COMDAT
   00072	3b f4		 cmp	 esi, esp
   00074	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 354  : 	glBindBuffer(GL_ARRAY_BUFFER, VERTEXES_VBO);
+; 345  : 	glBindBuffer(GL_ARRAY_BUFFER, VERTEXES_VBO);
 
   00079	8b f4		 mov	 esi, esp
   0007b	a1 00 00 00 00	 mov	 eax, DWORD PTR _VERTEXES_VBO
@@ -728,7 +710,7 @@ _Init_GL PROC						; COMDAT
   0008c	3b f4		 cmp	 esi, esp
   0008e	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 355  : 	glBufferData(GL_ARRAY_BUFFER, 32 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+; 346  : 	glBufferData(GL_ARRAY_BUFFER, 32 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
   00093	8b f4		 mov	 esi, esp
   00095	68 e8 88 00 00	 push	 35048			; 000088e8H
@@ -740,7 +722,7 @@ _Init_GL PROC						; COMDAT
   000ac	3b f4		 cmp	 esi, esp
   000ae	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 356  : 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+; 347  : 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 
   000b3	8b f4		 mov	 esi, esp
   000b5	6a 00		 push	 0
@@ -754,7 +736,7 @@ _Init_GL PROC						; COMDAT
   000ca	3b f4		 cmp	 esi, esp
   000cc	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 357  : 	glEnableVertexAttribArray(0);
+; 348  : 	glEnableVertexAttribArray(0);
 
   000d1	8b f4		 mov	 esi, esp
   000d3	6a 00		 push	 0
@@ -763,7 +745,7 @@ _Init_GL PROC						; COMDAT
   000db	3b f4		 cmp	 esi, esp
   000dd	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 358  : 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+; 349  : 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 
   000e2	8b f4		 mov	 esi, esp
   000e4	6a 0c		 push	 12			; 0000000cH
@@ -777,7 +759,7 @@ _Init_GL PROC						; COMDAT
   000f9	3b f4		 cmp	 esi, esp
   000fb	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 359  : 	glEnableVertexAttribArray(1);
+; 350  : 	glEnableVertexAttribArray(1);
 
   00100	8b f4		 mov	 esi, esp
   00102	6a 01		 push	 1
@@ -786,7 +768,7 @@ _Init_GL PROC						; COMDAT
   0010a	3b f4		 cmp	 esi, esp
   0010c	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 360  : 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+; 351  : 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
   00111	8b f4		 mov	 esi, esp
   00113	6a 18		 push	 24			; 00000018H
@@ -800,7 +782,7 @@ _Init_GL PROC						; COMDAT
   00128	3b f4		 cmp	 esi, esp
   0012a	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 361  : 	glEnableVertexAttribArray(2);
+; 352  : 	glEnableVertexAttribArray(2);
 
   0012f	8b f4		 mov	 esi, esp
   00131	6a 02		 push	 2
@@ -809,8 +791,8 @@ _Init_GL PROC						; COMDAT
   00139	3b f4		 cmp	 esi, esp
   0013b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 362  : 	//textures, player texture
-; 363  : 	glActiveTexture(GL_TEXTURE0);
+; 353  : 	//textures, player texture
+; 354  : 	glActiveTexture(GL_TEXTURE0);
 
   00140	8b f4		 mov	 esi, esp
   00142	68 c0 84 00 00	 push	 33984			; 000084c0H
@@ -819,17 +801,17 @@ _Init_GL PROC						; COMDAT
   0014d	3b f4		 cmp	 esi, esp
   0014f	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 364  : 	glGenTextures(6, texture);
+; 355  : 	glGenTextures(4, texture);
 
   00154	8b f4		 mov	 esi, esp
   00156	68 00 00 00 00	 push	 OFFSET _texture
-  0015b	6a 06		 push	 6
+  0015b	6a 04		 push	 4
   0015d	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glGenTextures
   00163	3b f4		 cmp	 esi, esp
   00165	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 365  : 	glBindTexture(GL_TEXTURE_2D, texture[0]);
+; 356  : 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 
   0016a	b8 04 00 00 00	 mov	 eax, 4
   0016f	6b c8 00	 imul	 ecx, eax, 0
@@ -843,7 +825,7 @@ _Init_GL PROC						; COMDAT
   00186	3b f4		 cmp	 esi, esp
   00188	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 366  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+; 357  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
   0018d	8b f4		 mov	 esi, esp
   0018f	68 01 29 00 00	 push	 10497			; 00002901H
@@ -854,7 +836,7 @@ _Init_GL PROC						; COMDAT
   001a4	3b f4		 cmp	 esi, esp
   001a6	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 367  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+; 358  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
   001ab	8b f4		 mov	 esi, esp
   001ad	68 01 29 00 00	 push	 10497			; 00002901H
@@ -865,7 +847,7 @@ _Init_GL PROC						; COMDAT
   001c2	3b f4		 cmp	 esi, esp
   001c4	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 368  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+; 359  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   001c9	8b f4		 mov	 esi, esp
   001cb	68 01 26 00 00	 push	 9729			; 00002601H
@@ -876,7 +858,7 @@ _Init_GL PROC						; COMDAT
   001e0	3b f4		 cmp	 esi, esp
   001e2	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 369  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+; 360  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   001e7	8b f4		 mov	 esi, esp
   001e9	68 01 26 00 00	 push	 9729			; 00002601H
@@ -887,7 +869,7 @@ _Init_GL PROC						; COMDAT
   001fe	3b f4		 cmp	 esi, esp
   00200	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 370  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
+; 361  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
 
   00205	68 18 00 00 00	 push	 OFFSET _player_quad+24
   0020a	68 14 00 00 00	 push	 OFFSET _player_quad+20
@@ -898,452 +880,382 @@ _Init_GL PROC						; COMDAT
   0021a	e8 00 00 00 00	 call	 _CreateTexture2D
   0021f	83 c4 14	 add	 esp, 20			; 00000014H
 
-; 371  : 	//player tongue texture
-; 372  : 	glBindTexture(GL_TEXTURE_2D, texture[1]);
+; 362  : 	//first bacground
+; 363  : 	tmp_surface = IMG_Load("resources/background_2.png");
 
-  00222	b8 04 00 00 00	 mov	 eax, 4
-  00227	c1 e0 00	 shl	 eax, 0
-  0022a	8b f4		 mov	 esi, esp
-  0022c	8b 88 00 00 00
+  00222	68 00 00 00 00	 push	 OFFSET ??_C@_0BL@HOCADEHK@resources?1background_2?4png@
+  00227	e8 00 00 00 00	 call	 _IMG_Load
+  0022c	83 c4 04	 add	 esp, 4
+  0022f	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
+
+; 364  : 	glBindTexture(GL_TEXTURE_2D, texture[1]);
+
+  00232	b8 04 00 00 00	 mov	 eax, 4
+  00237	c1 e0 00	 shl	 eax, 0
+  0023a	8b f4		 mov	 esi, esp
+  0023c	8b 88 00 00 00
 	00		 mov	 ecx, DWORD PTR _texture[eax]
-  00232	51		 push	 ecx
-  00233	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00238	ff 15 00 00 00
+  00242	51		 push	 ecx
+  00243	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00248	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  0023e	3b f4		 cmp	 esi, esp
-  00240	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0024e	3b f4		 cmp	 esi, esp
+  00250	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 373  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+; 365  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
-  00245	8b f4		 mov	 esi, esp
-  00247	68 01 29 00 00	 push	 10497			; 00002901H
-  0024c	68 02 28 00 00	 push	 10242			; 00002802H
-  00251	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00256	ff 15 00 00 00
+  00255	8b f4		 mov	 esi, esp
+  00257	68 01 29 00 00	 push	 10497			; 00002901H
+  0025c	68 02 28 00 00	 push	 10242			; 00002802H
+  00261	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00266	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  0025c	3b f4		 cmp	 esi, esp
-  0025e	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0026c	3b f4		 cmp	 esi, esp
+  0026e	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 374  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+; 366  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  00263	8b f4		 mov	 esi, esp
-  00265	68 01 29 00 00	 push	 10497			; 00002901H
-  0026a	68 03 28 00 00	 push	 10243			; 00002803H
-  0026f	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00274	ff 15 00 00 00
+  00273	8b f4		 mov	 esi, esp
+  00275	68 01 29 00 00	 push	 10497			; 00002901H
+  0027a	68 03 28 00 00	 push	 10243			; 00002803H
+  0027f	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00284	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  0027a	3b f4		 cmp	 esi, esp
-  0027c	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0028a	3b f4		 cmp	 esi, esp
+  0028c	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 375  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+; 367  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  00281	8b f4		 mov	 esi, esp
-  00283	68 01 26 00 00	 push	 9729			; 00002601H
-  00288	68 01 28 00 00	 push	 10241			; 00002801H
-  0028d	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00292	ff 15 00 00 00
+  00291	8b f4		 mov	 esi, esp
+  00293	68 01 26 00 00	 push	 9729			; 00002601H
+  00298	68 01 28 00 00	 push	 10241			; 00002801H
+  0029d	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  002a2	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  00298	3b f4		 cmp	 esi, esp
-  0029a	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  002a8	3b f4		 cmp	 esi, esp
+  002aa	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 376  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+; 368  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  0029f	8b f4		 mov	 esi, esp
-  002a1	68 01 26 00 00	 push	 9729			; 00002601H
-  002a6	68 00 28 00 00	 push	 10240			; 00002800H
-  002ab	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  002b0	ff 15 00 00 00
+  002af	8b f4		 mov	 esi, esp
+  002b1	68 01 26 00 00	 push	 9729			; 00002601H
+  002b6	68 00 28 00 00	 push	 10240			; 00002800H
+  002bb	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  002c0	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  002b6	3b f4		 cmp	 esi, esp
-  002b8	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  002c6	3b f4		 cmp	 esi, esp
+  002c8	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 377  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_tongue.texw, &player_tongue.texh);
+; 369  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
 
-  002bd	68 18 00 00 00	 push	 OFFSET _player_tongue+24
-  002c2	68 14 00 00 00	 push	 OFFSET _player_tongue+20
-  002c7	6a 01		 push	 1
-  002c9	68 08 19 00 00	 push	 6408			; 00001908H
-  002ce	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  002d1	50		 push	 eax
-  002d2	e8 00 00 00 00	 call	 _CreateTexture2D
-  002d7	83 c4 14	 add	 esp, 20			; 00000014H
+  002cd	6a 00		 push	 0
+  002cf	6a 00		 push	 0
+  002d1	6a 01		 push	 1
+  002d3	68 08 19 00 00	 push	 6408			; 00001908H
+  002d8	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  002db	50		 push	 eax
+  002dc	e8 00 00 00 00	 call	 _CreateTexture2D
+  002e1	83 c4 14	 add	 esp, 20			; 00000014H
 
-; 378  : 	//first bacground
-; 379  : 	tmp_surface = IMG_Load("resources/background_2.png");
+; 370  : 	tmp_surface = IMG_Load("resources/fed_scout.png");
 
-  002da	68 00 00 00 00	 push	 OFFSET ??_C@_0BL@HOCADEHK@resources?1background_2?4png@
-  002df	e8 00 00 00 00	 call	 _IMG_Load
-  002e4	83 c4 04	 add	 esp, 4
-  002e7	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
+  002e4	68 00 00 00 00	 push	 OFFSET ??_C@_0BI@IOIDGNDF@resources?1fed_scout?4png@
+  002e9	e8 00 00 00 00	 call	 _IMG_Load
+  002ee	83 c4 04	 add	 esp, 4
+  002f1	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
 
-; 380  : 	glBindTexture(GL_TEXTURE_2D, texture[2]);
+; 371  : 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 
-  002ea	b8 04 00 00 00	 mov	 eax, 4
-  002ef	d1 e0		 shl	 eax, 1
-  002f1	8b f4		 mov	 esi, esp
-  002f3	8b 88 00 00 00
+  002f4	b8 04 00 00 00	 mov	 eax, 4
+  002f9	d1 e0		 shl	 eax, 1
+  002fb	8b f4		 mov	 esi, esp
+  002fd	8b 88 00 00 00
 	00		 mov	 ecx, DWORD PTR _texture[eax]
-  002f9	51		 push	 ecx
-  002fa	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  002ff	ff 15 00 00 00
+  00303	51		 push	 ecx
+  00304	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00309	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  00305	3b f4		 cmp	 esi, esp
-  00307	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0030f	3b f4		 cmp	 esi, esp
+  00311	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 381  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+; 372  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
-  0030c	8b f4		 mov	 esi, esp
-  0030e	68 01 29 00 00	 push	 10497			; 00002901H
-  00313	68 02 28 00 00	 push	 10242			; 00002802H
-  00318	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  0031d	ff 15 00 00 00
+  00316	8b f4		 mov	 esi, esp
+  00318	68 01 29 00 00	 push	 10497			; 00002901H
+  0031d	68 02 28 00 00	 push	 10242			; 00002802H
+  00322	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00327	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  00323	3b f4		 cmp	 esi, esp
-  00325	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0032d	3b f4		 cmp	 esi, esp
+  0032f	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 382  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+; 373  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  0032a	8b f4		 mov	 esi, esp
-  0032c	68 01 29 00 00	 push	 10497			; 00002901H
-  00331	68 03 28 00 00	 push	 10243			; 00002803H
-  00336	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  0033b	ff 15 00 00 00
+  00334	8b f4		 mov	 esi, esp
+  00336	68 01 29 00 00	 push	 10497			; 00002901H
+  0033b	68 03 28 00 00	 push	 10243			; 00002803H
+  00340	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00345	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  00341	3b f4		 cmp	 esi, esp
-  00343	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0034b	3b f4		 cmp	 esi, esp
+  0034d	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 383  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+; 374  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  00348	8b f4		 mov	 esi, esp
-  0034a	68 01 26 00 00	 push	 9729			; 00002601H
-  0034f	68 01 28 00 00	 push	 10241			; 00002801H
-  00354	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00359	ff 15 00 00 00
+  00352	8b f4		 mov	 esi, esp
+  00354	68 01 26 00 00	 push	 9729			; 00002601H
+  00359	68 01 28 00 00	 push	 10241			; 00002801H
+  0035e	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00363	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  0035f	3b f4		 cmp	 esi, esp
-  00361	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00369	3b f4		 cmp	 esi, esp
+  0036b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 384  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+; 375  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  00366	8b f4		 mov	 esi, esp
-  00368	68 01 26 00 00	 push	 9729			; 00002601H
-  0036d	68 00 28 00 00	 push	 10240			; 00002800H
-  00372	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00377	ff 15 00 00 00
+  00370	8b f4		 mov	 esi, esp
+  00372	68 01 26 00 00	 push	 9729			; 00002601H
+  00377	68 00 28 00 00	 push	 10240			; 00002800H
+  0037c	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00381	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  0037d	3b f4		 cmp	 esi, esp
-  0037f	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00387	3b f4		 cmp	 esi, esp
+  00389	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 385  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
+; 376  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
 
-  00384	6a 00		 push	 0
-  00386	6a 00		 push	 0
-  00388	6a 01		 push	 1
-  0038a	68 08 19 00 00	 push	 6408			; 00001908H
-  0038f	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  00392	50		 push	 eax
-  00393	e8 00 00 00 00	 call	 _CreateTexture2D
-  00398	83 c4 14	 add	 esp, 20			; 00000014H
+  0038e	6a 00		 push	 0
+  00390	6a 00		 push	 0
+  00392	6a 01		 push	 1
+  00394	68 08 19 00 00	 push	 6408			; 00001908H
+  00399	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  0039c	50		 push	 eax
+  0039d	e8 00 00 00 00	 call	 _CreateTexture2D
+  003a2	83 c4 14	 add	 esp, 20			; 00000014H
 
-; 386  : 	tmp_surface = IMG_Load("resources/fed_scout.png");
+; 377  : 	glBindTexture(GL_TEXTURE_2D, texture[3]);
 
-  0039b	68 00 00 00 00	 push	 OFFSET ??_C@_0BI@IOIDGNDF@resources?1fed_scout?4png@
-  003a0	e8 00 00 00 00	 call	 _IMG_Load
-  003a5	83 c4 04	 add	 esp, 4
-  003a8	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
-
-; 387  : 	glBindTexture(GL_TEXTURE_2D, texture[3]);
-
-  003ab	b8 04 00 00 00	 mov	 eax, 4
-  003b0	6b c8 03	 imul	 ecx, eax, 3
-  003b3	8b f4		 mov	 esi, esp
-  003b5	8b 91 00 00 00
+  003a5	b8 04 00 00 00	 mov	 eax, 4
+  003aa	6b c8 03	 imul	 ecx, eax, 3
+  003ad	8b f4		 mov	 esi, esp
+  003af	8b 91 00 00 00
 	00		 mov	 edx, DWORD PTR _texture[ecx]
-  003bb	52		 push	 edx
-  003bc	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  003c1	ff 15 00 00 00
+  003b5	52		 push	 edx
+  003b6	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  003bb	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  003c7	3b f4		 cmp	 esi, esp
-  003c9	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  003c1	3b f4		 cmp	 esi, esp
+  003c3	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 388  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+; 378  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
-  003ce	8b f4		 mov	 esi, esp
-  003d0	68 01 29 00 00	 push	 10497			; 00002901H
-  003d5	68 02 28 00 00	 push	 10242			; 00002802H
-  003da	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  003df	ff 15 00 00 00
+  003c8	8b f4		 mov	 esi, esp
+  003ca	68 01 29 00 00	 push	 10497			; 00002901H
+  003cf	68 02 28 00 00	 push	 10242			; 00002802H
+  003d4	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  003d9	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  003e5	3b f4		 cmp	 esi, esp
-  003e7	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  003df	3b f4		 cmp	 esi, esp
+  003e1	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 389  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+; 379  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  003ec	8b f4		 mov	 esi, esp
-  003ee	68 01 29 00 00	 push	 10497			; 00002901H
-  003f3	68 03 28 00 00	 push	 10243			; 00002803H
-  003f8	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  003fd	ff 15 00 00 00
+  003e6	8b f4		 mov	 esi, esp
+  003e8	68 01 29 00 00	 push	 10497			; 00002901H
+  003ed	68 03 28 00 00	 push	 10243			; 00002803H
+  003f2	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  003f7	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  00403	3b f4		 cmp	 esi, esp
-  00405	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  003fd	3b f4		 cmp	 esi, esp
+  003ff	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 390  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+; 380  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  0040a	8b f4		 mov	 esi, esp
-  0040c	68 01 26 00 00	 push	 9729			; 00002601H
-  00411	68 01 28 00 00	 push	 10241			; 00002801H
-  00416	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  0041b	ff 15 00 00 00
+  00404	8b f4		 mov	 esi, esp
+  00406	68 01 26 00 00	 push	 9729			; 00002601H
+  0040b	68 01 28 00 00	 push	 10241			; 00002801H
+  00410	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00415	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  00421	3b f4		 cmp	 esi, esp
-  00423	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0041b	3b f4		 cmp	 esi, esp
+  0041d	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 391  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+; 381  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  00428	8b f4		 mov	 esi, esp
-  0042a	68 01 26 00 00	 push	 9729			; 00002601H
-  0042f	68 00 28 00 00	 push	 10240			; 00002800H
-  00434	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00439	ff 15 00 00 00
+  00422	8b f4		 mov	 esi, esp
+  00424	68 01 26 00 00	 push	 9729			; 00002601H
+  00429	68 00 28 00 00	 push	 10240			; 00002800H
+  0042e	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00433	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  0043f	3b f4		 cmp	 esi, esp
-  00441	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00439	3b f4		 cmp	 esi, esp
+  0043b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 392  : 	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
+; 382  : 	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL); //but we want to keep the surface around so we can change the text after every wave
 
-  00446	6a 00		 push	 0
-  00448	6a 00		 push	 0
-  0044a	6a 01		 push	 1
-  0044c	68 08 19 00 00	 push	 6408			; 00001908H
-  00451	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  00454	50		 push	 eax
-  00455	e8 00 00 00 00	 call	 _CreateTexture2D
-  0045a	83 c4 14	 add	 esp, 20			; 00000014H
+  00440	6a 00		 push	 0
+  00442	6a 00		 push	 0
+  00444	6a 01		 push	 1
+  00446	68 08 19 00 00	 push	 6408			; 00001908H
+  0044b	a1 00 00 00 00	 mov	 eax, DWORD PTR _wave_text
+  00450	50		 push	 eax
+  00451	e8 00 00 00 00	 call	 _CreateTexture2D
+  00456	83 c4 14	 add	 esp, 20			; 00000014H
 
-; 393  : 	glBindTexture(GL_TEXTURE_2D, texture[4]);
+; 383  : 	glBindTexture(GL_TEXTURE_2D, texture[4]);
 
-  0045d	b8 04 00 00 00	 mov	 eax, 4
-  00462	c1 e0 02	 shl	 eax, 2
-  00465	8b f4		 mov	 esi, esp
-  00467	8b 88 00 00 00
+  00459	b8 04 00 00 00	 mov	 eax, 4
+  0045e	c1 e0 02	 shl	 eax, 2
+  00461	8b f4		 mov	 esi, esp
+  00463	8b 88 00 00 00
 	00		 mov	 ecx, DWORD PTR _texture[eax]
-  0046d	51		 push	 ecx
-  0046e	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00473	ff 15 00 00 00
+  00469	51		 push	 ecx
+  0046a	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  0046f	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  00479	3b f4		 cmp	 esi, esp
-  0047b	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00475	3b f4		 cmp	 esi, esp
+  00477	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 394  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+; 384  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 
-  00480	8b f4		 mov	 esi, esp
-  00482	68 01 29 00 00	 push	 10497			; 00002901H
-  00487	68 02 28 00 00	 push	 10242			; 00002802H
-  0048c	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00491	ff 15 00 00 00
+  0047c	8b f4		 mov	 esi, esp
+  0047e	68 01 29 00 00	 push	 10497			; 00002901H
+  00483	68 02 28 00 00	 push	 10242			; 00002802H
+  00488	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  0048d	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  00497	3b f4		 cmp	 esi, esp
-  00499	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00493	3b f4		 cmp	 esi, esp
+  00495	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 395  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+; 385  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  0049e	8b f4		 mov	 esi, esp
-  004a0	68 01 29 00 00	 push	 10497			; 00002901H
-  004a5	68 03 28 00 00	 push	 10243			; 00002803H
-  004aa	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  004af	ff 15 00 00 00
+  0049a	8b f4		 mov	 esi, esp
+  0049c	68 01 29 00 00	 push	 10497			; 00002901H
+  004a1	68 03 28 00 00	 push	 10243			; 00002803H
+  004a6	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  004ab	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  004b5	3b f4		 cmp	 esi, esp
-  004b7	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  004b1	3b f4		 cmp	 esi, esp
+  004b3	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 396  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+; 386  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  004bc	8b f4		 mov	 esi, esp
-  004be	68 01 26 00 00	 push	 9729			; 00002601H
-  004c3	68 01 28 00 00	 push	 10241			; 00002801H
-  004c8	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  004cd	ff 15 00 00 00
+  004b8	8b f4		 mov	 esi, esp
+  004ba	68 01 26 00 00	 push	 9729			; 00002601H
+  004bf	68 01 28 00 00	 push	 10241			; 00002801H
+  004c4	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  004c9	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  004d3	3b f4		 cmp	 esi, esp
-  004d5	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  004cf	3b f4		 cmp	 esi, esp
+  004d1	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 397  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+; 387  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  004da	8b f4		 mov	 esi, esp
-  004dc	68 01 26 00 00	 push	 9729			; 00002601H
-  004e1	68 00 28 00 00	 push	 10240			; 00002800H
-  004e6	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  004eb	ff 15 00 00 00
+  004d6	8b f4		 mov	 esi, esp
+  004d8	68 01 26 00 00	 push	 9729			; 00002601H
+  004dd	68 00 28 00 00	 push	 10240			; 00002800H
+  004e2	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  004e7	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glTexParameteri
-  004f1	3b f4		 cmp	 esi, esp
-  004f3	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  004ed	3b f4		 cmp	 esi, esp
+  004ef	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 398  : 	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL); //but we want to keep the surface around so we can change the text after every wave
+; 388  : 	CreateTexture2D(overtime_text, GL_RGBA, true, NULL, NULL);
 
-  004f8	6a 00		 push	 0
-  004fa	6a 00		 push	 0
-  004fc	6a 01		 push	 1
-  004fe	68 08 19 00 00	 push	 6408			; 00001908H
-  00503	a1 00 00 00 00	 mov	 eax, DWORD PTR _wave_text
-  00508	50		 push	 eax
-  00509	e8 00 00 00 00	 call	 _CreateTexture2D
-  0050e	83 c4 14	 add	 esp, 20			; 00000014H
+  004f4	6a 00		 push	 0
+  004f6	6a 00		 push	 0
+  004f8	6a 01		 push	 1
+  004fa	68 08 19 00 00	 push	 6408			; 00001908H
+  004ff	a1 00 00 00 00	 mov	 eax, DWORD PTR _overtime_text
+  00504	50		 push	 eax
+  00505	e8 00 00 00 00	 call	 _CreateTexture2D
+  0050a	83 c4 14	 add	 esp, 20			; 00000014H
 
-; 399  : 	glBindTexture(GL_TEXTURE_2D, texture[5]);
+; 389  : 	tmp_surface = IMG_Load("resources/character_ic.png"); //for the program icon
 
-  00511	b8 04 00 00 00	 mov	 eax, 4
-  00516	6b c8 05	 imul	 ecx, eax, 5
-  00519	8b f4		 mov	 esi, esp
-  0051b	8b 91 00 00 00
-	00		 mov	 edx, DWORD PTR _texture[ecx]
-  00521	52		 push	 edx
-  00522	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00527	ff 15 00 00 00
-	00		 call	 DWORD PTR _glad_glBindTexture
-  0052d	3b f4		 cmp	 esi, esp
-  0052f	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0050d	68 00 00 00 00	 push	 OFFSET ??_C@_0BL@EHIMIKAH@resources?1character_ic?4png@
+  00512	e8 00 00 00 00	 call	 _IMG_Load
+  00517	83 c4 04	 add	 esp, 4
+  0051a	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
 
-; 400  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+; 390  : 	SDL_SetWindowIcon(window, tmp_surface);
 
-  00534	8b f4		 mov	 esi, esp
-  00536	68 01 29 00 00	 push	 10497			; 00002901H
-  0053b	68 02 28 00 00	 push	 10242			; 00002802H
-  00540	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00545	ff 15 00 00 00
-	00		 call	 DWORD PTR _glad_glTexParameteri
-  0054b	3b f4		 cmp	 esi, esp
-  0054d	e8 00 00 00 00	 call	 __RTC_CheckEsp
-
-; 401  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-  00552	8b f4		 mov	 esi, esp
-  00554	68 01 29 00 00	 push	 10497			; 00002901H
-  00559	68 03 28 00 00	 push	 10243			; 00002803H
-  0055e	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00563	ff 15 00 00 00
-	00		 call	 DWORD PTR _glad_glTexParameteri
-  00569	3b f4		 cmp	 esi, esp
-  0056b	e8 00 00 00 00	 call	 __RTC_CheckEsp
-
-; 402  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-  00570	8b f4		 mov	 esi, esp
-  00572	68 01 26 00 00	 push	 9729			; 00002601H
-  00577	68 01 28 00 00	 push	 10241			; 00002801H
-  0057c	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00581	ff 15 00 00 00
-	00		 call	 DWORD PTR _glad_glTexParameteri
-  00587	3b f4		 cmp	 esi, esp
-  00589	e8 00 00 00 00	 call	 __RTC_CheckEsp
-
-; 403  : 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  0058e	8b f4		 mov	 esi, esp
-  00590	68 01 26 00 00	 push	 9729			; 00002601H
-  00595	68 00 28 00 00	 push	 10240			; 00002800H
-  0059a	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  0059f	ff 15 00 00 00
-	00		 call	 DWORD PTR _glad_glTexParameteri
-  005a5	3b f4		 cmp	 esi, esp
-  005a7	e8 00 00 00 00	 call	 __RTC_CheckEsp
-
-; 404  : 	CreateTexture2D(overtime_text, GL_RGBA, true, NULL, NULL);
-
-  005ac	6a 00		 push	 0
-  005ae	6a 00		 push	 0
-  005b0	6a 01		 push	 1
-  005b2	68 08 19 00 00	 push	 6408			; 00001908H
-  005b7	a1 00 00 00 00	 mov	 eax, DWORD PTR _overtime_text
-  005bc	50		 push	 eax
-  005bd	e8 00 00 00 00	 call	 _CreateTexture2D
-  005c2	83 c4 14	 add	 esp, 20			; 00000014H
-
-; 405  : 	tmp_surface = IMG_Load("resources/character_ic.png"); //for the program icon
-
-  005c5	68 00 00 00 00	 push	 OFFSET ??_C@_0BL@EHIMIKAH@resources?1character_ic?4png@
-  005ca	e8 00 00 00 00	 call	 _IMG_Load
-  005cf	83 c4 04	 add	 esp, 4
-  005d2	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
-
-; 406  : 	SDL_SetWindowIcon(window, tmp_surface);
-
-  005d5	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  005d8	50		 push	 eax
-  005d9	8b 0d 00 00 00
+  0051d	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  00520	50		 push	 eax
+  00521	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _window
-  005df	51		 push	 ecx
-  005e0	e8 00 00 00 00	 call	 _SDL_SetWindowIcon
-  005e5	83 c4 08	 add	 esp, 8
+  00527	51		 push	 ecx
+  00528	e8 00 00 00 00	 call	 _SDL_SetWindowIcon
+  0052d	83 c4 08	 add	 esp, 8
 
-; 407  : 	SDL_FreeSurface(tmp_surface);
+; 391  : 	SDL_FreeSurface(tmp_surface);
 
-  005e8	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  005eb	50		 push	 eax
-  005ec	e8 00 00 00 00	 call	 _SDL_FreeSurface
-  005f1	83 c4 04	 add	 esp, 4
+  00530	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  00533	50		 push	 eax
+  00534	e8 00 00 00 00	 call	 _SDL_FreeSurface
+  00539	83 c4 04	 add	 esp, 4
 
-; 408  : 	tmp_surface = IMG_Load("resources/cursor_f_open.png"); //for the mouse when left mouse button is not pressed
+; 392  : 	tmp_surface = IMG_Load("resources/cursor_f_open.png"); //for the mouse when left mouse button is not pressed
 
-  005f4	68 00 00 00 00	 push	 OFFSET ??_C@_0BM@DGPFILOH@resources?1cursor_f_open?4png@
-  005f9	e8 00 00 00 00	 call	 _IMG_Load
-  005fe	83 c4 04	 add	 esp, 4
-  00601	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
+  0053c	68 00 00 00 00	 push	 OFFSET ??_C@_0BM@DGPFILOH@resources?1cursor_f_open?4png@
+  00541	e8 00 00 00 00	 call	 _IMG_Load
+  00546	83 c4 04	 add	 esp, 4
+  00549	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
 
-; 409  : 	mouse_opened = SDL_CreateColorCursor(tmp_surface, 0, 0);
+; 393  : 	mouse_opened = SDL_CreateColorCursor(tmp_surface, 0, 0);
 
-  00604	6a 00		 push	 0
-  00606	6a 00		 push	 0
-  00608	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  0060b	50		 push	 eax
-  0060c	e8 00 00 00 00	 call	 _SDL_CreateColorCursor
-  00611	83 c4 0c	 add	 esp, 12			; 0000000cH
-  00614	a3 00 00 00 00	 mov	 DWORD PTR _mouse_opened, eax
+  0054c	6a 00		 push	 0
+  0054e	6a 00		 push	 0
+  00550	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  00553	50		 push	 eax
+  00554	e8 00 00 00 00	 call	 _SDL_CreateColorCursor
+  00559	83 c4 0c	 add	 esp, 12			; 0000000cH
+  0055c	a3 00 00 00 00	 mov	 DWORD PTR _mouse_opened, eax
 
-; 410  : 	SDL_FreeSurface(tmp_surface);
+; 394  : 	SDL_FreeSurface(tmp_surface);
 
-  00619	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  0061c	50		 push	 eax
-  0061d	e8 00 00 00 00	 call	 _SDL_FreeSurface
-  00622	83 c4 04	 add	 esp, 4
+  00561	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  00564	50		 push	 eax
+  00565	e8 00 00 00 00	 call	 _SDL_FreeSurface
+  0056a	83 c4 04	 add	 esp, 4
 
-; 411  : 	tmp_surface = IMG_Load("resources/cursor_f_closed.png"); //for the mouse when left mouse button is pressed
+; 395  : 	tmp_surface = IMG_Load("resources/cursor_f_closed.png"); //for the mouse when left mouse button is pressed
 
-  00625	68 00 00 00 00	 push	 OFFSET ??_C@_0BO@NMOBJJI@resources?1cursor_f_closed?4png@
-  0062a	e8 00 00 00 00	 call	 _IMG_Load
-  0062f	83 c4 04	 add	 esp, 4
-  00632	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
+  0056d	68 00 00 00 00	 push	 OFFSET ??_C@_0BO@NMOBJJI@resources?1cursor_f_closed?4png@
+  00572	e8 00 00 00 00	 call	 _IMG_Load
+  00577	83 c4 04	 add	 esp, 4
+  0057a	89 45 f8	 mov	 DWORD PTR _tmp_surface$[ebp], eax
 
-; 412  : 	mouse_closed = SDL_CreateColorCursor(tmp_surface, 0, 0);
+; 396  : 	mouse_closed = SDL_CreateColorCursor(tmp_surface, 0, 0);
 
-  00635	6a 00		 push	 0
-  00637	6a 00		 push	 0
-  00639	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  0063c	50		 push	 eax
-  0063d	e8 00 00 00 00	 call	 _SDL_CreateColorCursor
-  00642	83 c4 0c	 add	 esp, 12			; 0000000cH
-  00645	a3 00 00 00 00	 mov	 DWORD PTR _mouse_closed, eax
+  0057d	6a 00		 push	 0
+  0057f	6a 00		 push	 0
+  00581	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  00584	50		 push	 eax
+  00585	e8 00 00 00 00	 call	 _SDL_CreateColorCursor
+  0058a	83 c4 0c	 add	 esp, 12			; 0000000cH
+  0058d	a3 00 00 00 00	 mov	 DWORD PTR _mouse_closed, eax
 
-; 413  : 	SDL_FreeSurface(tmp_surface);
+; 397  : 	SDL_FreeSurface(tmp_surface);
 
-  0064a	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
-  0064d	50		 push	 eax
-  0064e	e8 00 00 00 00	 call	 _SDL_FreeSurface
-  00653	83 c4 04	 add	 esp, 4
+  00592	8b 45 f8	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
+  00595	50		 push	 eax
+  00596	e8 00 00 00 00	 call	 _SDL_FreeSurface
+  0059b	83 c4 04	 add	 esp, 4
 
-; 414  : 
-; 415  : }
+; 398  : 
+; 399  : }
 
-  00656	5f		 pop	 edi
-  00657	5e		 pop	 esi
-  00658	5b		 pop	 ebx
-  00659	81 c4 cc 00 00
+  0059e	5f		 pop	 edi
+  0059f	5e		 pop	 esi
+  005a0	5b		 pop	 ebx
+  005a1	81 c4 cc 00 00
 	00		 add	 esp, 204		; 000000ccH
-  0065f	3b ec		 cmp	 ebp, esp
-  00661	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  00666	8b e5		 mov	 esp, ebp
-  00668	5d		 pop	 ebp
-  00669	c3		 ret	 0
+  005a7	3b ec		 cmp	 ebp, esp
+  005a9	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  005ae	8b e5		 mov	 esp, ebp
+  005b0	5d		 pop	 ebp
+  005b1	c3		 ret	 0
 _Init_GL ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp /RTCsu /ZI
@@ -1357,7 +1269,7 @@ _w$ = 20						; size = 4
 _h$ = 24						; size = 4
 _CreateTexture2D PROC					; COMDAT
 
-; 339  : void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h) {
+; 330  : void CreateTexture2D(SDL_Surface* tmp_surface, GLenum format, SDL_bool free_surface, int* w, int* h) {
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -1374,7 +1286,7 @@ _CreateTexture2D PROC					; COMDAT
   0001e	b9 00 00 00 00	 mov	 ecx, OFFSET __E7DCAAE8_main@c
   00023	e8 00 00 00 00	 call	 @__CheckForDebuggerJustMyCode@4
 
-; 340  : 	glTexImage2D(GL_TEXTURE_2D, 0, format, tmp_surface->w, tmp_surface->h, 0, format, GL_UNSIGNED_BYTE, tmp_surface->pixels);
+; 331  : 	glTexImage2D(GL_TEXTURE_2D, 0, format, tmp_surface->w, tmp_surface->h, 0, format, GL_UNSIGNED_BYTE, tmp_surface->pixels);
 
   00028	8b f4		 mov	 esi, esp
   0002a	8b 45 08	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
@@ -1399,36 +1311,36 @@ _CreateTexture2D PROC					; COMDAT
   0005b	3b f4		 cmp	 esi, esp
   0005d	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 341  : 	if(w)
+; 332  : 	if(w)
 
   00062	83 7d 14 00	 cmp	 DWORD PTR _w$[ebp], 0
   00066	74 09		 je	 SHORT $LN2@CreateText
 
-; 342  : 		w = tmp_surface->w;
+; 333  : 		w = tmp_surface->w;
 
   00068	8b 45 08	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
   0006b	8b 48 08	 mov	 ecx, DWORD PTR [eax+8]
   0006e	89 4d 14	 mov	 DWORD PTR _w$[ebp], ecx
 $LN2@CreateText:
 
-; 343  : 	if(h)
+; 334  : 	if(h)
 
   00071	83 7d 18 00	 cmp	 DWORD PTR _h$[ebp], 0
   00075	74 09		 je	 SHORT $LN3@CreateText
 
-; 344  : 		h = tmp_surface->h;
+; 335  : 		h = tmp_surface->h;
 
   00077	8b 45 08	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
   0007a	8b 48 0c	 mov	 ecx, DWORD PTR [eax+12]
   0007d	89 4d 18	 mov	 DWORD PTR _h$[ebp], ecx
 $LN3@CreateText:
 
-; 345  : 	if (free_surface)
+; 336  : 	if (free_surface)
 
   00080	83 7d 10 00	 cmp	 DWORD PTR _free_surface$[ebp], 0
   00084	74 0c		 je	 SHORT $LN1@CreateText
 
-; 346  : 		SDL_FreeSurface(tmp_surface);
+; 337  : 		SDL_FreeSurface(tmp_surface);
 
   00086	8b 45 08	 mov	 eax, DWORD PTR _tmp_surface$[ebp]
   00089	50		 push	 eax
@@ -1436,7 +1348,7 @@ $LN3@CreateText:
   0008f	83 c4 04	 add	 esp, 4
 $LN1@CreateText:
 
-; 347  : }
+; 338  : }
 
   00092	5f		 pop	 edi
   00093	5e		 pop	 esi
@@ -1459,7 +1371,7 @@ _filter$ = 12						; size = 4
 _repeat_type$ = 16					; size = 4
 _SetTextureBoundedParams PROC				; COMDAT
 
-; 333  : void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type) {
+; 324  : void SetTextureBoundedParams(GLenum sampler_target, GLenum filter, GLfloat repeat_type) {
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -1476,7 +1388,7 @@ _SetTextureBoundedParams PROC				; COMDAT
   0001e	b9 00 00 00 00	 mov	 ecx, OFFSET __E7DCAAE8_main@c
   00023	e8 00 00 00 00	 call	 @__CheckForDebuggerJustMyCode@4
 
-; 334  : 	glTexParameteri(sampler_target, GL_TEXTURE_WRAP_S, repeat_type);
+; 325  : 	glTexParameteri(sampler_target, GL_TEXTURE_WRAP_S, repeat_type);
 
   00028	f3 0f 2c 45 10	 cvttss2si eax, DWORD PTR _repeat_type$[ebp]
   0002d	8b f4		 mov	 esi, esp
@@ -1489,7 +1401,7 @@ _SetTextureBoundedParams PROC				; COMDAT
   0003f	3b f4		 cmp	 esi, esp
   00041	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 335  : 	glTexParameteri(sampler_target, GL_TEXTURE_WRAP_T, repeat_type);
+; 326  : 	glTexParameteri(sampler_target, GL_TEXTURE_WRAP_T, repeat_type);
 
   00046	f3 0f 2c 45 10	 cvttss2si eax, DWORD PTR _repeat_type$[ebp]
   0004b	8b f4		 mov	 esi, esp
@@ -1502,7 +1414,7 @@ _SetTextureBoundedParams PROC				; COMDAT
   0005d	3b f4		 cmp	 esi, esp
   0005f	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 336  : 	glTexParameteri(sampler_target, GL_TEXTURE_MIN_FILTER, filter);
+; 327  : 	glTexParameteri(sampler_target, GL_TEXTURE_MIN_FILTER, filter);
 
   00064	8b f4		 mov	 esi, esp
   00066	8b 45 0c	 mov	 eax, DWORD PTR _filter$[ebp]
@@ -1515,7 +1427,7 @@ _SetTextureBoundedParams PROC				; COMDAT
   00079	3b f4		 cmp	 esi, esp
   0007b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 337  : 	glTexParameteri(sampler_target, GL_TEXTURE_MAG_FILTER, filter);
+; 328  : 	glTexParameteri(sampler_target, GL_TEXTURE_MAG_FILTER, filter);
 
   00080	8b f4		 mov	 esi, esp
   00082	8b 45 0c	 mov	 eax, DWORD PTR _filter$[ebp]
@@ -1528,7 +1440,7 @@ _SetTextureBoundedParams PROC				; COMDAT
   00095	3b f4		 cmp	 esi, esp
   00097	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 338  : }
+; 329  : }
 
   0009c	5f		 pop	 edi
   0009d	5e		 pop	 esi
@@ -1557,7 +1469,7 @@ _shader_fname$ = 8					; size = 4
 _type$ = 12						; size = 4
 _CompileShader PROC					; COMDAT
 
-; 302  : GLint CompileShader(char* shader_fname, GLenum type) {
+; 293  : GLint CompileShader(char* shader_fname, GLenum type) {
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -1577,17 +1489,17 @@ _CompileShader PROC					; COMDAT
   00028	b9 00 00 00 00	 mov	 ecx, OFFSET __E7DCAAE8_main@c
   0002d	e8 00 00 00 00	 call	 @__CheckForDebuggerJustMyCode@4
 
-; 303  : 	char* shader_data;
-; 304  : 	GLint shader_obj;
-; 305  : 	size_t size;
-; 306  : 	int linebreak_amount = 0;
+; 294  : 	char* shader_data;
+; 295  : 	GLint shader_obj;
+; 296  : 	size_t size;
+; 297  : 	int linebreak_amount = 0;
 
   00032	c7 45 d0 00 00
 	00 00		 mov	 DWORD PTR _linebreak_amount$[ebp], 0
 
-; 307  : 	{
-; 308  : 		FILE* fp; 
-; 309  : 		fp = fopen(shader_fname, "r");
+; 298  : 	{
+; 299  : 		FILE* fp; 
+; 300  : 		fp = fopen(shader_fname, "r");
 
   00039	8b f4		 mov	 esi, esp
   0003b	68 00 00 00 00	 push	 OFFSET ??_C@_01KDCPPGHE@r@
@@ -1600,7 +1512,7 @@ _CompileShader PROC					; COMDAT
   0004f	e8 00 00 00 00	 call	 __RTC_CheckEsp
   00054	89 45 c4	 mov	 DWORD PTR _fp$2[ebp], eax
 
-; 310  : 		fseek(fp, SEEK_SET, SEEK_END);
+; 301  : 		fseek(fp, SEEK_SET, SEEK_END);
 
   00057	8b f4		 mov	 esi, esp
   00059	6a 02		 push	 2
@@ -1613,7 +1525,7 @@ _CompileShader PROC					; COMDAT
   0006a	3b f4		 cmp	 esi, esp
   0006c	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 311  : 		size = ftell(fp);
+; 302  : 		size = ftell(fp);
 
   00071	8b f4		 mov	 esi, esp
   00073	8b 45 c4	 mov	 eax, DWORD PTR _fp$2[ebp]
@@ -1625,7 +1537,7 @@ _CompileShader PROC					; COMDAT
   00082	e8 00 00 00 00	 call	 __RTC_CheckEsp
   00087	89 45 dc	 mov	 DWORD PTR _size$[ebp], eax
 
-; 312  : 		fseek(fp, SEEK_SET, SEEK_SET);
+; 303  : 		fseek(fp, SEEK_SET, SEEK_SET);
 
   0008a	8b f4		 mov	 esi, esp
   0008c	6a 00		 push	 0
@@ -1638,7 +1550,7 @@ _CompileShader PROC					; COMDAT
   0009d	3b f4		 cmp	 esi, esp
   0009f	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 313  : 		shader_data = calloc(1, size);
+; 304  : 		shader_data = calloc(1, size);
 
   000a4	8b f4		 mov	 esi, esp
   000a6	8b 45 dc	 mov	 eax, DWORD PTR _size$[ebp]
@@ -1651,7 +1563,7 @@ _CompileShader PROC					; COMDAT
   000b7	e8 00 00 00 00	 call	 __RTC_CheckEsp
   000bc	89 45 f4	 mov	 DWORD PTR _shader_data$[ebp], eax
 
-; 314  : 		fread(shader_data, 1, size, fp);
+; 305  : 		fread(shader_data, 1, size, fp);
 
   000bf	8b f4		 mov	 esi, esp
   000c1	8b 45 c4	 mov	 eax, DWORD PTR _fp$2[ebp]
@@ -1667,7 +1579,7 @@ _CompileShader PROC					; COMDAT
   000d8	3b f4		 cmp	 esi, esp
   000da	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 315  : 		fclose(fp);
+; 306  : 		fclose(fp);
 
   000df	8b f4		 mov	 esi, esp
   000e1	8b 45 c4	 mov	 eax, DWORD PTR _fp$2[ebp]
@@ -1678,7 +1590,7 @@ _CompileShader PROC					; COMDAT
   000ee	3b f4		 cmp	 esi, esp
   000f0	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 316  : 		for (int i = 0; i < size; ++i) {
+; 307  : 		for (int i = 0; i < size; ++i) {
 
   000f5	c7 45 b8 00 00
 	00 00		 mov	 DWORD PTR _i$1[ebp], 0
@@ -1692,7 +1604,7 @@ $LN4@CompileSha:
   0010a	3b 45 dc	 cmp	 eax, DWORD PTR _size$[ebp]
   0010d	73 19		 jae	 SHORT $LN3@CompileSha
 
-; 317  : 			if (shader_data[i] == '\n') {
+; 308  : 			if (shader_data[i] == '\n') {
 
   0010f	8b 45 f4	 mov	 eax, DWORD PTR _shader_data$[ebp]
   00112	03 45 b8	 add	 eax, DWORD PTR _i$1[ebp]
@@ -1700,31 +1612,31 @@ $LN4@CompileSha:
   00118	83 f9 0a	 cmp	 ecx, 10			; 0000000aH
   0011b	75 09		 jne	 SHORT $LN5@CompileSha
 
-; 318  : 				++linebreak_amount;
+; 309  : 				++linebreak_amount;
 
   0011d	8b 45 d0	 mov	 eax, DWORD PTR _linebreak_amount$[ebp]
   00120	83 c0 01	 add	 eax, 1
   00123	89 45 d0	 mov	 DWORD PTR _linebreak_amount$[ebp], eax
 $LN5@CompileSha:
 
-; 319  : 			}
-; 320  : 		}
+; 310  : 			}
+; 311  : 		}
 
   00126	eb d6		 jmp	 SHORT $LN2@CompileSha
 $LN3@CompileSha:
 
-; 321  : 		shader_data[size - linebreak_amount] = '\0'; //not really sure why it works but it does
+; 312  : 		shader_data[size - linebreak_amount] = '\0'; //not really sure why it works but it does
 
   00128	8b 45 dc	 mov	 eax, DWORD PTR _size$[ebp]
   0012b	2b 45 d0	 sub	 eax, DWORD PTR _linebreak_amount$[ebp]
   0012e	8b 4d f4	 mov	 ecx, DWORD PTR _shader_data$[ebp]
   00131	c6 04 01 00	 mov	 BYTE PTR [ecx+eax], 0
 
-; 322  : 		//printf("%s", shader_data);
-; 323  : 		//printf("%d", size);
-; 324  : 		//for debugging
-; 325  : 	}
-; 326  : 	shader_obj = glCreateShader(type);
+; 313  : 		//printf("%s", shader_data);
+; 314  : 		//printf("%d", size);
+; 315  : 		//for debugging
+; 316  : 	}
+; 317  : 	shader_obj = glCreateShader(type);
 
   00135	8b f4		 mov	 esi, esp
   00137	8b 45 0c	 mov	 eax, DWORD PTR _type$[ebp]
@@ -1735,7 +1647,7 @@ $LN3@CompileSha:
   00143	e8 00 00 00 00	 call	 __RTC_CheckEsp
   00148	89 45 e8	 mov	 DWORD PTR _shader_obj$[ebp], eax
 
-; 327  : 	glShaderSource(shader_obj, 1, &shader_data, NULL);
+; 318  : 	glShaderSource(shader_obj, 1, &shader_data, NULL);
 
   0014b	8b f4		 mov	 esi, esp
   0014d	6a 00		 push	 0
@@ -1749,7 +1661,7 @@ $LN3@CompileSha:
   0015f	3b f4		 cmp	 esi, esp
   00161	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 328  : 	glCompileShader(shader_obj);
+; 319  : 	glCompileShader(shader_obj);
 
   00166	8b f4		 mov	 esi, esp
   00168	8b 45 e8	 mov	 eax, DWORD PTR _shader_obj$[ebp]
@@ -1759,7 +1671,7 @@ $LN3@CompileSha:
   00172	3b f4		 cmp	 esi, esp
   00174	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 329  : 	free(shader_data);
+; 320  : 	free(shader_data);
 
   00179	8b f4		 mov	 esi, esp
   0017b	8b 45 f4	 mov	 eax, DWORD PTR _shader_data$[ebp]
@@ -1770,11 +1682,11 @@ $LN3@CompileSha:
   00188	3b f4		 cmp	 esi, esp
   0018a	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 330  : 	return shader_obj;
+; 321  : 	return shader_obj;
 
   0018f	8b 45 e8	 mov	 eax, DWORD PTR _shader_obj$[ebp]
 
-; 331  : }
+; 322  : }
 
   00192	52		 push	 edx
   00193	8b cd		 mov	 ecx, ebp
@@ -2703,19 +2615,18 @@ _TEXT	ENDS
 ; File C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c
 ;	COMDAT _SDL_main
 _TEXT	SEGMENT
-tv711 = -1260						; size = 4
-tv698 = -1260						; size = 4
-tv705 = -1256						; size = 4
-tv692 = -1256						; size = 4
-tv225 = -1256						; size = 4
-_tmp_srect$1 = -864					; size = 16
+tv670 = -1236						; size = 4
+tv657 = -1236						; size = 4
+tv664 = -1232						; size = 4
+tv651 = -1232						; size = 4
+tv225 = -1232						; size = 4
 _event_handle$ = -840					; size = 56
 _key_input$ = -776					; size = 4
-_loc$2 = -764						; size = 4
-_shader_fragment$3 = -752				; size = 4
-_shader_vertex$4 = -740					; size = 4
-_shader_fragment$5 = -728				; size = 4
-_shader_vertex$6 = -716					; size = 4
+_loc$1 = -764						; size = 4
+_shader_fragment$2 = -752				; size = 4
+_shader_vertex$3 = -740					; size = 4
+_shader_fragment$4 = -728				; size = 4
+_shader_vertex$5 = -716					; size = 4
 _ortho$ = -704						; size = 64
 _test$ = -624						; size = 8
 _error$ = -604						; size = 4
@@ -2724,12 +2635,12 @@ _fp$ = -72						; size = 4
 _format$ = -60						; size = 2
 _channels$ = -48					; size = 4
 _freq$ = -36						; size = 4
-_i$7 = -24						; size = 4
+_i$6 = -24						; size = 4
 _number_decoders$ = -12					; size = 4
 __$ArrayPad$ = -4					; size = 4
 _SDL_main PROC						; COMDAT
 
-; 57   : int main(void) {
+; 56   : int main(void) {
 
   00000	53		 push	 ebx
   00001	8b dc		 mov	 ebx, esp
@@ -2740,13 +2651,13 @@ _SDL_main PROC						; COMDAT
   0000d	8b 6b 04	 mov	 ebp, DWORD PTR [ebx+4]
   00010	89 6c 24 04	 mov	 DWORD PTR [esp+4], ebp
   00014	8b ec		 mov	 ebp, esp
-  00016	81 ec f8 04 00
-	00		 sub	 esp, 1272		; 000004f8H
+  00016	81 ec d8 04 00
+	00		 sub	 esp, 1240		; 000004d8H
   0001c	56		 push	 esi
   0001d	57		 push	 edi
-  0001e	8d bd 08 fb ff
-	ff		 lea	 edi, DWORD PTR [ebp-1272]
-  00024	b9 3e 01 00 00	 mov	 ecx, 318		; 0000013eH
+  0001e	8d bd 28 fb ff
+	ff		 lea	 edi, DWORD PTR [ebp-1240]
+  00024	b9 36 01 00 00	 mov	 ecx, 310		; 00000136H
   00029	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0002e	f3 ab		 rep stosd
   00030	a1 00 00 00 00	 mov	 eax, DWORD PTR ___security_cookie
@@ -2755,30 +2666,30 @@ _SDL_main PROC						; COMDAT
   0003a	b9 00 00 00 00	 mov	 ecx, OFFSET __E7DCAAE8_main@c
   0003f	e8 00 00 00 00	 call	 @__CheckForDebuggerJustMyCode@4
 
-; 58   : 	//Inititlze SDL stuff
-; 59   : 	//TODO: rename some globals from "test" and choose better var names, also get controller support and haptic support before you start adding items and stuff
-; 60   : 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+; 57   : 	//Inititlze SDL stuff
+; 58   : 	//TODO: rename some globals from "test" and choose better var names, also get controller support and haptic support before you start adding items and stuff
+; 59   : 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 
   00044	6a 03		 push	 3
   00046	6a 11		 push	 17			; 00000011H
   00048	e8 00 00 00 00	 call	 _SDL_GL_SetAttribute
   0004d	83 c4 08	 add	 esp, 8
 
-; 61   : 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+; 60   : 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
   00050	6a 03		 push	 3
   00052	6a 12		 push	 18			; 00000012H
   00054	e8 00 00 00 00	 call	 _SDL_GL_SetAttribute
   00059	83 c4 08	 add	 esp, 8
 
-; 62   : 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+; 61   : 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
   0005c	6a 02		 push	 2
   0005e	6a 15		 push	 21			; 00000015H
   00060	e8 00 00 00 00	 call	 _SDL_GL_SetAttribute
   00065	83 c4 08	 add	 esp, 8
 
-; 63   : 	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_HAPTIC | SDL_INIT_JOYSTICK)) {
+; 62   : 	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_HAPTIC | SDL_INIT_JOYSTICK)) {
 
   00068	68 10 12 00 00	 push	 4624			; 00001210H
   0006d	e8 00 00 00 00	 call	 _SDL_Init
@@ -2786,7 +2697,7 @@ _SDL_main PROC						; COMDAT
   00075	85 c0		 test	 eax, eax
   00077	74 13		 je	 SHORT $LN9@SDL_main
 
-; 64   : 		printf("Couldn't inilize audio, %s", SDL_GetError());
+; 63   : 		printf("Couldn't inilize audio, %s", SDL_GetError());
 
   00079	e8 00 00 00 00	 call	 _SDL_GetError
   0007e	50		 push	 eax
@@ -2795,14 +2706,14 @@ _SDL_main PROC						; COMDAT
   00089	83 c4 08	 add	 esp, 8
 $LN9@SDL_main:
 
-; 65   : 	}
-; 66   : 	if (TTF_Init() == -1) {
+; 64   : 	}
+; 65   : 	if (TTF_Init() == -1) {
 
   0008c	e8 00 00 00 00	 call	 _TTF_Init
   00091	83 f8 ff	 cmp	 eax, -1
   00094	75 17		 jne	 SHORT $LN10@SDL_main
 
-; 67   : 		puts("Failed to load SDL_TTF font library");
+; 66   : 		puts("Failed to load SDL_TTF font library");
 
   00096	8b f4		 mov	 esi, esp
   00098	68 00 00 00 00	 push	 OFFSET ??_C@_0CE@NEDBEHFE@Failed?5to?5load?5SDL_TTF?5font?5lib@
@@ -2813,8 +2724,8 @@ $LN9@SDL_main:
   000a8	e8 00 00 00 00	 call	 __RTC_CheckEsp
 $LN10@SDL_main:
 
-; 68   : 	}
-; 69   : 	if ((Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3) != MIX_INIT_MP3) {
+; 67   : 	}
+; 68   : 	if ((Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3) != MIX_INIT_MP3) {
 
   000ad	6a 08		 push	 8
   000af	e8 00 00 00 00	 call	 _Mix_Init
@@ -2822,7 +2733,7 @@ $LN10@SDL_main:
   000b7	83 e0 08	 and	 eax, 8
   000ba	75 13		 jne	 SHORT $LN11@SDL_main
 
-; 70   : 		printf("Failed to initilize mix, %s\n", Mix_GetError());
+; 69   : 		printf("Failed to initilize mix, %s\n", Mix_GetError());
 
   000bc	e8 00 00 00 00	 call	 _SDL_GetError
   000c1	50		 push	 eax
@@ -2831,9 +2742,9 @@ $LN10@SDL_main:
   000cc	83 c4 08	 add	 esp, 8
 $LN11@SDL_main:
 
-; 71   : 	}
-; 72   : 	//set up fonts, load them and turn them into surfaces here
-; 73   : 	font_1 = TTF_OpenFont("resources/font_1.ttf", 50);
+; 70   : 	}
+; 71   : 	//set up fonts, load them and turn them into surfaces here
+; 72   : 	font_1 = TTF_OpenFont("resources/font_1.ttf", 50);
 
   000cf	6a 32		 push	 50			; 00000032H
   000d1	68 00 00 00 00	 push	 OFFSET ??_C@_0BF@IGFECFHO@resources?1font_1?4ttf@
@@ -2841,7 +2752,7 @@ $LN11@SDL_main:
   000db	83 c4 08	 add	 esp, 8
   000de	a3 00 00 00 00	 mov	 DWORD PTR _font_1, eax
 
-; 74   : 	wave_text = TTF_RenderText_Blended(font_1, "Wave:01", white);
+; 73   : 	wave_text = TTF_RenderText_Blended(font_1, "Wave:01", white);
 
   000e3	a1 00 00 00 00	 mov	 eax, DWORD PTR _white
   000e8	50		 push	 eax
@@ -2853,7 +2764,7 @@ $LN11@SDL_main:
   000fa	83 c4 0c	 add	 esp, 12			; 0000000cH
   000fd	a3 00 00 00 00	 mov	 DWORD PTR _wave_text, eax
 
-; 75   : 	overtime_text = TTF_RenderText_Blended(font_1, "OVERTIME", white);
+; 74   : 	overtime_text = TTF_RenderText_Blended(font_1, "OVERTIME", white);
 
   00102	a1 00 00 00 00	 mov	 eax, DWORD PTR _white
   00107	50		 push	 eax
@@ -2865,17 +2776,17 @@ $LN11@SDL_main:
   00119	83 c4 0c	 add	 esp, 12			; 0000000cH
   0011c	a3 00 00 00 00	 mov	 DWORD PTR _overtime_text, eax
 
-; 76   : 	wave_text_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("Wave:01"), wave_text_quad.x = 0 - (QUAD_TEXTURE_RECT_TEXT_CAL("Wave:01") / 2);
+; 75   : 	wave_text_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("Wave:01"), wave_text_quad.x = 0 - (QUAD_TEXTURE_RECT_TEXT_CAL("Wave:01") / 2);
 
   00121	68 00 00 00 00	 push	 OFFSET ??_C@_07BJPGHBBO@Wave?301@
   00126	e8 00 00 00 00	 call	 _strlen
   0012b	83 c4 04	 add	 esp, 4
-  0012e	89 85 18 fb ff
-	ff		 mov	 DWORD PTR tv692[ebp], eax
-  00134	f2 0f 2a 85 18
-	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv692[ebp]
-  0013c	8b 85 18 fb ff
-	ff		 mov	 eax, DWORD PTR tv692[ebp]
+  0012e	89 85 30 fb ff
+	ff		 mov	 DWORD PTR tv651[ebp], eax
+  00134	f2 0f 2a 85 30
+	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv651[ebp]
+  0013c	8b 85 30 fb ff
+	ff		 mov	 eax, DWORD PTR tv651[ebp]
   00142	c1 e8 1f	 shr	 eax, 31			; 0000001fH
   00145	f2 0f 58 04 c5
 	00 00 00 00	 addsd	 xmm0, QWORD PTR __xmm@41f00000000000000000000000000000[eax*8]
@@ -2887,12 +2798,12 @@ $LN11@SDL_main:
   00162	68 00 00 00 00	 push	 OFFSET ??_C@_07BJPGHBBO@Wave?301@
   00167	e8 00 00 00 00	 call	 _strlen
   0016c	83 c4 04	 add	 esp, 4
-  0016f	89 85 14 fb ff
-	ff		 mov	 DWORD PTR tv698[ebp], eax
-  00175	f2 0f 2a 85 14
-	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv698[ebp]
-  0017d	8b 8d 14 fb ff
-	ff		 mov	 ecx, DWORD PTR tv698[ebp]
+  0016f	89 85 2c fb ff
+	ff		 mov	 DWORD PTR tv657[ebp], eax
+  00175	f2 0f 2a 85 2c
+	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv657[ebp]
+  0017d	8b 8d 2c fb ff
+	ff		 mov	 ecx, DWORD PTR tv657[ebp]
   00183	c1 e9 1f	 shr	 ecx, 31			; 0000001fH
   00186	f2 0f 58 04 cd
 	00 00 00 00	 addsd	 xmm0, QWORD PTR __xmm@41f00000000000000000000000000000[ecx*8]
@@ -2906,17 +2817,17 @@ $LN11@SDL_main:
   001aa	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _wave_text_quad, xmm0
 
-; 77   : 	overtime_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("OVERTIME"), overtime_quad.x = 0 - (QUAD_TEXTURE_RECT_TEXT_CAL("OVERTIME") / 2);
+; 76   : 	overtime_quad.w = QUAD_TEXTURE_RECT_TEXT_CAL("OVERTIME"), overtime_quad.x = 0 - (QUAD_TEXTURE_RECT_TEXT_CAL("OVERTIME") / 2);
 
   001b2	68 00 00 00 00	 push	 OFFSET ??_C@_08CCCPFIL@OVERTIME@
   001b7	e8 00 00 00 00	 call	 _strlen
   001bc	83 c4 04	 add	 esp, 4
-  001bf	89 85 18 fb ff
-	ff		 mov	 DWORD PTR tv705[ebp], eax
-  001c5	f2 0f 2a 85 18
-	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv705[ebp]
-  001cd	8b 85 18 fb ff
-	ff		 mov	 eax, DWORD PTR tv705[ebp]
+  001bf	89 85 30 fb ff
+	ff		 mov	 DWORD PTR tv664[ebp], eax
+  001c5	f2 0f 2a 85 30
+	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv664[ebp]
+  001cd	8b 85 30 fb ff
+	ff		 mov	 eax, DWORD PTR tv664[ebp]
   001d3	c1 e8 1f	 shr	 eax, 31			; 0000001fH
   001d6	f2 0f 58 04 c5
 	00 00 00 00	 addsd	 xmm0, QWORD PTR __xmm@41f00000000000000000000000000000[eax*8]
@@ -2928,12 +2839,12 @@ $LN11@SDL_main:
   001f3	68 00 00 00 00	 push	 OFFSET ??_C@_08CCCPFIL@OVERTIME@
   001f8	e8 00 00 00 00	 call	 _strlen
   001fd	83 c4 04	 add	 esp, 4
-  00200	89 85 14 fb ff
-	ff		 mov	 DWORD PTR tv711[ebp], eax
-  00206	f2 0f 2a 85 14
-	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv711[ebp]
-  0020e	8b 8d 14 fb ff
-	ff		 mov	 ecx, DWORD PTR tv711[ebp]
+  00200	89 85 2c fb ff
+	ff		 mov	 DWORD PTR tv670[ebp], eax
+  00206	f2 0f 2a 85 2c
+	fb ff ff	 cvtsi2sd xmm0, DWORD PTR tv670[ebp]
+  0020e	8b 8d 2c fb ff
+	ff		 mov	 ecx, DWORD PTR tv670[ebp]
   00214	c1 e9 1f	 shr	 ecx, 31			; 0000001fH
   00217	f2 0f 58 04 cd
 	00 00 00 00	 addsd	 xmm0, QWORD PTR __xmm@41f00000000000000000000000000000[ecx*8]
@@ -2947,8 +2858,8 @@ $LN11@SDL_main:
   0023b	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _overtime_quad, xmm0
 
-; 78   : 	//set up audio
-; 79   : 	if(Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048) < 0) {
+; 77   : 	//set up audio
+; 78   : 	if(Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048) < 0) {
 
   00243	68 00 08 00 00	 push	 2048			; 00000800H
   00248	6a 02		 push	 2
@@ -2959,7 +2870,7 @@ $LN11@SDL_main:
   0025c	85 c0		 test	 eax, eax
   0025e	7d 13		 jge	 SHORT $LN12@SDL_main
 
-; 80   : 		printf("Error opening audio device, %s\n", Mix_GetError());
+; 79   : 		printf("Error opening audio device, %s\n", Mix_GetError());
 
   00260	e8 00 00 00 00	 call	 _SDL_GetError
   00265	50		 push	 eax
@@ -2968,8 +2879,8 @@ $LN11@SDL_main:
   00270	83 c4 08	 add	 esp, 8
 $LN12@SDL_main:
 
-; 81   : 	}
-; 82   : 	printf("amount of channels: %d\n", Mix_AllocateChannels(32));
+; 80   : 	}
+; 81   : 	printf("amount of channels: %d\n", Mix_AllocateChannels(32));
 
   00273	6a 20		 push	 32			; 00000020H
   00275	e8 00 00 00 00	 call	 _Mix_AllocateChannels
@@ -2979,34 +2890,34 @@ $LN12@SDL_main:
   00283	e8 00 00 00 00	 call	 _printf
   00288	83 c4 08	 add	 esp, 8
 
-; 83   : 	//???
-; 84   : 	int number_decoders = Mix_GetNumChunkDecoders();
+; 82   : 	//???
+; 83   : 	int number_decoders = Mix_GetNumChunkDecoders();
 
   0028b	e8 00 00 00 00	 call	 _Mix_GetNumChunkDecoders
   00290	89 45 f4	 mov	 DWORD PTR _number_decoders$[ebp], eax
 
-; 85   : 	for (int i = 0; i < number_decoders; ++i)
+; 84   : 	for (int i = 0; i < number_decoders; ++i)
 
   00293	c7 45 e8 00 00
-	00 00		 mov	 DWORD PTR _i$7[ebp], 0
+	00 00		 mov	 DWORD PTR _i$6[ebp], 0
   0029a	eb 09		 jmp	 SHORT $LN4@SDL_main
 $LN2@SDL_main:
-  0029c	8b 45 e8	 mov	 eax, DWORD PTR _i$7[ebp]
+  0029c	8b 45 e8	 mov	 eax, DWORD PTR _i$6[ebp]
   0029f	83 c0 01	 add	 eax, 1
-  002a2	89 45 e8	 mov	 DWORD PTR _i$7[ebp], eax
+  002a2	89 45 e8	 mov	 DWORD PTR _i$6[ebp], eax
 $LN4@SDL_main:
-  002a5	8b 45 e8	 mov	 eax, DWORD PTR _i$7[ebp]
+  002a5	8b 45 e8	 mov	 eax, DWORD PTR _i$6[ebp]
   002a8	3b 45 f4	 cmp	 eax, DWORD PTR _number_decoders$[ebp]
   002ab	7d 20		 jge	 SHORT $LN3@SDL_main
 
-; 86   : 		printf("Sample chunk decoder %d is for %s\n", i, Mix_GetChunkDecoder(i));
+; 85   : 		printf("Sample chunk decoder %d is for %s\n", i, Mix_GetChunkDecoder(i));
 
-  002ad	8b 45 e8	 mov	 eax, DWORD PTR _i$7[ebp]
+  002ad	8b 45 e8	 mov	 eax, DWORD PTR _i$6[ebp]
   002b0	50		 push	 eax
   002b1	e8 00 00 00 00	 call	 _Mix_GetChunkDecoder
   002b6	83 c4 04	 add	 esp, 4
   002b9	50		 push	 eax
-  002ba	8b 4d e8	 mov	 ecx, DWORD PTR _i$7[ebp]
+  002ba	8b 4d e8	 mov	 ecx, DWORD PTR _i$6[ebp]
   002bd	51		 push	 ecx
   002be	68 00 00 00 00	 push	 OFFSET ??_C@_0CD@EJFJAJJE@Sample?5chunk?5decoder?5?$CFd?5is?5for?5@
   002c3	e8 00 00 00 00	 call	 _printf
@@ -3014,8 +2925,8 @@ $LN4@SDL_main:
   002cb	eb cf		 jmp	 SHORT $LN2@SDL_main
 $LN3@SDL_main:
 
-; 87   : 	//set up any audio loading here
-; 88   : 	overtime_bell_audio = Mix_LoadWAV("resources/overtime_bell.wav");
+; 86   : 	//set up any audio loading here
+; 87   : 	overtime_bell_audio = Mix_LoadWAV("resources/overtime_bell.wav");
 
   002cd	6a 01		 push	 1
   002cf	68 00 00 00 00	 push	 OFFSET ??_C@_02JDPG@rb@
@@ -3027,7 +2938,7 @@ $LN3@SDL_main:
   002e7	83 c4 08	 add	 esp, 8
   002ea	a3 00 00 00 00	 mov	 DWORD PTR _overtime_bell_audio, eax
 
-; 89   : 	Mix_VolumeChunk(overtime_bell_audio, 64);
+; 88   : 	Mix_VolumeChunk(overtime_bell_audio, 64);
 
   002ef	6a 40		 push	 64			; 00000040H
   002f1	a1 00 00 00 00	 mov	 eax, DWORD PTR _overtime_bell_audio
@@ -3035,10 +2946,10 @@ $LN3@SDL_main:
   002f7	e8 00 00 00 00	 call	 _Mix_VolumeChunk
   002fc	83 c4 08	 add	 esp, 8
 
-; 90   : 	//print out the current hardware format
-; 91   : 	int freq, channels;
-; 92   : 	Uint16 format;
-; 93   : 	if (Mix_QuerySpec(&freq, &format, &channels)) {
+; 89   : 	//print out the current hardware format
+; 90   : 	int freq, channels;
+; 91   : 	Uint16 format;
+; 92   : 	if (Mix_QuerySpec(&freq, &format, &channels)) {
 
   002ff	8d 45 d0	 lea	 eax, DWORD PTR _channels$[ebp]
   00302	50		 push	 eax
@@ -3051,7 +2962,7 @@ $LN3@SDL_main:
   00313	85 c0		 test	 eax, eax
   00315	74 1c		 je	 SHORT $LN13@SDL_main
 
-; 94   : 		printf("Frequerncy:%d, audio format:%x, number of channels:%d\n", freq, format, channels);
+; 93   : 		printf("Frequerncy:%d, audio format:%x, number of channels:%d\n", freq, format, channels);
 
   00317	8b 45 d0	 mov	 eax, DWORD PTR _channels$[ebp]
   0031a	50		 push	 eax
@@ -3063,14 +2974,14 @@ $LN3@SDL_main:
   00329	e8 00 00 00 00	 call	 _printf
   0032e	83 c4 10	 add	 esp, 16			; 00000010H
 
-; 95   : 	}
+; 94   : 	}
 
   00331	eb 13		 jmp	 SHORT $LN14@SDL_main
 $LN13@SDL_main:
 
-; 96   : 	else
-; 97   : 	{
-; 98   : 		printf("Something bad happened...%s\n", Mix_GetError());
+; 95   : 	else
+; 96   : 	{
+; 97   : 		printf("Something bad happened...%s\n", Mix_GetError());
 
   00333	e8 00 00 00 00	 call	 _SDL_GetError
   00338	50		 push	 eax
@@ -3079,21 +2990,21 @@ $LN13@SDL_main:
   00343	83 c4 08	 add	 esp, 8
 $LN14@SDL_main:
 
-; 99   : 	}
-; 100  : 	//initilize lua and load scripts
-; 101  : 	L = lua_open();
+; 98   : 	}
+; 99   : 	//initilize lua and load scripts
+; 100  : 	L = lua_open();
 
   00346	e8 00 00 00 00	 call	 _luaL_newstate
   0034b	a3 00 00 00 00	 mov	 DWORD PTR _L, eax
 
-; 102  : 	luaL_openlibs(L);
+; 101  : 	luaL_openlibs(L);
 
   00350	a1 00 00 00 00	 mov	 eax, DWORD PTR _L
   00355	50		 push	 eax
   00356	e8 00 00 00 00	 call	 _luaL_openlibs
   0035b	83 c4 04	 add	 esp, 4
 
-; 103  : 	FILE* fp = fopen("resources/lua/scripts/test.lua", "r+");
+; 102  : 	FILE* fp = fopen("resources/lua/scripts/test.lua", "r+");
 
   0035e	8b f4		 mov	 esi, esp
   00360	68 00 00 00 00	 push	 OFFSET ??_C@_02CBLLGHLK@r?$CL@
@@ -3106,9 +3017,9 @@ $LN14@SDL_main:
   0037a	89 45 b8	 mov	 DWORD PTR _fp$[ebp], eax
 $LN5@SDL_main:
 
-; 104  : 	char buff[512];
-; 105  : 	int error;  
-; 106  : 	while (fgets(buff, sizeof(buff), fp) != NULL) {
+; 103  : 	char buff[512];
+; 104  : 	int error;  
+; 105  : 	while (fgets(buff, sizeof(buff), fp) != NULL) {
 
   0037d	8b f4		 mov	 esi, esp
   0037f	8b 45 b8	 mov	 eax, DWORD PTR _fp$[ebp]
@@ -3126,7 +3037,7 @@ $LN5@SDL_main:
   003a1	0f 84 bc 00 00
 	00		 je	 $LN6@SDL_main
 
-; 107  : 		error = luaL_loadbuffer(L, buff, strlen(buff), "line") || lua_pcall(L, 0, 0, 0);
+; 106  : 		error = luaL_loadbuffer(L, buff, strlen(buff), "line") || lua_pcall(L, 0, 0, 0);
 
   003a7	68 00 00 00 00	 push	 OFFSET ??_C@_04HJPCFDOP@line@
   003ac	8d 85 b0 fd ff
@@ -3154,25 +3065,25 @@ $LN5@SDL_main:
   003e7	83 c4 10	 add	 esp, 16			; 00000010H
   003ea	85 c0		 test	 eax, eax
   003ec	75 0c		 jne	 SHORT $LN47@SDL_main
-  003ee	c7 85 18 fb ff
+  003ee	c7 85 30 fb ff
 	ff 00 00 00 00	 mov	 DWORD PTR tv225[ebp], 0
   003f8	eb 0a		 jmp	 SHORT $LN48@SDL_main
 $LN47@SDL_main:
-  003fa	c7 85 18 fb ff
+  003fa	c7 85 30 fb ff
 	ff 01 00 00 00	 mov	 DWORD PTR tv225[ebp], 1
 $LN48@SDL_main:
-  00404	8b 8d 18 fb ff
+  00404	8b 8d 30 fb ff
 	ff		 mov	 ecx, DWORD PTR tv225[ebp]
   0040a	89 8d a4 fd ff
 	ff		 mov	 DWORD PTR _error$[ebp], ecx
 
-; 108  : 		if (error) {
+; 107  : 		if (error) {
 
   00410	83 bd a4 fd ff
 	ff 00		 cmp	 DWORD PTR _error$[ebp], 0
   00417	74 45		 je	 SHORT $LN15@SDL_main
 
-; 109  : 			fprintf(stderr, "%s\n", lua_tostring(L, -1));
+; 108  : 			fprintf(stderr, "%s\n", lua_tostring(L, -1));
 
   00419	6a 00		 push	 0
   0041b	6a ff		 push	 -1
@@ -3193,7 +3104,7 @@ $LN48@SDL_main:
   00446	e8 00 00 00 00	 call	 _fprintf
   0044b	83 c4 0c	 add	 esp, 12			; 0000000cH
 
-; 110  : 			lua_pop(L, 1);  /* pop error message from the stack */
+; 109  : 			lua_pop(L, 1);  /* pop error message from the stack */
 
   0044e	6a fe		 push	 -2			; fffffffeH
   00450	a1 00 00 00 00	 mov	 eax, DWORD PTR _L
@@ -3202,13 +3113,13 @@ $LN48@SDL_main:
   0045b	83 c4 08	 add	 esp, 8
 $LN15@SDL_main:
 
-; 111  : 		}
-; 112  : 	}
+; 110  : 		}
+; 111  : 	}
 
   0045e	e9 1a ff ff ff	 jmp	 $LN5@SDL_main
 $LN6@SDL_main:
 
-; 113  : 	lua_getglobal(L, "ab");
+; 112  : 	lua_getglobal(L, "ab");
 
   00463	68 00 00 00 00	 push	 OFFSET ??_C@_02BOGAIONP@ab@
   00468	68 ee d8 ff ff	 push	 -10002			; ffffd8eeH
@@ -3217,7 +3128,7 @@ $LN6@SDL_main:
   00473	e8 00 00 00 00	 call	 _lua_getfield
   00478	83 c4 0c	 add	 esp, 12			; 0000000cH
 
-; 114  : 	lua_pushstring(L, "b");
+; 113  : 	lua_pushstring(L, "b");
 
   0047b	68 00 00 00 00	 push	 OFFSET ??_C@_01OJONOECF@b@
   00480	a1 00 00 00 00	 mov	 eax, DWORD PTR _L
@@ -3225,7 +3136,7 @@ $LN6@SDL_main:
   00486	e8 00 00 00 00	 call	 _lua_pushstring
   0048b	83 c4 08	 add	 esp, 8
 
-; 115  : 	lua_gettable(L, -2);
+; 114  : 	lua_gettable(L, -2);
 
   0048e	6a fe		 push	 -2			; fffffffeH
   00490	a1 00 00 00 00	 mov	 eax, DWORD PTR _L
@@ -3233,7 +3144,7 @@ $LN6@SDL_main:
   00496	e8 00 00 00 00	 call	 _lua_gettable
   0049b	83 c4 08	 add	 esp, 8
 
-; 116  : 	double test = lua_tonumber(L, -1);
+; 115  : 	double test = lua_tonumber(L, -1);
 
   0049e	6a ff		 push	 -1
   004a0	a1 00 00 00 00	 mov	 eax, DWORD PTR _L
@@ -3243,7 +3154,7 @@ $LN6@SDL_main:
   004ae	dd 9d 90 fd ff
 	ff		 fstp	 QWORD PTR _test$[ebp]
 
-; 117  : 	printf("%f\n", test);
+; 116  : 	printf("%f\n", test);
 
   004b4	83 ec 08	 sub	 esp, 8
   004b7	f2 0f 10 85 90
@@ -3253,7 +3164,7 @@ $LN6@SDL_main:
   004c9	e8 00 00 00 00	 call	 _printf
   004ce	83 c4 0c	 add	 esp, 12			; 0000000cH
 
-; 118  : 	fclose(fp);
+; 117  : 	fclose(fp);
 
   004d1	8b f4		 mov	 esi, esp
   004d3	8b 45 b8	 mov	 eax, DWORD PTR _fp$[ebp]
@@ -3264,7 +3175,7 @@ $LN6@SDL_main:
   004e0	3b f4		 cmp	 esi, esp
   004e2	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 119  : 	window = SDL_CreateWindow("SpaceMonster", 0, 100, WINDOW_WIDTH_START, WINDOW_HEIGHT_START, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+; 118  : 	window = SDL_CreateWindow("SpaceMonster", 0, 100, WINDOW_WIDTH_START, WINDOW_HEIGHT_START, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
   004e7	6a 22		 push	 34			; 00000022H
   004e9	68 d0 02 00 00	 push	 720			; 000002d0H
@@ -3276,13 +3187,13 @@ $LN6@SDL_main:
   00501	83 c4 18	 add	 esp, 24			; 00000018H
   00504	a3 00 00 00 00	 mov	 DWORD PTR _window, eax
 
-; 120  : 	if (!window) {
+; 119  : 	if (!window) {
 
   00509	83 3d 00 00 00
 	00 00		 cmp	 DWORD PTR _window, 0
   00510	75 17		 jne	 SHORT $LN16@SDL_main
 
-; 121  : 		puts("Window creation failed!");
+; 120  : 		puts("Window creation failed!");
 
   00512	8b f4		 mov	 esi, esp
   00514	68 00 00 00 00	 push	 OFFSET ??_C@_0BI@LCLIEIFC@Window?5creation?5failed?$CB@
@@ -3293,8 +3204,8 @@ $LN6@SDL_main:
   00524	e8 00 00 00 00	 call	 __RTC_CheckEsp
 $LN16@SDL_main:
 
-; 122  : 	}
-; 123  :     glcontext = SDL_GL_CreateContext(window);
+; 121  : 	}
+; 122  :     glcontext = SDL_GL_CreateContext(window);
 
   00529	a1 00 00 00 00	 mov	 eax, DWORD PTR _window
   0052e	50		 push	 eax
@@ -3302,13 +3213,13 @@ $LN16@SDL_main:
   00534	83 c4 04	 add	 esp, 4
   00537	a3 00 00 00 00	 mov	 DWORD PTR _glcontext, eax
 
-; 124  : 	if (!glcontext) {
+; 123  : 	if (!glcontext) {
 
   0053c	83 3d 00 00 00
 	00 00		 cmp	 DWORD PTR _glcontext, 0
   00543	75 17		 jne	 SHORT $LN17@SDL_main
 
-; 125  : 		puts("SDL/OPENGL thing failed!");
+; 124  : 		puts("SDL/OPENGL thing failed!");
 
   00545	8b f4		 mov	 esi, esp
   00547	68 00 00 00 00	 push	 OFFSET ??_C@_0BJ@DJNHDOCB@SDL?1OPENGL?5thing?5failed?$CB@
@@ -3319,14 +3230,14 @@ $LN16@SDL_main:
   00557	e8 00 00 00 00	 call	 __RTC_CheckEsp
 $LN17@SDL_main:
 
-; 126  : 	}
-; 127  : 	if (!gladLoadGL()) {
+; 125  : 	}
+; 126  : 	if (!gladLoadGL()) {
 
   0055c	e8 00 00 00 00	 call	 _gladLoadGL
   00561	85 c0		 test	 eax, eax
   00563	75 17		 jne	 SHORT $LN18@SDL_main
 
-; 128  : 		puts("Failed to load openGL");
+; 127  : 		puts("Failed to load openGL");
 
   00565	8b f4		 mov	 esi, esp
   00567	68 00 00 00 00	 push	 OFFSET ??_C@_0BG@EDNFGKPI@Failed?5to?5load?5openGL@
@@ -3337,8 +3248,8 @@ $LN17@SDL_main:
   00577	e8 00 00 00 00	 call	 __RTC_CheckEsp
 $LN18@SDL_main:
 
-; 129  : 	}
-; 130  : 	glEnable(GL_BLEND);
+; 128  : 	}
+; 129  : 	glEnable(GL_BLEND);
 
   0057c	8b f4		 mov	 esi, esp
   0057e	68 e2 0b 00 00	 push	 3042			; 00000be2H
@@ -3347,7 +3258,7 @@ $LN18@SDL_main:
   00589	3b f4		 cmp	 esi, esp
   0058b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 131  : 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+; 130  : 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   00590	8b f4		 mov	 esi, esp
   00592	68 03 03 00 00	 push	 771			; 00000303H
@@ -3357,7 +3268,7 @@ $LN18@SDL_main:
   005a2	3b f4		 cmp	 esi, esp
   005a4	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 132  : 	glViewport(0, 0, WINDOW_WIDTH_START, WINDOW_HEIGHT_START);
+; 131  : 	glViewport(0, 0, WINDOW_WIDTH_START, WINDOW_HEIGHT_START);
 
   005a9	8b f4		 mov	 esi, esp
   005ab	68 d0 02 00 00	 push	 720			; 000002d0H
@@ -3369,7 +3280,7 @@ $LN18@SDL_main:
   005bf	3b f4		 cmp	 esi, esp
   005c1	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 133  : 	glOrtho(0, WINDOW_WIDTH_START, 0, WINDOW_HEIGHT_START, 1.0, -1.0);
+; 132  : 	glOrtho(0, WINDOW_WIDTH_START, 0, WINDOW_HEIGHT_START, 1.0, -1.0);
 
   005c6	8b f4		 mov	 esi, esp
   005c8	83 ec 08	 sub	 esp, 8
@@ -3399,8 +3310,8 @@ $LN18@SDL_main:
   00624	3b f4		 cmp	 esi, esp
   00626	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 134  : 	mat4 ortho;
-; 135  : 	glm_ortho(0, WINDOW_WIDTH_START, 0, WINDOW_HEIGHT_START, 1.0, -1.0, ortho);
+; 133  : 	mat4 ortho;
+; 134  : 	glm_ortho(0, WINDOW_WIDTH_START, 0, WINDOW_HEIGHT_START, 1.0, -1.0, ortho);
 
   0062b	8d 85 40 fd ff
 	ff		 lea	 eax, DWORD PTR _ortho$[ebp]
@@ -3430,7 +3341,7 @@ $LN18@SDL_main:
   0067c	e8 00 00 00 00	 call	 _glm_ortho
   00681	83 c4 1c	 add	 esp, 28			; 0000001cH
 
-; 136  : 	if (glGetError()) {
+; 135  : 	if (glGetError()) {
 
   00684	8b f4		 mov	 esi, esp
   00686	ff 15 00 00 00
@@ -3440,7 +3351,7 @@ $LN18@SDL_main:
   00693	85 c0		 test	 eax, eax
   00695	74 1d		 je	 SHORT $LN19@SDL_main
 
-; 137  : 		printf("Failed to initilize openGL, %x", glGetError());
+; 136  : 		printf("Failed to initilize openGL, %x", glGetError());
 
   00697	8b f4		 mov	 esi, esp
   00699	ff 15 00 00 00
@@ -3453,8 +3364,8 @@ $LN18@SDL_main:
   006b1	83 c4 08	 add	 esp, 8
 $LN19@SDL_main:
 
-; 138  : 	}
-; 139  : 	shader_texturedobj = glCreateProgram();
+; 137  : 	}
+; 138  : 	shader_texturedobj = glCreateProgram();
 
   006b4	8b f4		 mov	 esi, esp
   006b6	ff 15 00 00 00
@@ -3463,7 +3374,7 @@ $LN19@SDL_main:
   006be	e8 00 00 00 00	 call	 __RTC_CheckEsp
   006c3	a3 00 00 00 00	 mov	 DWORD PTR _shader_texturedobj, eax
 
-; 140  : 	shader_colored = glCreateProgram();
+; 139  : 	shader_colored = glCreateProgram();
 
   006c8	8b f4		 mov	 esi, esp
   006ca	ff 15 00 00 00
@@ -3472,32 +3383,32 @@ $LN19@SDL_main:
   006d2	e8 00 00 00 00	 call	 __RTC_CheckEsp
   006d7	a3 00 00 00 00	 mov	 DWORD PTR _shader_colored, eax
 
-; 141  : 	{
-; 142  : 		GLint shader_vertex;
-; 143  : 		GLint shader_fragment;
-; 144  : 		shader_vertex = CompileShader("resources/shaders/vertex1.txt", GL_VERTEX_SHADER);
+; 140  : 	{
+; 141  : 		GLint shader_vertex;
+; 142  : 		GLint shader_fragment;
+; 143  : 		shader_vertex = CompileShader("resources/shaders/vertex1.txt", GL_VERTEX_SHADER);
 
   006dc	68 31 8b 00 00	 push	 35633			; 00008b31H
   006e1	68 00 00 00 00	 push	 OFFSET ??_C@_0BO@HPNKKGGC@resources?1shaders?1vertex1?4txt@
   006e6	e8 00 00 00 00	 call	 _CompileShader
   006eb	83 c4 08	 add	 esp, 8
   006ee	89 85 34 fd ff
-	ff		 mov	 DWORD PTR _shader_vertex$6[ebp], eax
+	ff		 mov	 DWORD PTR _shader_vertex$5[ebp], eax
 
-; 145  : 		shader_fragment = CompileShader("resources/shaders/fragment1.txt", GL_FRAGMENT_SHADER);
+; 144  : 		shader_fragment = CompileShader("resources/shaders/fragment1.txt", GL_FRAGMENT_SHADER);
 
   006f4	68 30 8b 00 00	 push	 35632			; 00008b30H
   006f9	68 00 00 00 00	 push	 OFFSET ??_C@_0CA@DHKGOHOF@resources?1shaders?1fragment1?4txt@
   006fe	e8 00 00 00 00	 call	 _CompileShader
   00703	83 c4 08	 add	 esp, 8
   00706	89 85 28 fd ff
-	ff		 mov	 DWORD PTR _shader_fragment$5[ebp], eax
+	ff		 mov	 DWORD PTR _shader_fragment$4[ebp], eax
 
-; 146  : 		glAttachShader(shader_texturedobj, shader_vertex);
+; 145  : 		glAttachShader(shader_texturedobj, shader_vertex);
 
   0070c	8b f4		 mov	 esi, esp
   0070e	8b 85 34 fd ff
-	ff		 mov	 eax, DWORD PTR _shader_vertex$6[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_vertex$5[ebp]
   00714	50		 push	 eax
   00715	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _shader_texturedobj
@@ -3507,11 +3418,11 @@ $LN19@SDL_main:
   00722	3b f4		 cmp	 esi, esp
   00724	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 147  : 		glAttachShader(shader_texturedobj, shader_fragment);
+; 146  : 		glAttachShader(shader_texturedobj, shader_fragment);
 
   00729	8b f4		 mov	 esi, esp
   0072b	8b 85 28 fd ff
-	ff		 mov	 eax, DWORD PTR _shader_fragment$5[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_fragment$4[ebp]
   00731	50		 push	 eax
   00732	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _shader_texturedobj
@@ -3521,55 +3432,55 @@ $LN19@SDL_main:
   0073f	3b f4		 cmp	 esi, esp
   00741	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 148  : 		glDeleteShader(shader_vertex);
+; 147  : 		glDeleteShader(shader_vertex);
 
   00746	8b f4		 mov	 esi, esp
   00748	8b 85 34 fd ff
-	ff		 mov	 eax, DWORD PTR _shader_vertex$6[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_vertex$5[ebp]
   0074e	50		 push	 eax
   0074f	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDeleteShader
   00755	3b f4		 cmp	 esi, esp
   00757	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 149  : 		glDeleteShader(shader_fragment);
+; 148  : 		glDeleteShader(shader_fragment);
 
   0075c	8b f4		 mov	 esi, esp
   0075e	8b 85 28 fd ff
-	ff		 mov	 eax, DWORD PTR _shader_fragment$5[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_fragment$4[ebp]
   00764	50		 push	 eax
   00765	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDeleteShader
   0076b	3b f4		 cmp	 esi, esp
   0076d	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 150  : 	}        
-; 151  : 	{
-; 152  : 		GLint shader_vertex;
-; 153  : 		GLint shader_fragment;
-; 154  : 		shader_vertex = CompileShader("resources/shaders/vertex2.txt", GL_VERTEX_SHADER);
+; 149  : 	}        
+; 150  : 	{
+; 151  : 		GLint shader_vertex;
+; 152  : 		GLint shader_fragment;
+; 153  : 		shader_vertex = CompileShader("resources/shaders/vertex2.txt", GL_VERTEX_SHADER);
 
   00772	68 31 8b 00 00	 push	 35633			; 00008b31H
   00777	68 00 00 00 00	 push	 OFFSET ??_C@_0BO@PJEONEMM@resources?1shaders?1vertex2?4txt@
   0077c	e8 00 00 00 00	 call	 _CompileShader
   00781	83 c4 08	 add	 esp, 8
   00784	89 85 1c fd ff
-	ff		 mov	 DWORD PTR _shader_vertex$4[ebp], eax
+	ff		 mov	 DWORD PTR _shader_vertex$3[ebp], eax
 
-; 155  : 		shader_fragment = CompileShader("resources/shaders/fragment2.txt", GL_FRAGMENT_SHADER);
+; 154  : 		shader_fragment = CompileShader("resources/shaders/fragment2.txt", GL_FRAGMENT_SHADER);
 
   0078a	68 30 8b 00 00	 push	 35632			; 00008b30H
   0078f	68 00 00 00 00	 push	 OFFSET ??_C@_0CA@LBDCJFEL@resources?1shaders?1fragment2?4txt@
   00794	e8 00 00 00 00	 call	 _CompileShader
   00799	83 c4 08	 add	 esp, 8
   0079c	89 85 10 fd ff
-	ff		 mov	 DWORD PTR _shader_fragment$3[ebp], eax
+	ff		 mov	 DWORD PTR _shader_fragment$2[ebp], eax
 
-; 156  : 		glAttachShader(shader_colored, shader_vertex);
+; 155  : 		glAttachShader(shader_colored, shader_vertex);
 
   007a2	8b f4		 mov	 esi, esp
   007a4	8b 85 1c fd ff
-	ff		 mov	 eax, DWORD PTR _shader_vertex$4[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_vertex$3[ebp]
   007aa	50		 push	 eax
   007ab	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _shader_colored
@@ -3579,11 +3490,11 @@ $LN19@SDL_main:
   007b8	3b f4		 cmp	 esi, esp
   007ba	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 157  : 		glAttachShader(shader_colored, shader_fragment);
+; 156  : 		glAttachShader(shader_colored, shader_fragment);
 
   007bf	8b f4		 mov	 esi, esp
   007c1	8b 85 10 fd ff
-	ff		 mov	 eax, DWORD PTR _shader_fragment$3[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_fragment$2[ebp]
   007c7	50		 push	 eax
   007c8	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _shader_colored
@@ -3593,30 +3504,30 @@ $LN19@SDL_main:
   007d5	3b f4		 cmp	 esi, esp
   007d7	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 158  : 		glDeleteShader(shader_vertex);
+; 157  : 		glDeleteShader(shader_vertex);
 
   007dc	8b f4		 mov	 esi, esp
   007de	8b 85 1c fd ff
-	ff		 mov	 eax, DWORD PTR _shader_vertex$4[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_vertex$3[ebp]
   007e4	50		 push	 eax
   007e5	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDeleteShader
   007eb	3b f4		 cmp	 esi, esp
   007ed	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 159  : 		glDeleteShader(shader_fragment);
+; 158  : 		glDeleteShader(shader_fragment);
 
   007f2	8b f4		 mov	 esi, esp
   007f4	8b 85 10 fd ff
-	ff		 mov	 eax, DWORD PTR _shader_fragment$3[ebp]
+	ff		 mov	 eax, DWORD PTR _shader_fragment$2[ebp]
   007fa	50		 push	 eax
   007fb	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDeleteShader
   00801	3b f4		 cmp	 esi, esp
   00803	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 160  : 	}
-; 161  : 	glLinkProgram(shader_texturedobj);
+; 159  : 	}
+; 160  : 	glLinkProgram(shader_texturedobj);
 
   00808	8b f4		 mov	 esi, esp
   0080a	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
@@ -3626,7 +3537,7 @@ $LN19@SDL_main:
   00816	3b f4		 cmp	 esi, esp
   00818	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 162  : 	glLinkProgram(shader_colored);
+; 161  : 	glLinkProgram(shader_colored);
 
   0081d	8b f4		 mov	 esi, esp
   0081f	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_colored
@@ -3636,7 +3547,7 @@ $LN19@SDL_main:
   0082b	3b f4		 cmp	 esi, esp
   0082d	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 163  : 	if (glGetError()) {
+; 162  : 	if (glGetError()) {
 
   00832	8b f4		 mov	 esi, esp
   00834	ff 15 00 00 00
@@ -3646,7 +3557,7 @@ $LN19@SDL_main:
   00841	85 c0		 test	 eax, eax
   00843	74 1d		 je	 SHORT $LN20@SDL_main
 
-; 164  : 		printf("Failed to initilize shaders, %x", glGetError());
+; 163  : 		printf("Failed to initilize shaders, %x", glGetError());
 
   00845	8b f4		 mov	 esi, esp
   00847	ff 15 00 00 00
@@ -3659,10 +3570,10 @@ $LN19@SDL_main:
   0085f	83 c4 08	 add	 esp, 8
 $LN20@SDL_main:
 
-; 165  : 	}
-; 166  : 	//setting global light
-; 167  : 	{
-; 168  : 		glUseProgram(shader_colored);
+; 164  : 	}
+; 165  : 	//setting global light
+; 166  : 	{
+; 167  : 		glUseProgram(shader_colored);
 
   00862	8b f4		 mov	 esi, esp
   00864	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_colored
@@ -3672,7 +3583,7 @@ $LN20@SDL_main:
   00870	3b f4		 cmp	 esi, esp
   00872	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 169  : 		GLint loc = glGetUniformLocation(shader_colored, "global_light");
+; 168  : 		GLint loc = glGetUniformLocation(shader_colored, "global_light");
 
   00877	8b f4		 mov	 esi, esp
   00879	68 00 00 00 00	 push	 OFFSET ??_C@_0N@OBNOHIMB@global_light@
@@ -3683,9 +3594,9 @@ $LN20@SDL_main:
   0088a	3b f4		 cmp	 esi, esp
   0088c	e8 00 00 00 00	 call	 __RTC_CheckEsp
   00891	89 85 04 fd ff
-	ff		 mov	 DWORD PTR _loc$2[ebp], eax
+	ff		 mov	 DWORD PTR _loc$1[ebp], eax
 
-; 170  : 		glUniform3f(loc, 1, 1, 1);
+; 169  : 		glUniform3f(loc, 1, 1, 1);
 
   00897	8b f4		 mov	 esi, esp
   00899	51		 push	 ecx
@@ -3701,14 +3612,14 @@ $LN20@SDL_main:
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
   008be	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
   008c3	8b 85 04 fd ff
-	ff		 mov	 eax, DWORD PTR _loc$2[ebp]
+	ff		 mov	 eax, DWORD PTR _loc$1[ebp]
   008c9	50		 push	 eax
   008ca	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glUniform3f
   008d0	3b f4		 cmp	 esi, esp
   008d2	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 171  : 		glUseProgram(shader_texturedobj);
+; 170  : 		glUseProgram(shader_texturedobj);
 
   008d7	8b f4		 mov	 esi, esp
   008d9	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
@@ -3718,7 +3629,7 @@ $LN20@SDL_main:
   008e5	3b f4		 cmp	 esi, esp
   008e7	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 172  : 		loc = glGetUniformLocation(shader_texturedobj, "global_light");
+; 171  : 		loc = glGetUniformLocation(shader_texturedobj, "global_light");
 
   008ec	8b f4		 mov	 esi, esp
   008ee	68 00 00 00 00	 push	 OFFSET ??_C@_0N@OBNOHIMB@global_light@
@@ -3729,9 +3640,9 @@ $LN20@SDL_main:
   008ff	3b f4		 cmp	 esi, esp
   00901	e8 00 00 00 00	 call	 __RTC_CheckEsp
   00906	89 85 04 fd ff
-	ff		 mov	 DWORD PTR _loc$2[ebp], eax
+	ff		 mov	 DWORD PTR _loc$1[ebp], eax
 
-; 173  : 		glUniform3f(loc, 1, 1, 1);
+; 172  : 		glUniform3f(loc, 1, 1, 1);
 
   0090c	8b f4		 mov	 esi, esp
   0090e	51		 push	 ecx
@@ -3747,14 +3658,14 @@ $LN20@SDL_main:
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
   00933	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
   00938	8b 85 04 fd ff
-	ff		 mov	 eax, DWORD PTR _loc$2[ebp]
+	ff		 mov	 eax, DWORD PTR _loc$1[ebp]
   0093e	50		 push	 eax
   0093f	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glUniform3f
   00945	3b f4		 cmp	 esi, esp
   00947	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 174  : 		if (glGetError()) {
+; 173  : 		if (glGetError()) {
 
   0094c	8b f4		 mov	 esi, esp
   0094e	ff 15 00 00 00
@@ -3764,7 +3675,7 @@ $LN20@SDL_main:
   0095b	85 c0		 test	 eax, eax
   0095d	74 1d		 je	 SHORT $LN21@SDL_main
 
-; 175  : 			printf("Failed to initilize shader uniforms, %x", glGetError());
+; 174  : 			printf("Failed to initilize shader uniforms, %x", glGetError());
 
   0095f	8b f4		 mov	 esi, esp
   00961	ff 15 00 00 00
@@ -3777,14 +3688,14 @@ $LN20@SDL_main:
   00979	83 c4 08	 add	 esp, 8
 $LN21@SDL_main:
 
-; 176  : 		}
-; 177  : 		//unless you need it for somereason
-; 178  : 		//GLint tex0 = glGetUniformLocation(shader_texturedobj, "Texture0");
-; 179  : 		//GLint tex1 = glGetUniformLocation(shader_texturedobj, "Texture1");
-; 180  : 		//glUniform1i(tex0, 0);
-; 181  : 		//glUniform1i(tex1, 1);
-; 182  : 	}
-; 183  : 	glUseProgram(shader_texturedobj);
+; 175  : 		}
+; 176  : 		//unless you need it for somereason
+; 177  : 		//GLint tex0 = glGetUniformLocation(shader_texturedobj, "Texture0");
+; 178  : 		//GLint tex1 = glGetUniformLocation(shader_texturedobj, "Texture1");
+; 179  : 		//glUniform1i(tex0, 0);
+; 180  : 		//glUniform1i(tex1, 1);
+; 181  : 	}
+; 182  : 	glUseProgram(shader_texturedobj);
 
   0097c	8b f4		 mov	 esi, esp
   0097e	a1 00 00 00 00	 mov	 eax, DWORD PTR _shader_texturedobj
@@ -3794,23 +3705,22 @@ $LN21@SDL_main:
   0098a	3b f4		 cmp	 esi, esp
   0098c	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 184  : 	Init_GL();
+; 183  : 	Init_GL();
 
   00991	e8 00 00 00 00	 call	 _Init_GL
 
-; 185  : 	active_en |= FEDERATION_SCOUT;
+; 184  : 	active_en |= FEDERATION_SCOUT;
 
   00996	a1 00 00 00 00	 mov	 eax, DWORD PTR _active_en
   0099b	83 c8 01	 or	 eax, 1
   0099e	a3 00 00 00 00	 mov	 DWORD PTR _active_en, eax
 
-; 186  : 	GAME_WaveInit();
+; 185  : 	GAME_WaveInit();
 
   009a3	e8 00 00 00 00	 call	 _GAME_WaveInit
 
-; 187  : 	//other misc texture init
-; 188  : 	//set up player stuff
-; 189  : 	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.05, player_quad.h = 0.1;
+; 186  : 	//other misc texture init
+; 187  : 	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.05, player_quad.h = 0.1;
 
   009a8	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
@@ -3829,7 +3739,7 @@ $LN21@SDL_main:
   009e0	f3 0f 11 05 0c
 	00 00 00	 movss	 DWORD PTR _player_quad+12, xmm0
 
-; 190  : 	player_quad.textid = texture[0];
+; 188  : 	player_quad.textid = texture[0];
 
   009e8	b8 04 00 00 00	 mov	 eax, 4
   009ed	6b c8 00	 imul	 ecx, eax, 0
@@ -3838,1025 +3748,925 @@ $LN21@SDL_main:
   009f6	89 15 10 00 00
 	00		 mov	 DWORD PTR _player_quad+16, edx
 
-; 191  : 	//player tongue
-; 192  : 	player_tongue.x = -1.0, player_tongue.y = 1.0, player_tongue.w = 0.05, player_tongue.h = 0.1;
+; 189  : 	wave_text_quad.textid = texture[3];
 
-  009fc	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  00a04	f3 0f 11 05 00
-	00 00 00	 movss	 DWORD PTR _player_tongue, xmm0
-  00a0c	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00a14	f3 0f 11 05 04
-	00 00 00	 movss	 DWORD PTR _player_tongue+4, xmm0
-  00a1c	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@3d4ccccd
-  00a24	f3 0f 11 05 08
-	00 00 00	 movss	 DWORD PTR _player_tongue+8, xmm0
-  00a2c	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@3dcccccd
-  00a34	f3 0f 11 05 0c
-	00 00 00	 movss	 DWORD PTR _player_tongue+12, xmm0
+  009fc	b8 04 00 00 00	 mov	 eax, 4
+  00a01	6b c8 03	 imul	 ecx, eax, 3
+  00a04	8b 91 00 00 00
+	00		 mov	 edx, DWORD PTR _texture[ecx]
+  00a0a	89 15 10 00 00
+	00		 mov	 DWORD PTR _wave_text_quad+16, edx
 
-; 193  : 	player_quad.textid = texture[1];
+; 190  : 	wave_num[0] = '0', wave_num[1] = '1';
 
-  00a3c	b8 04 00 00 00	 mov	 eax, 4
-  00a41	c1 e0 00	 shl	 eax, 0
-  00a44	8b 88 00 00 00
-	00		 mov	 ecx, DWORD PTR _texture[eax]
-  00a4a	89 0d 10 00 00
-	00		 mov	 DWORD PTR _player_quad+16, ecx
-
-; 194  : 	//set up the wave counter
-; 195  : 	wave_text_quad.textid = texture[4];
-
-  00a50	b8 04 00 00 00	 mov	 eax, 4
-  00a55	c1 e0 02	 shl	 eax, 2
-  00a58	8b 88 00 00 00
-	00		 mov	 ecx, DWORD PTR _texture[eax]
-  00a5e	89 0d 10 00 00
-	00		 mov	 DWORD PTR _wave_text_quad+16, ecx
-
-; 196  : 	wave_num[0] = '0', wave_num[1] = '1';
-
-  00a64	b8 01 00 00 00	 mov	 eax, 1
-  00a69	6b c8 00	 imul	 ecx, eax, 0
-  00a6c	c6 81 00 00 00
+  00a10	b8 01 00 00 00	 mov	 eax, 1
+  00a15	6b c8 00	 imul	 ecx, eax, 0
+  00a18	c6 81 00 00 00
 	00 30		 mov	 BYTE PTR _wave_num[ecx], 48 ; 00000030H
-  00a73	ba 01 00 00 00	 mov	 edx, 1
-  00a78	c1 e2 00	 shl	 edx, 0
-  00a7b	c6 82 00 00 00
+  00a1f	ba 01 00 00 00	 mov	 edx, 1
+  00a24	c1 e2 00	 shl	 edx, 0
+  00a27	c6 82 00 00 00
 	00 31		 mov	 BYTE PTR _wave_num[edx], 49 ; 00000031H
 
-; 197  : 	//over time bell text
-; 198  : 	overtime_quad.textid = texture[5];
+; 191  : 	overtime_quad.textid = texture[4];
 
-  00a82	b8 04 00 00 00	 mov	 eax, 4
-  00a87	6b c8 05	 imul	 ecx, eax, 5
-  00a8a	8b 91 00 00 00
-	00		 mov	 edx, DWORD PTR _texture[ecx]
-  00a90	89 15 10 00 00
-	00		 mov	 DWORD PTR _overtime_quad+16, edx
+  00a2e	b8 04 00 00 00	 mov	 eax, 4
+  00a33	c1 e0 02	 shl	 eax, 2
+  00a36	8b 88 00 00 00
+	00		 mov	 ecx, DWORD PTR _texture[eax]
+  00a3c	89 0d 10 00 00
+	00		 mov	 DWORD PTR _overtime_quad+16, ecx
 
-; 199  : 	glClearColor(0, 0, 0, 1);
+; 192  : 	glClearColor(0, 0, 0, 1);
 
-  00a96	8b f4		 mov	 esi, esp
-  00a98	51		 push	 ecx
-  00a99	f3 0f 10 05 00
+  00a42	8b f4		 mov	 esi, esp
+  00a44	51		 push	 ecx
+  00a45	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00aa1	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00aa6	51		 push	 ecx
-  00aa7	0f 57 c0	 xorps	 xmm0, xmm0
-  00aaa	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00aaf	51		 push	 ecx
-  00ab0	0f 57 c0	 xorps	 xmm0, xmm0
-  00ab3	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00ab8	51		 push	 ecx
-  00ab9	0f 57 c0	 xorps	 xmm0, xmm0
-  00abc	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00ac1	ff 15 00 00 00
+  00a4d	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00a52	51		 push	 ecx
+  00a53	0f 57 c0	 xorps	 xmm0, xmm0
+  00a56	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00a5b	51		 push	 ecx
+  00a5c	0f 57 c0	 xorps	 xmm0, xmm0
+  00a5f	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00a64	51		 push	 ecx
+  00a65	0f 57 c0	 xorps	 xmm0, xmm0
+  00a68	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00a6d	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glClearColor
-  00ac7	3b f4		 cmp	 esi, esp
-  00ac9	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00a73	3b f4		 cmp	 esi, esp
+  00a75	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 200  : 	//Stuff that needs to be outside of the while loop
-; 201  : 	Uint8* key_input = SDL_GetKeyboardState(NULL);
+; 193  : 	//Stuff that needs to be outside of the while loop
+; 194  : 	Uint8* key_input = SDL_GetKeyboardState(NULL);
 
-  00ace	6a 00		 push	 0
-  00ad0	e8 00 00 00 00	 call	 _SDL_GetKeyboardState
-  00ad5	83 c4 04	 add	 esp, 4
-  00ad8	89 85 f8 fc ff
+  00a7a	6a 00		 push	 0
+  00a7c	e8 00 00 00 00	 call	 _SDL_GetKeyboardState
+  00a81	83 c4 04	 add	 esp, 4
+  00a84	89 85 f8 fc ff
 	ff		 mov	 DWORD PTR _key_input$[ebp], eax
 $LN7@SDL_main:
 
-; 202  : 	SDL_Event event_handle;
-; 203  : 	while (1) {
+; 195  : 	SDL_Event event_handle;
+; 196  : 	while (1) {
 
-  00ade	b8 01 00 00 00	 mov	 eax, 1
-  00ae3	85 c0		 test	 eax, eax
-  00ae5	0f 84 ac 07 00
-	00		 je	 $SHUTDOWN$58
+  00a8a	b8 01 00 00 00	 mov	 eax, 1
+  00a8f	85 c0		 test	 eax, eax
+  00a91	0f 84 08 07 00
+	00		 je	 $SHUTDOWN$57
 
-; 204  : 		start = clock();
+; 197  : 		start = clock();
 
-  00aeb	8b f4		 mov	 esi, esp
-  00aed	ff 15 00 00 00
+  00a97	8b f4		 mov	 esi, esp
+  00a99	ff 15 00 00 00
 	00		 call	 DWORD PTR __imp__clock
-  00af3	3b f4		 cmp	 esi, esp
-  00af5	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  00afa	f3 0f 2a c0	 cvtsi2ss xmm0, eax
-  00afe	f3 0f 11 05 00
+  00a9f	3b f4		 cmp	 esi, esp
+  00aa1	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00aa6	f3 0f 2a c0	 cvtsi2ss xmm0, eax
+  00aaa	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _start, xmm0
 
-; 205  : 		if (SDL_PollEvent(&event_handle)) {
+; 198  : 		if (SDL_PollEvent(&event_handle)) {
 
-  00b06	8d 85 b8 fc ff
+  00ab2	8d 85 b8 fc ff
 	ff		 lea	 eax, DWORD PTR _event_handle$[ebp]
-  00b0c	50		 push	 eax
-  00b0d	e8 00 00 00 00	 call	 _SDL_PollEvent
-  00b12	83 c4 04	 add	 esp, 4
-  00b15	85 c0		 test	 eax, eax
-  00b17	0f 84 27 01 00
+  00ab8	50		 push	 eax
+  00ab9	e8 00 00 00 00	 call	 _SDL_PollEvent
+  00abe	83 c4 04	 add	 esp, 4
+  00ac1	85 c0		 test	 eax, eax
+  00ac3	0f 84 27 01 00
 	00		 je	 $LN25@SDL_main
 
-; 206  : 			if (event_handle.type == SDL_WINDOWEVENT) {
+; 199  : 			if (event_handle.type == SDL_WINDOWEVENT) {
 
-  00b1d	81 bd b8 fc ff
+  00ac9	81 bd b8 fc ff
 	ff 00 02 00 00	 cmp	 DWORD PTR _event_handle$[ebp], 512 ; 00000200H
-  00b27	0f 85 17 01 00
+  00ad3	0f 85 17 01 00
 	00		 jne	 $LN25@SDL_main
 
-; 207  : 				if (event_handle.window.event == SDL_WINDOWEVENT_CLOSE) {
+; 200  : 				if (event_handle.window.event == SDL_WINDOWEVENT_CLOSE) {
 
-  00b2d	0f b6 85 c4 fc
+  00ad9	0f b6 85 c4 fc
 	ff ff		 movzx	 eax, BYTE PTR _event_handle$[ebp+12]
-  00b34	83 f8 0e	 cmp	 eax, 14			; 0000000eH
-  00b37	75 05		 jne	 SHORT $LN24@SDL_main
+  00ae0	83 f8 0e	 cmp	 eax, 14			; 0000000eH
+  00ae3	75 05		 jne	 SHORT $LN24@SDL_main
 
-; 208  : 					goto SHUTDOWN;
+; 201  : 					goto SHUTDOWN;
 
-  00b39	e9 59 07 00 00	 jmp	 $SHUTDOWN$58
+  00ae5	e9 b5 06 00 00	 jmp	 $SHUTDOWN$57
 $LN24@SDL_main:
 
-; 209  : 				}
-; 210  : 				if (event_handle.window.event == SDL_WINDOWEVENT_RESIZED) {
+; 202  : 				}
+; 203  : 				if (event_handle.window.event == SDL_WINDOWEVENT_RESIZED) {
 
-  00b3e	0f b6 85 c4 fc
+  00aea	0f b6 85 c4 fc
 	ff ff		 movzx	 eax, BYTE PTR _event_handle$[ebp+12]
-  00b45	83 f8 05	 cmp	 eax, 5
-  00b48	0f 85 f6 00 00
+  00af1	83 f8 05	 cmp	 eax, 5
+  00af4	0f 85 f6 00 00
 	00		 jne	 $LN25@SDL_main
 
-; 211  : 					glViewport(0, 0, event_handle.window.data1, event_handle.window.data2);
+; 204  : 					glViewport(0, 0, event_handle.window.data1, event_handle.window.data2);
 
-  00b4e	8b f4		 mov	 esi, esp
-  00b50	8b 85 cc fc ff
+  00afa	8b f4		 mov	 esi, esp
+  00afc	8b 85 cc fc ff
 	ff		 mov	 eax, DWORD PTR _event_handle$[ebp+20]
-  00b56	50		 push	 eax
-  00b57	8b 8d c8 fc ff
+  00b02	50		 push	 eax
+  00b03	8b 8d c8 fc ff
 	ff		 mov	 ecx, DWORD PTR _event_handle$[ebp+16]
-  00b5d	51		 push	 ecx
-  00b5e	6a 00		 push	 0
-  00b60	6a 00		 push	 0
-  00b62	ff 15 00 00 00
+  00b09	51		 push	 ecx
+  00b0a	6a 00		 push	 0
+  00b0c	6a 00		 push	 0
+  00b0e	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glViewport
-  00b68	3b f4		 cmp	 esi, esp
-  00b6a	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00b14	3b f4		 cmp	 esi, esp
+  00b16	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 212  : 					glOrtho(0, event_handle.window.data1, 0, event_handle.window.data2, 1.0, -1.0);
+; 205  : 					glOrtho(0, event_handle.window.data1, 0, event_handle.window.data2, 1.0, -1.0);
 
-  00b6f	8b f4		 mov	 esi, esp
-  00b71	83 ec 08	 sub	 esp, 8
-  00b74	f2 0f 10 05 00
+  00b1b	8b f4		 mov	 esi, esp
+  00b1d	83 ec 08	 sub	 esp, 8
+  00b20	f2 0f 10 05 00
 	00 00 00	 movsd	 xmm0, QWORD PTR __real@bff0000000000000
-  00b7c	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  00b81	83 ec 08	 sub	 esp, 8
-  00b84	f2 0f 10 05 00
+  00b28	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  00b2d	83 ec 08	 sub	 esp, 8
+  00b30	f2 0f 10 05 00
 	00 00 00	 movsd	 xmm0, QWORD PTR __real@3ff0000000000000
-  00b8c	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  00b91	f2 0f 2a 85 cc
+  00b38	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  00b3d	f2 0f 2a 85 cc
 	fc ff ff	 cvtsi2sd xmm0, DWORD PTR _event_handle$[ebp+20]
-  00b99	83 ec 08	 sub	 esp, 8
-  00b9c	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  00ba1	83 ec 08	 sub	 esp, 8
-  00ba4	0f 57 c0	 xorps	 xmm0, xmm0
-  00ba7	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  00bac	f2 0f 2a 85 c8
+  00b45	83 ec 08	 sub	 esp, 8
+  00b48	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  00b4d	83 ec 08	 sub	 esp, 8
+  00b50	0f 57 c0	 xorps	 xmm0, xmm0
+  00b53	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  00b58	f2 0f 2a 85 c8
 	fc ff ff	 cvtsi2sd xmm0, DWORD PTR _event_handle$[ebp+16]
-  00bb4	83 ec 08	 sub	 esp, 8
-  00bb7	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  00bbc	83 ec 08	 sub	 esp, 8
-  00bbf	0f 57 c0	 xorps	 xmm0, xmm0
-  00bc2	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  00bc7	ff 15 00 00 00
+  00b60	83 ec 08	 sub	 esp, 8
+  00b63	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  00b68	83 ec 08	 sub	 esp, 8
+  00b6b	0f 57 c0	 xorps	 xmm0, xmm0
+  00b6e	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  00b73	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glOrtho
-  00bcd	3b f4		 cmp	 esi, esp
-  00bcf	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00b79	3b f4		 cmp	 esi, esp
+  00b7b	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 213  : 					glm_ortho(0, event_handle.window.data1, 0, event_handle.window.data2, 1.0, -1.0, ortho);
+; 206  : 					glm_ortho(0, event_handle.window.data1, 0, event_handle.window.data2, 1.0, -1.0, ortho);
 
-  00bd4	8d 85 40 fd ff
+  00b80	8d 85 40 fd ff
 	ff		 lea	 eax, DWORD PTR _ortho$[ebp]
-  00bda	50		 push	 eax
-  00bdb	51		 push	 ecx
-  00bdc	f3 0f 10 05 00
+  00b86	50		 push	 eax
+  00b87	51		 push	 ecx
+  00b88	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  00be4	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00be9	51		 push	 ecx
-  00bea	f3 0f 10 05 00
+  00b90	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00b95	51		 push	 ecx
+  00b96	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00bf2	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00bf7	f3 0f 2a 85 cc
+  00b9e	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00ba3	f3 0f 2a 85 cc
 	fc ff ff	 cvtsi2ss xmm0, DWORD PTR _event_handle$[ebp+20]
-  00bff	51		 push	 ecx
-  00c00	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00c05	51		 push	 ecx
-  00c06	0f 57 c0	 xorps	 xmm0, xmm0
-  00c09	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00c0e	f3 0f 2a 85 c8
+  00bab	51		 push	 ecx
+  00bac	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00bb1	51		 push	 ecx
+  00bb2	0f 57 c0	 xorps	 xmm0, xmm0
+  00bb5	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00bba	f3 0f 2a 85 c8
 	fc ff ff	 cvtsi2ss xmm0, DWORD PTR _event_handle$[ebp+16]
-  00c16	51		 push	 ecx
-  00c17	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00c1c	51		 push	 ecx
-  00c1d	0f 57 c0	 xorps	 xmm0, xmm0
-  00c20	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  00c25	e8 00 00 00 00	 call	 _glm_ortho
-  00c2a	83 c4 1c	 add	 esp, 28			; 0000001cH
+  00bc2	51		 push	 ecx
+  00bc3	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00bc8	51		 push	 ecx
+  00bc9	0f 57 c0	 xorps	 xmm0, xmm0
+  00bcc	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00bd1	e8 00 00 00 00	 call	 _glm_ortho
+  00bd6	83 c4 1c	 add	 esp, 28			; 0000001cH
 
-; 214  : 					window_width = event_handle.window.data1, window_height = event_handle.window.data2;
+; 207  : 					window_width = event_handle.window.data1, window_height = event_handle.window.data2;
 
-  00c2d	8b 85 c8 fc ff
+  00bd9	8b 85 c8 fc ff
 	ff		 mov	 eax, DWORD PTR _event_handle$[ebp+16]
-  00c33	a3 00 00 00 00	 mov	 DWORD PTR _window_width, eax
-  00c38	8b 8d cc fc ff
+  00bdf	a3 00 00 00 00	 mov	 DWORD PTR _window_width, eax
+  00be4	8b 8d cc fc ff
 	ff		 mov	 ecx, DWORD PTR _event_handle$[ebp+20]
-  00c3e	89 0d 00 00 00
+  00bea	89 0d 00 00 00
 	00		 mov	 DWORD PTR _window_height, ecx
 $LN25@SDL_main:
 
-; 215  : 				}
-; 216  : 			}
-; 217  : 		}
-; 218  : 
-; 219  : 		glClear(GL_COLOR_BUFFER_BIT);
+; 208  : 				}
+; 209  : 			}
+; 210  : 		}
+; 211  : 
+; 212  : 		glClear(GL_COLOR_BUFFER_BIT);
 
-  00c44	8b f4		 mov	 esi, esp
-  00c46	68 00 40 00 00	 push	 16384			; 00004000H
-  00c4b	ff 15 00 00 00
+  00bf0	8b f4		 mov	 esi, esp
+  00bf2	68 00 40 00 00	 push	 16384			; 00004000H
+  00bf7	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glClear
-  00c51	3b f4		 cmp	 esi, esp
-  00c53	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00bfd	3b f4		 cmp	 esi, esp
+  00bff	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 220  : 		//cycle the background
-; 221  : 		background_vertexes[6] = background_vertexes[6] + 1 * delta_time, background_vertexes[14] = background_vertexes[14] + 1 * delta_time;
+; 213  : 		//cycle the background
+; 214  : 		background_vertexes[6] = background_vertexes[6] + 1 * delta_time, background_vertexes[14] = background_vertexes[14] + 1 * delta_time;
 
-  00c58	b8 04 00 00 00	 mov	 eax, 4
-  00c5d	6b c8 06	 imul	 ecx, eax, 6
-  00c60	f3 0f 10 05 00
+  00c04	b8 04 00 00 00	 mov	 eax, 4
+  00c09	6b c8 06	 imul	 ecx, eax, 6
+  00c0c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00c68	f3 0f 59 05 00
+  00c14	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00c70	f3 0f 58 81 00
+  00c1c	f3 0f 58 81 00
 	00 00 00	 addss	 xmm0, DWORD PTR _background_vertexes[ecx]
-  00c78	ba 04 00 00 00	 mov	 edx, 4
-  00c7d	6b c2 06	 imul	 eax, edx, 6
-  00c80	f3 0f 11 80 00
+  00c24	ba 04 00 00 00	 mov	 edx, 4
+  00c29	6b c2 06	 imul	 eax, edx, 6
+  00c2c	f3 0f 11 80 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[eax], xmm0
-  00c88	b9 04 00 00 00	 mov	 ecx, 4
-  00c8d	6b d1 0e	 imul	 edx, ecx, 14
-  00c90	f3 0f 10 05 00
+  00c34	b9 04 00 00 00	 mov	 ecx, 4
+  00c39	6b d1 0e	 imul	 edx, ecx, 14
+  00c3c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00c98	f3 0f 59 05 00
+  00c44	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00ca0	f3 0f 58 82 00
+  00c4c	f3 0f 58 82 00
 	00 00 00	 addss	 xmm0, DWORD PTR _background_vertexes[edx]
-  00ca8	b8 04 00 00 00	 mov	 eax, 4
-  00cad	6b c8 0e	 imul	 ecx, eax, 14
-  00cb0	f3 0f 11 81 00
+  00c54	b8 04 00 00 00	 mov	 eax, 4
+  00c59	6b c8 0e	 imul	 ecx, eax, 14
+  00c5c	f3 0f 11 81 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[ecx], xmm0
 
-; 222  : 		background_vertexes[22] = background_vertexes[22] + 1 * delta_time, background_vertexes[30] = background_vertexes[30] + 1 * delta_time;
+; 215  : 		background_vertexes[22] = background_vertexes[22] + 1 * delta_time, background_vertexes[30] = background_vertexes[30] + 1 * delta_time;
 
-  00cb8	b8 04 00 00 00	 mov	 eax, 4
-  00cbd	6b c8 16	 imul	 ecx, eax, 22
-  00cc0	f3 0f 10 05 00
+  00c64	b8 04 00 00 00	 mov	 eax, 4
+  00c69	6b c8 16	 imul	 ecx, eax, 22
+  00c6c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00cc8	f3 0f 59 05 00
+  00c74	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00cd0	f3 0f 58 81 00
+  00c7c	f3 0f 58 81 00
 	00 00 00	 addss	 xmm0, DWORD PTR _background_vertexes[ecx]
-  00cd8	ba 04 00 00 00	 mov	 edx, 4
-  00cdd	6b c2 16	 imul	 eax, edx, 22
-  00ce0	f3 0f 11 80 00
+  00c84	ba 04 00 00 00	 mov	 edx, 4
+  00c89	6b c2 16	 imul	 eax, edx, 22
+  00c8c	f3 0f 11 80 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[eax], xmm0
-  00ce8	b9 04 00 00 00	 mov	 ecx, 4
-  00ced	6b d1 1e	 imul	 edx, ecx, 30
-  00cf0	f3 0f 10 05 00
+  00c94	b9 04 00 00 00	 mov	 ecx, 4
+  00c99	6b d1 1e	 imul	 edx, ecx, 30
+  00c9c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00cf8	f3 0f 59 05 00
+  00ca4	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00d00	f3 0f 58 82 00
+  00cac	f3 0f 58 82 00
 	00 00 00	 addss	 xmm0, DWORD PTR _background_vertexes[edx]
-  00d08	b8 04 00 00 00	 mov	 eax, 4
-  00d0d	6b c8 1e	 imul	 ecx, eax, 30
-  00d10	f3 0f 11 81 00
+  00cb4	b8 04 00 00 00	 mov	 eax, 4
+  00cb9	6b c8 1e	 imul	 ecx, eax, 30
+  00cbc	f3 0f 11 81 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[ecx], xmm0
 
-; 223  : 		if (background_vertexes[6] > 1)
+; 216  : 		if (background_vertexes[6] > 1)
 
-  00d18	b8 04 00 00 00	 mov	 eax, 4
-  00d1d	6b c8 06	 imul	 ecx, eax, 6
-  00d20	f3 0f 10 81 00
+  00cc4	b8 04 00 00 00	 mov	 eax, 4
+  00cc9	6b c8 06	 imul	 ecx, eax, 6
+  00ccc	f3 0f 10 81 00
 	00 00 00	 movss	 xmm0, DWORD PTR _background_vertexes[ecx]
-  00d28	0f 2f 05 00 00
+  00cd4	0f 2f 05 00 00
 	00 00		 comiss	 xmm0, DWORD PTR __real@3f800000
-  00d2f	76 56		 jbe	 SHORT $LN26@SDL_main
+  00cdb	76 56		 jbe	 SHORT $LN26@SDL_main
 
-; 224  : 			background_vertexes[6] = 0, background_vertexes[14] = 1, background_vertexes[22] = 1, background_vertexes[30] = 0;
+; 217  : 			background_vertexes[6] = 0, background_vertexes[14] = 1, background_vertexes[22] = 1, background_vertexes[30] = 0;
 
-  00d31	b8 04 00 00 00	 mov	 eax, 4
-  00d36	6b c8 06	 imul	 ecx, eax, 6
-  00d39	0f 57 c0	 xorps	 xmm0, xmm0
-  00d3c	f3 0f 11 81 00
+  00cdd	b8 04 00 00 00	 mov	 eax, 4
+  00ce2	6b c8 06	 imul	 ecx, eax, 6
+  00ce5	0f 57 c0	 xorps	 xmm0, xmm0
+  00ce8	f3 0f 11 81 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[ecx], xmm0
-  00d44	ba 04 00 00 00	 mov	 edx, 4
-  00d49	6b c2 0e	 imul	 eax, edx, 14
-  00d4c	f3 0f 10 05 00
+  00cf0	ba 04 00 00 00	 mov	 edx, 4
+  00cf5	6b c2 0e	 imul	 eax, edx, 14
+  00cf8	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00d54	f3 0f 11 80 00
+  00d00	f3 0f 11 80 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[eax], xmm0
-  00d5c	b9 04 00 00 00	 mov	 ecx, 4
-  00d61	6b d1 16	 imul	 edx, ecx, 22
-  00d64	f3 0f 10 05 00
+  00d08	b9 04 00 00 00	 mov	 ecx, 4
+  00d0d	6b d1 16	 imul	 edx, ecx, 22
+  00d10	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00d6c	f3 0f 11 82 00
+  00d18	f3 0f 11 82 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[edx], xmm0
-  00d74	b8 04 00 00 00	 mov	 eax, 4
-  00d79	6b c8 1e	 imul	 ecx, eax, 30
-  00d7c	0f 57 c0	 xorps	 xmm0, xmm0
-  00d7f	f3 0f 11 81 00
+  00d20	b8 04 00 00 00	 mov	 eax, 4
+  00d25	6b c8 1e	 imul	 ecx, eax, 30
+  00d28	0f 57 c0	 xorps	 xmm0, xmm0
+  00d2b	f3 0f 11 81 00
 	00 00 00	 movss	 DWORD PTR _background_vertexes[ecx], xmm0
 $LN26@SDL_main:
 
-; 225  : 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), background_vertexes);
+; 218  : 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), background_vertexes);
 
-  00d87	8b f4		 mov	 esi, esp
-  00d89	68 00 00 00 00	 push	 OFFSET _background_vertexes
-  00d8e	68 80 00 00 00	 push	 128			; 00000080H
-  00d93	6a 00		 push	 0
-  00d95	68 92 88 00 00	 push	 34962			; 00008892H
-  00d9a	ff 15 00 00 00
+  00d33	8b f4		 mov	 esi, esp
+  00d35	68 00 00 00 00	 push	 OFFSET _background_vertexes
+  00d3a	68 80 00 00 00	 push	 128			; 00000080H
+  00d3f	6a 00		 push	 0
+  00d41	68 92 88 00 00	 push	 34962			; 00008892H
+  00d46	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBufferSubData
-  00da0	3b f4		 cmp	 esi, esp
-  00da2	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00d4c	3b f4		 cmp	 esi, esp
+  00d4e	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 226  : 		glBindTexture(GL_TEXTURE_2D, texture[2]);
+; 219  : 		glBindTexture(GL_TEXTURE_2D, texture[1]);
 
-  00da7	b8 04 00 00 00	 mov	 eax, 4
-  00dac	d1 e0		 shl	 eax, 1
-  00dae	8b f4		 mov	 esi, esp
-  00db0	8b 88 00 00 00
+  00d53	b8 04 00 00 00	 mov	 eax, 4
+  00d58	c1 e0 00	 shl	 eax, 0
+  00d5b	8b f4		 mov	 esi, esp
+  00d5d	8b 88 00 00 00
 	00		 mov	 ecx, DWORD PTR _texture[eax]
-  00db6	51		 push	 ecx
-  00db7	68 e1 0d 00 00	 push	 3553			; 00000de1H
-  00dbc	ff 15 00 00 00
+  00d63	51		 push	 ecx
+  00d64	68 e1 0d 00 00	 push	 3553			; 00000de1H
+  00d69	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture
-  00dc2	3b f4		 cmp	 esi, esp
-  00dc4	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00d6f	3b f4		 cmp	 esi, esp
+  00d71	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 227  : 		glDrawArrays(GL_QUADS, 0, 4);
+; 220  : 		glDrawArrays(GL_QUADS, 0, 4);
 
-  00dc9	8b f4		 mov	 esi, esp
-  00dcb	6a 04		 push	 4
-  00dcd	6a 00		 push	 0
-  00dcf	6a 07		 push	 7
-  00dd1	ff 15 00 00 00
+  00d76	8b f4		 mov	 esi, esp
+  00d78	6a 04		 push	 4
+  00d7a	6a 00		 push	 0
+  00d7c	6a 07		 push	 7
+  00d7e	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glDrawArrays
-  00dd7	3b f4		 cmp	 esi, esp
-  00dd9	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00d84	3b f4		 cmp	 esi, esp
+  00d86	e8 00 00 00 00	 call	 __RTC_CheckEsp
 
-; 228  : 		//input processing
-; 229  : 		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+; 221  : 		//input processing
+; 222  : 		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 
-  00dde	6a 00		 push	 0
-  00de0	6a 00		 push	 0
-  00de2	e8 00 00 00 00	 call	 _SDL_GetMouseState
-  00de7	83 c4 08	 add	 esp, 8
-  00dea	83 e0 01	 and	 eax, 1
-  00ded	74 10		 je	 SHORT $LN27@SDL_main
+  00d8b	6a 00		 push	 0
+  00d8d	6a 00		 push	 0
+  00d8f	e8 00 00 00 00	 call	 _SDL_GetMouseState
+  00d94	83 c4 08	 add	 esp, 8
+  00d97	83 e0 01	 and	 eax, 1
+  00d9a	74 10		 je	 SHORT $LN27@SDL_main
 
-; 230  : 			SDL_SetCursor(mouse_closed);
+; 223  : 			SDL_SetCursor(mouse_closed);
 
-  00def	a1 00 00 00 00	 mov	 eax, DWORD PTR _mouse_closed
-  00df4	50		 push	 eax
-  00df5	e8 00 00 00 00	 call	 _SDL_SetCursor
-  00dfa	83 c4 04	 add	 esp, 4
+  00d9c	a1 00 00 00 00	 mov	 eax, DWORD PTR _mouse_closed
+  00da1	50		 push	 eax
+  00da2	e8 00 00 00 00	 call	 _SDL_SetCursor
+  00da7	83 c4 04	 add	 esp, 4
 
-; 231  : 		}
+; 224  : 		}
 
-  00dfd	eb 0e		 jmp	 SHORT $LN28@SDL_main
+  00daa	eb 0e		 jmp	 SHORT $LN28@SDL_main
 $LN27@SDL_main:
 
-; 232  : 		else {
-; 233  : 			SDL_SetCursor(mouse_opened);
+; 225  : 		else {
+; 226  : 			SDL_SetCursor(mouse_opened);
 
-  00dff	a1 00 00 00 00	 mov	 eax, DWORD PTR _mouse_opened
-  00e04	50		 push	 eax
-  00e05	e8 00 00 00 00	 call	 _SDL_SetCursor
-  00e0a	83 c4 04	 add	 esp, 4
+  00dac	a1 00 00 00 00	 mov	 eax, DWORD PTR _mouse_opened
+  00db1	50		 push	 eax
+  00db2	e8 00 00 00 00	 call	 _SDL_SetCursor
+  00db7	83 c4 04	 add	 esp, 4
 $LN28@SDL_main:
 
-; 234  : 		}
-; 235  : 		if (key_input[SDL_SCANCODE_UP]) {
+; 227  : 		}
+; 228  : 		if (key_input[SDL_SCANCODE_UP]) {
 
-  00e0d	b8 01 00 00 00	 mov	 eax, 1
-  00e12	6b c8 52	 imul	 ecx, eax, 82
-  00e15	8b 95 f8 fc ff
+  00dba	b8 01 00 00 00	 mov	 eax, 1
+  00dbf	6b c8 52	 imul	 ecx, eax, 82
+  00dc2	8b 95 f8 fc ff
 	ff		 mov	 edx, DWORD PTR _key_input$[ebp]
-  00e1b	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
-  00e1f	85 c0		 test	 eax, eax
-  00e21	74 0d		 je	 SHORT $LN29@SDL_main
+  00dc8	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
+  00dcc	85 c0		 test	 eax, eax
+  00dce	74 0d		 je	 SHORT $LN29@SDL_main
 
-; 236  : 			++score;
+; 229  : 			++score;
 
-  00e23	a1 00 00 00 00	 mov	 eax, DWORD PTR _score
-  00e28	83 c0 01	 add	 eax, 1
-  00e2b	a3 00 00 00 00	 mov	 DWORD PTR _score, eax
+  00dd0	a1 00 00 00 00	 mov	 eax, DWORD PTR _score
+  00dd5	83 c0 01	 add	 eax, 1
+  00dd8	a3 00 00 00 00	 mov	 DWORD PTR _score, eax
 $LN29@SDL_main:
 
-; 237  : 		}
-; 238  : 		if (key_input[SDL_SCANCODE_DOWN]) {
+; 230  : 		}
+; 231  : 		if (key_input[SDL_SCANCODE_DOWN]) {
 
-  00e30	b8 01 00 00 00	 mov	 eax, 1
-  00e35	6b c8 51	 imul	 ecx, eax, 81
-  00e38	8b 95 f8 fc ff
+  00ddd	b8 01 00 00 00	 mov	 eax, 1
+  00de2	6b c8 51	 imul	 ecx, eax, 81
+  00de5	8b 95 f8 fc ff
 	ff		 mov	 edx, DWORD PTR _key_input$[ebp]
-  00e3e	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
-  00e42	85 c0		 test	 eax, eax
-  00e44	74 13		 je	 SHORT $LN30@SDL_main
+  00deb	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
+  00def	85 c0		 test	 eax, eax
+  00df1	74 13		 je	 SHORT $LN30@SDL_main
 
-; 239  : 			printf("score is now: %d\n", score);
+; 232  : 			printf("score is now: %d\n", score);
 
-  00e46	a1 00 00 00 00	 mov	 eax, DWORD PTR _score
-  00e4b	50		 push	 eax
-  00e4c	68 00 00 00 00	 push	 OFFSET ??_C@_0BC@FGDKOGKJ@score?5is?5now?3?5?$CFd?6@
-  00e51	e8 00 00 00 00	 call	 _printf
-  00e56	83 c4 08	 add	 esp, 8
+  00df3	a1 00 00 00 00	 mov	 eax, DWORD PTR _score
+  00df8	50		 push	 eax
+  00df9	68 00 00 00 00	 push	 OFFSET ??_C@_0BC@FGDKOGKJ@score?5is?5now?3?5?$CFd?6@
+  00dfe	e8 00 00 00 00	 call	 _printf
+  00e03	83 c4 08	 add	 esp, 8
 $LN30@SDL_main:
 
-; 240  : 		}
-; 241  : 		if (key_input[SDL_SCANCODE_D]) {
+; 233  : 		}
+; 234  : 		if (key_input[SDL_SCANCODE_D]) {
 
-  00e59	b8 01 00 00 00	 mov	 eax, 1
-  00e5e	6b c8 07	 imul	 ecx, eax, 7
-  00e61	8b 95 f8 fc ff
+  00e06	b8 01 00 00 00	 mov	 eax, 1
+  00e0b	6b c8 07	 imul	 ecx, eax, 7
+  00e0e	8b 95 f8 fc ff
 	ff		 mov	 edx, DWORD PTR _key_input$[ebp]
-  00e67	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
-  00e6b	85 c0		 test	 eax, eax
-  00e6d	74 20		 je	 SHORT $LN31@SDL_main
+  00e14	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
+  00e18	85 c0		 test	 eax, eax
+  00e1a	74 20		 je	 SHORT $LN31@SDL_main
 
-; 242  : 			player_quad.x = player_quad.x + player_wasd_speed * delta_time;
+; 235  : 			player_quad.x = player_quad.x + player_wasd_speed * delta_time;
 
-  00e6f	f3 0f 10 05 00
+  00e1c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR _player_wasd_speed
-  00e77	f3 0f 59 05 00
+  00e24	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00e7f	f3 0f 58 05 00
+  00e2c	f3 0f 58 05 00
 	00 00 00	 addss	 xmm0, DWORD PTR _player_quad
-  00e87	f3 0f 11 05 00
+  00e34	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _player_quad, xmm0
 $LN31@SDL_main:
 
-; 243  : 		}
-; 244  : 		if (key_input[SDL_SCANCODE_A]) {
+; 236  : 		}
+; 237  : 		if (key_input[SDL_SCANCODE_A]) {
 
-  00e8f	b8 01 00 00 00	 mov	 eax, 1
-  00e94	c1 e0 02	 shl	 eax, 2
-  00e97	8b 8d f8 fc ff
+  00e3c	b8 01 00 00 00	 mov	 eax, 1
+  00e41	c1 e0 02	 shl	 eax, 2
+  00e44	8b 8d f8 fc ff
 	ff		 mov	 ecx, DWORD PTR _key_input$[ebp]
-  00e9d	0f b6 14 01	 movzx	 edx, BYTE PTR [ecx+eax]
-  00ea1	85 d2		 test	 edx, edx
-  00ea3	74 24		 je	 SHORT $LN32@SDL_main
+  00e4a	0f b6 14 01	 movzx	 edx, BYTE PTR [ecx+eax]
+  00e4e	85 d2		 test	 edx, edx
+  00e50	74 24		 je	 SHORT $LN32@SDL_main
 
-; 245  : 			player_quad.x = player_quad.x - player_wasd_speed * delta_time;
+; 238  : 			player_quad.x = player_quad.x - player_wasd_speed * delta_time;
 
-  00ea5	f3 0f 10 05 00
+  00e52	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR _player_wasd_speed
-  00ead	f3 0f 59 05 00
+  00e5a	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00eb5	f3 0f 10 0d 00
+  00e62	f3 0f 10 0d 00
 	00 00 00	 movss	 xmm1, DWORD PTR _player_quad
-  00ebd	f3 0f 5c c8	 subss	 xmm1, xmm0
-  00ec1	f3 0f 11 0d 00
+  00e6a	f3 0f 5c c8	 subss	 xmm1, xmm0
+  00e6e	f3 0f 11 0d 00
 	00 00 00	 movss	 DWORD PTR _player_quad, xmm1
 $LN32@SDL_main:
 
-; 246  : 		}
-; 247  : 		if (key_input[SDL_SCANCODE_S]) {
+; 239  : 		}
+; 240  : 		if (key_input[SDL_SCANCODE_S]) {
 
-  00ec9	b8 01 00 00 00	 mov	 eax, 1
-  00ece	6b c8 16	 imul	 ecx, eax, 22
-  00ed1	8b 95 f8 fc ff
+  00e76	b8 01 00 00 00	 mov	 eax, 1
+  00e7b	6b c8 16	 imul	 ecx, eax, 22
+  00e7e	8b 95 f8 fc ff
 	ff		 mov	 edx, DWORD PTR _key_input$[ebp]
-  00ed7	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
-  00edb	85 c0		 test	 eax, eax
-  00edd	74 24		 je	 SHORT $LN33@SDL_main
+  00e84	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
+  00e88	85 c0		 test	 eax, eax
+  00e8a	74 24		 je	 SHORT $LN33@SDL_main
 
-; 248  : 			player_quad.y = player_quad.y - player_wasd_speed * delta_time;
+; 241  : 			player_quad.y = player_quad.y - player_wasd_speed * delta_time;
 
-  00edf	f3 0f 10 05 00
+  00e8c	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR _player_wasd_speed
-  00ee7	f3 0f 59 05 00
+  00e94	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00eef	f3 0f 10 0d 04
+  00e9c	f3 0f 10 0d 04
 	00 00 00	 movss	 xmm1, DWORD PTR _player_quad+4
-  00ef7	f3 0f 5c c8	 subss	 xmm1, xmm0
-  00efb	f3 0f 11 0d 04
+  00ea4	f3 0f 5c c8	 subss	 xmm1, xmm0
+  00ea8	f3 0f 11 0d 04
 	00 00 00	 movss	 DWORD PTR _player_quad+4, xmm1
 $LN33@SDL_main:
 
-; 249  : 		}
-; 250  : 		if (key_input[SDL_SCANCODE_W]) {
+; 242  : 		}
+; 243  : 		if (key_input[SDL_SCANCODE_W]) {
 
-  00f03	b8 01 00 00 00	 mov	 eax, 1
-  00f08	6b c8 1a	 imul	 ecx, eax, 26
-  00f0b	8b 95 f8 fc ff
+  00eb0	b8 01 00 00 00	 mov	 eax, 1
+  00eb5	6b c8 1a	 imul	 ecx, eax, 26
+  00eb8	8b 95 f8 fc ff
 	ff		 mov	 edx, DWORD PTR _key_input$[ebp]
-  00f11	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
-  00f15	85 c0		 test	 eax, eax
-  00f17	74 20		 je	 SHORT $LN34@SDL_main
+  00ebe	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
+  00ec2	85 c0		 test	 eax, eax
+  00ec4	74 20		 je	 SHORT $LN34@SDL_main
 
-; 251  : 			player_quad.y = player_quad.y + player_wasd_speed * delta_time;
+; 244  : 			player_quad.y = player_quad.y + player_wasd_speed * delta_time;
 
-  00f19	f3 0f 10 05 00
+  00ec6	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR _player_wasd_speed
-  00f21	f3 0f 59 05 00
+  00ece	f3 0f 59 05 00
 	00 00 00	 mulss	 xmm0, DWORD PTR _delta_time
-  00f29	f3 0f 58 05 04
+  00ed6	f3 0f 58 05 04
 	00 00 00	 addss	 xmm0, DWORD PTR _player_quad+4
-  00f31	f3 0f 11 05 04
+  00ede	f3 0f 11 05 04
 	00 00 00	 movss	 DWORD PTR _player_quad+4, xmm0
 $LN34@SDL_main:
 
-; 252  : 		}
-; 253  : 		//make sure player is not outside of the window
-; 254  : 		if (player_quad.x < -1) {
+; 245  : 		}
+; 246  : 		//make sure player is not outside of the window
+; 247  : 		if (player_quad.x < -1) {
 
-  00f39	f3 0f 10 05 00
+  00ee6	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  00f41	0f 2f 05 00 00
+  00eee	0f 2f 05 00 00
 	00 00		 comiss	 xmm0, DWORD PTR _player_quad
-  00f48	76 12		 jbe	 SHORT $LN35@SDL_main
+  00ef5	76 12		 jbe	 SHORT $LN35@SDL_main
 
-; 255  : 			player_quad.x = -1;
+; 248  : 			player_quad.x = -1;
 
-  00f4a	f3 0f 10 05 00
+  00ef7	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  00f52	f3 0f 11 05 00
+  00eff	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _player_quad, xmm0
 
-; 256  : 
-; 257  : 		}
+; 249  : 
+; 250  : 		}
 
-  00f5a	eb 31		 jmp	 SHORT $LN37@SDL_main
+  00f07	eb 31		 jmp	 SHORT $LN37@SDL_main
 $LN35@SDL_main:
 
-; 258  : 		else if (player_quad.x + player_quad.w > 1) {
+; 251  : 		else if (player_quad.x + player_quad.w > 1) {
 
-  00f5c	f3 0f 10 05 00
+  00f09	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR _player_quad
-  00f64	f3 0f 58 05 08
+  00f11	f3 0f 58 05 08
 	00 00 00	 addss	 xmm0, DWORD PTR _player_quad+8
-  00f6c	0f 2f 05 00 00
+  00f19	0f 2f 05 00 00
 	00 00		 comiss	 xmm0, DWORD PTR __real@3f800000
-  00f73	76 18		 jbe	 SHORT $LN37@SDL_main
+  00f20	76 18		 jbe	 SHORT $LN37@SDL_main
 
-; 259  : 			player_quad.x = 1 - player_quad.w;
+; 252  : 			player_quad.x = 1 - player_quad.w;
 
-  00f75	f3 0f 10 05 00
+  00f22	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00f7d	f3 0f 5c 05 08
+  00f2a	f3 0f 5c 05 08
 	00 00 00	 subss	 xmm0, DWORD PTR _player_quad+8
-  00f85	f3 0f 11 05 00
+  00f32	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _player_quad, xmm0
 $LN37@SDL_main:
 
-; 260  : 
-; 261  : 		}
-; 262  : 		if (player_quad.y > 1) {
+; 253  : 
+; 254  : 		}
+; 255  : 		if (player_quad.y > 1) {
 
-  00f8d	f3 0f 10 05 04
+  00f3a	f3 0f 10 05 04
 	00 00 00	 movss	 xmm0, DWORD PTR _player_quad+4
-  00f95	0f 2f 05 00 00
+  00f42	0f 2f 05 00 00
 	00 00		 comiss	 xmm0, DWORD PTR __real@3f800000
-  00f9c	76 12		 jbe	 SHORT $LN38@SDL_main
+  00f49	76 12		 jbe	 SHORT $LN38@SDL_main
 
-; 263  : 			player_quad.y = 1;
+; 256  : 			player_quad.y = 1;
 
-  00f9e	f3 0f 10 05 00
+  00f4b	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  00fa6	f3 0f 11 05 04
+  00f53	f3 0f 11 05 04
 	00 00 00	 movss	 DWORD PTR _player_quad+4, xmm0
 
-; 264  : 
-; 265  : 		}
+; 257  : 
+; 258  : 		}
 
-  00fae	eb 31		 jmp	 SHORT $LN40@SDL_main
+  00f5b	eb 31		 jmp	 SHORT $LN40@SDL_main
 $LN38@SDL_main:
 
-; 266  : 		else if (player_quad.y < -1 + player_quad.h) {
+; 259  : 		else if (player_quad.y < -1 + player_quad.h) {
 
-  00fb0	f3 0f 10 05 00
+  00f5d	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  00fb8	f3 0f 58 05 0c
+  00f65	f3 0f 58 05 0c
 	00 00 00	 addss	 xmm0, DWORD PTR _player_quad+12
-  00fc0	0f 2f 05 04 00
+  00f6d	0f 2f 05 04 00
 	00 00		 comiss	 xmm0, DWORD PTR _player_quad+4
-  00fc7	76 18		 jbe	 SHORT $LN40@SDL_main
+  00f74	76 18		 jbe	 SHORT $LN40@SDL_main
 
-; 267  : 			player_quad.y = -1 + player_quad.h;
+; 260  : 			player_quad.y = -1 + player_quad.h;
 
-  00fc9	f3 0f 10 05 00
+  00f76	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@bf800000
-  00fd1	f3 0f 58 05 0c
+  00f7e	f3 0f 58 05 0c
 	00 00 00	 addss	 xmm0, DWORD PTR _player_quad+12
-  00fd9	f3 0f 11 05 04
+  00f86	f3 0f 11 05 04
 	00 00 00	 movss	 DWORD PTR _player_quad+4, xmm0
 $LN40@SDL_main:
 
-; 268  : 
-; 269  : 		}
-; 270  : 		//check if wave should increase
-; 271  : 		if (score == (32 << wave))
+; 261  : 
+; 262  : 		}
+; 263  : 		//check if wave should increase
+; 264  : 		if (score == (32 << wave))
 
-  00fe1	b8 20 00 00 00	 mov	 eax, 32			; 00000020H
-  00fe6	8b 0d 00 00 00
+  00f8e	b8 20 00 00 00	 mov	 eax, 32			; 00000020H
+  00f93	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _wave
-  00fec	d3 e0		 shl	 eax, cl
-  00fee	39 05 00 00 00
+  00f99	d3 e0		 shl	 eax, cl
+  00f9b	39 05 00 00 00
 	00		 cmp	 DWORD PTR _score, eax
-  00ff4	75 2d		 jne	 SHORT $LN41@SDL_main
+  00fa1	75 2d		 jne	 SHORT $LN41@SDL_main
 
-; 272  : 			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 32 << wave);
+; 265  : 			++wave, GAME_WaveInit(), printf("score requirement: %d\n", 32 << wave);
 
-  00ff6	a1 00 00 00 00	 mov	 eax, DWORD PTR _wave
-  00ffb	83 c0 01	 add	 eax, 1
-  00ffe	a3 00 00 00 00	 mov	 DWORD PTR _wave, eax
-  01003	e8 00 00 00 00	 call	 _GAME_WaveInit
-  01008	ba 20 00 00 00	 mov	 edx, 32			; 00000020H
-  0100d	8b 0d 00 00 00
+  00fa3	a1 00 00 00 00	 mov	 eax, DWORD PTR _wave
+  00fa8	83 c0 01	 add	 eax, 1
+  00fab	a3 00 00 00 00	 mov	 DWORD PTR _wave, eax
+  00fb0	e8 00 00 00 00	 call	 _GAME_WaveInit
+  00fb5	ba 20 00 00 00	 mov	 edx, 32			; 00000020H
+  00fba	8b 0d 00 00 00
 	00		 mov	 ecx, DWORD PTR _wave
-  01013	d3 e2		 shl	 edx, cl
-  01015	52		 push	 edx
-  01016	68 00 00 00 00	 push	 OFFSET ??_C@_0BH@EPAHPNOC@score?5requirement?3?5?$CFd?6@
-  0101b	e8 00 00 00 00	 call	 _printf
-  01020	83 c4 08	 add	 esp, 8
+  00fc0	d3 e2		 shl	 edx, cl
+  00fc2	52		 push	 edx
+  00fc3	68 00 00 00 00	 push	 OFFSET ??_C@_0BH@EPAHPNOC@score?5requirement?3?5?$CFd?6@
+  00fc8	e8 00 00 00 00	 call	 _printf
+  00fcd	83 c4 08	 add	 esp, 8
 $LN41@SDL_main:
 
-; 273  : 		GAME_AddEnemies();
+; 266  : 		GAME_AddEnemies();
 
-  01023	e8 00 00 00 00	 call	 _GAME_AddEnemies
+  00fd0	e8 00 00 00 00	 call	 _GAME_AddEnemies
 
-; 274  : 		GAME_HandleEnemies(&enemies);
+; 267  : 		GAME_HandleEnemies(&enemies);
 
-  01028	68 00 00 00 00	 push	 OFFSET _enemies
-  0102d	e8 00 00 00 00	 call	 _GAME_HandleEnemies
-  01032	83 c4 04	 add	 esp, 4
+  00fd5	68 00 00 00 00	 push	 OFFSET _enemies
+  00fda	e8 00 00 00 00	 call	 _GAME_HandleEnemies
+  00fdf	83 c4 04	 add	 esp, 4
 
-; 275  : 		RENDER_List(&enemies);
+; 268  : 		RENDER_List(&enemies);
 
-  01035	68 00 00 00 00	 push	 OFFSET _enemies
-  0103a	e8 00 00 00 00	 call	 _RENDER_List
-  0103f	83 c4 04	 add	 esp, 4
+  00fe2	68 00 00 00 00	 push	 OFFSET _enemies
+  00fe7	e8 00 00 00 00	 call	 _RENDER_List
+  00fec	83 c4 04	 add	 esp, 4
 
-; 276  : 		quad tmp_srect = { 0,0,128,12 };
+; 269  : 		RENDER_TexturedQuad(player_quad, 1, 1, 1, false);
 
-  01042	0f 57 c0	 xorps	 xmm0, xmm0
-  01045	f3 0f 11 85 a0
-	fc ff ff	 movss	 DWORD PTR _tmp_srect$1[ebp], xmm0
-  0104d	0f 57 c0	 xorps	 xmm0, xmm0
-  01050	f3 0f 11 85 a4
-	fc ff ff	 movss	 DWORD PTR _tmp_srect$1[ebp+4], xmm0
-  01058	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@43000000
-  01060	f3 0f 11 85 a8
-	fc ff ff	 movss	 DWORD PTR _tmp_srect$1[ebp+8], xmm0
-  01068	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@41400000
-  01070	f3 0f 11 85 ac
-	fc ff ff	 movss	 DWORD PTR _tmp_srect$1[ebp+12], xmm0
-
-; 277  : 		RENDER_TexturedQuadSheet(player_tongue, tmp_srect, 1, 1, 1, false, false);
-
-  01078	6a 00		 push	 0
-  0107a	6a 00		 push	 0
-  0107c	51		 push	 ecx
-  0107d	f3 0f 10 05 00
+  00fef	6a 00		 push	 0
+  00ff1	51		 push	 ecx
+  00ff2	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  01085	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  0108a	51		 push	 ecx
-  0108b	f3 0f 10 05 00
+  00ffa	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  00fff	51		 push	 ecx
+  01000	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  01093	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  01098	51		 push	 ecx
-  01099	f3 0f 10 05 00
+  01008	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  0100d	51		 push	 ecx
+  0100e	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  010a1	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  010a6	83 ec 10	 sub	 esp, 16			; 00000010H
-  010a9	8b c4		 mov	 eax, esp
-  010ab	8b 8d a0 fc ff
-	ff		 mov	 ecx, DWORD PTR _tmp_srect$1[ebp]
-  010b1	89 08		 mov	 DWORD PTR [eax], ecx
-  010b3	8b 95 a4 fc ff
-	ff		 mov	 edx, DWORD PTR _tmp_srect$1[ebp+4]
-  010b9	89 50 04	 mov	 DWORD PTR [eax+4], edx
-  010bc	8b 8d a8 fc ff
-	ff		 mov	 ecx, DWORD PTR _tmp_srect$1[ebp+8]
-  010c2	89 48 08	 mov	 DWORD PTR [eax+8], ecx
-  010c5	8b 95 ac fc ff
-	ff		 mov	 edx, DWORD PTR _tmp_srect$1[ebp+12]
-  010cb	89 50 0c	 mov	 DWORD PTR [eax+12], edx
-  010ce	83 ec 1c	 sub	 esp, 28			; 0000001cH
-  010d1	b9 07 00 00 00	 mov	 ecx, 7
-  010d6	be 00 00 00 00	 mov	 esi, OFFSET _player_tongue
-  010db	8b fc		 mov	 edi, esp
-  010dd	f3 a5		 rep movsd
-  010df	e8 00 00 00 00	 call	 _RENDER_TexturedQuadSheet
-  010e4	83 c4 40	 add	 esp, 64			; 00000040H
+  01016	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  0101b	83 ec 1c	 sub	 esp, 28			; 0000001cH
+  0101e	b9 07 00 00 00	 mov	 ecx, 7
+  01023	be 00 00 00 00	 mov	 esi, OFFSET _player_quad
+  01028	8b fc		 mov	 edi, esp
+  0102a	f3 a5		 rep movsd
+  0102c	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
+  01031	83 c4 2c	 add	 esp, 44			; 0000002cH
 
-; 278  : 		RENDER_TexturedQuad(player_quad, 1, 1, 1, false);
+; 270  : 		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
 
-  010e7	6a 00		 push	 0
-  010e9	51		 push	 ecx
-  010ea	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  010f2	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  010f7	51		 push	 ecx
-  010f8	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  01100	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  01105	51		 push	 ecx
-  01106	f3 0f 10 05 00
-	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  0110e	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  01113	83 ec 1c	 sub	 esp, 28			; 0000001cH
-  01116	b9 07 00 00 00	 mov	 ecx, 7
-  0111b	be 00 00 00 00	 mov	 esi, OFFSET _player_quad
-  01120	8b fc		 mov	 edi, esp
-  01122	f3 a5		 rep movsd
-  01124	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
-  01129	83 c4 2c	 add	 esp, 44			; 0000002cH
-
-; 279  : 		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
-
-  0112c	6a 00		 push	 0
-  0112e	51		 push	 ecx
-  0112f	f3 0f 10 05 00
+  01034	6a 00		 push	 0
+  01036	51		 push	 ecx
+  01037	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3dcccccd
-  01137	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  0113c	51		 push	 ecx
-  0113d	f3 0f 10 05 00
+  0103f	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  01044	51		 push	 ecx
+  01045	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3dcccccd
-  01145	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  0114a	51		 push	 ecx
-  0114b	f3 0f 10 05 00
+  0104d	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  01052	51		 push	 ecx
+  01053	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  01153	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  01158	83 ec 1c	 sub	 esp, 28			; 0000001cH
-  0115b	b9 07 00 00 00	 mov	 ecx, 7
-  01160	be 00 00 00 00	 mov	 esi, OFFSET _wave_text_quad
-  01165	8b fc		 mov	 edi, esp
-  01167	f3 a5		 rep movsd
-  01169	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
-  0116e	83 c4 2c	 add	 esp, 44			; 0000002cH
+  0105b	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  01060	83 ec 1c	 sub	 esp, 28			; 0000001cH
+  01063	b9 07 00 00 00	 mov	 ecx, 7
+  01068	be 00 00 00 00	 mov	 esi, OFFSET _wave_text_quad
+  0106d	8b fc		 mov	 edi, esp
+  0106f	f3 a5		 rep movsd
+  01071	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
+  01076	83 c4 2c	 add	 esp, 44			; 0000002cH
 
-; 280  : 		if (reserve < 0) {
+; 271  : 		if (reserve < 0) {
 
-  01171	83 3d 00 00 00
+  01079	83 3d 00 00 00
 	00 00		 cmp	 DWORD PTR _reserve, 0
-  01178	7d 6c		 jge	 SHORT $LN43@SDL_main
+  01080	7d 6c		 jge	 SHORT $LN43@SDL_main
 
-; 281  : 			RENDER_TexturedQuad(overtime_quad, 1, 0.9, 0.1, false);
+; 272  : 			RENDER_TexturedQuad(overtime_quad, 1, 0.9, 0.1, false);
 
-  0117a	6a 00		 push	 0
-  0117c	51		 push	 ecx
-  0117d	f3 0f 10 05 00
+  01082	6a 00		 push	 0
+  01084	51		 push	 ecx
+  01085	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3dcccccd
-  01185	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  0118a	51		 push	 ecx
-  0118b	f3 0f 10 05 00
+  0108d	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  01092	51		 push	 ecx
+  01093	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f666666
-  01193	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  01198	51		 push	 ecx
-  01199	f3 0f 10 05 00
+  0109b	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  010a0	51		 push	 ecx
+  010a1	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f800000
-  011a1	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
-  011a6	83 ec 1c	 sub	 esp, 28			; 0000001cH
-  011a9	b9 07 00 00 00	 mov	 ecx, 7
-  011ae	be 00 00 00 00	 mov	 esi, OFFSET _overtime_quad
-  011b3	8b fc		 mov	 edi, esp
-  011b5	f3 a5		 rep movsd
-  011b7	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
-  011bc	83 c4 2c	 add	 esp, 44			; 0000002cH
+  010a9	f3 0f 11 04 24	 movss	 DWORD PTR [esp], xmm0
+  010ae	83 ec 1c	 sub	 esp, 28			; 0000001cH
+  010b1	b9 07 00 00 00	 mov	 ecx, 7
+  010b6	be 00 00 00 00	 mov	 esi, OFFSET _overtime_quad
+  010bb	8b fc		 mov	 edi, esp
+  010bd	f3 a5		 rep movsd
+  010bf	e8 00 00 00 00	 call	 _RENDER_TexturedQuad
+  010c4	83 c4 2c	 add	 esp, 44			; 0000002cH
 
-; 282  : 			if (!overtime_bell_rung) {
+; 273  : 			if (!overtime_bell_rung) {
 
-  011bf	83 3d 00 00 00
+  010c7	83 3d 00 00 00
 	00 00		 cmp	 DWORD PTR _overtime_bell_rung, 0
-  011c6	75 1e		 jne	 SHORT $LN43@SDL_main
+  010ce	75 1e		 jne	 SHORT $LN43@SDL_main
 
-; 283  : 				Mix_PlayChannel(-1, overtime_bell_audio, 0);
+; 274  : 				Mix_PlayChannel(-1, overtime_bell_audio, 0);
 
-  011c8	6a ff		 push	 -1
-  011ca	6a 00		 push	 0
-  011cc	a1 00 00 00 00	 mov	 eax, DWORD PTR _overtime_bell_audio
-  011d1	50		 push	 eax
-  011d2	6a ff		 push	 -1
-  011d4	e8 00 00 00 00	 call	 _Mix_PlayChannelTimed
-  011d9	83 c4 10	 add	 esp, 16			; 00000010H
+  010d0	6a ff		 push	 -1
+  010d2	6a 00		 push	 0
+  010d4	a1 00 00 00 00	 mov	 eax, DWORD PTR _overtime_bell_audio
+  010d9	50		 push	 eax
+  010da	6a ff		 push	 -1
+  010dc	e8 00 00 00 00	 call	 _Mix_PlayChannelTimed
+  010e1	83 c4 10	 add	 esp, 16			; 00000010H
 
-; 284  : 				overtime_bell_rung = true;
+; 275  : 				overtime_bell_rung = true;
 
-  011dc	c7 05 00 00 00
+  010e4	c7 05 00 00 00
 	00 01 00 00 00	 mov	 DWORD PTR _overtime_bell_rung, 1
 $LN43@SDL_main:
 
-; 285  : 			}
-; 286  : 		}
-; 287  : 		if (glGetError()) {
+; 276  : 			}
+; 277  : 		}
+; 278  : 		if (glGetError()) {
 
-  011e6	8b f4		 mov	 esi, esp
-  011e8	ff 15 00 00 00
+  010ee	8b f4		 mov	 esi, esp
+  010f0	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glGetError
-  011ee	3b f4		 cmp	 esi, esp
-  011f0	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  011f5	85 c0		 test	 eax, eax
-  011f7	74 1d		 je	 SHORT $LN44@SDL_main
+  010f6	3b f4		 cmp	 esi, esp
+  010f8	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  010fd	85 c0		 test	 eax, eax
+  010ff	74 1d		 je	 SHORT $LN44@SDL_main
 
-; 288  : 			printf("Failed to do something, %x", glGetError());
+; 279  : 			printf("Failed to do something, %x", glGetError());
 
-  011f9	8b f4		 mov	 esi, esp
-  011fb	ff 15 00 00 00
+  01101	8b f4		 mov	 esi, esp
+  01103	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glGetError
-  01201	3b f4		 cmp	 esi, esp
-  01203	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  01208	50		 push	 eax
-  01209	68 00 00 00 00	 push	 OFFSET ??_C@_0BL@CEPLMCGI@Failed?5to?5do?5something?0?5?$CFx@
-  0120e	e8 00 00 00 00	 call	 _printf
-  01213	83 c4 08	 add	 esp, 8
+  01109	3b f4		 cmp	 esi, esp
+  0110b	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  01110	50		 push	 eax
+  01111	68 00 00 00 00	 push	 OFFSET ??_C@_0BL@CEPLMCGI@Failed?5to?5do?5something?0?5?$CFx@
+  01116	e8 00 00 00 00	 call	 _printf
+  0111b	83 c4 08	 add	 esp, 8
 $LN44@SDL_main:
 
-; 289  : 		}
-; 290  : 		SDL_GL_SwapWindow(window);
+; 280  : 		}
+; 281  : 		SDL_GL_SwapWindow(window);
 
-  01216	a1 00 00 00 00	 mov	 eax, DWORD PTR _window
-  0121b	50		 push	 eax
-  0121c	e8 00 00 00 00	 call	 _SDL_GL_SwapWindow
-  01221	83 c4 04	 add	 esp, 4
+  0111e	a1 00 00 00 00	 mov	 eax, DWORD PTR _window
+  01123	50		 push	 eax
+  01124	e8 00 00 00 00	 call	 _SDL_GL_SwapWindow
+  01129	83 c4 04	 add	 esp, 4
 
-; 291  : 		delta_time = clock() - start;
+; 282  : 		delta_time = clock() - start;
 
-  01224	8b f4		 mov	 esi, esp
-  01226	ff 15 00 00 00
+  0112c	8b f4		 mov	 esi, esp
+  0112e	ff 15 00 00 00
 	00		 call	 DWORD PTR __imp__clock
-  0122c	3b f4		 cmp	 esi, esp
-  0122e	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  01233	f3 0f 2a c0	 cvtsi2ss xmm0, eax
-  01237	f3 0f 5c 05 00
+  01134	3b f4		 cmp	 esi, esp
+  01136	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0113b	f3 0f 2a c0	 cvtsi2ss xmm0, eax
+  0113f	f3 0f 5c 05 00
 	00 00 00	 subss	 xmm0, DWORD PTR _start
-  0123f	f3 0f 11 05 00
+  01147	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _delta_time, xmm0
 
-; 292  : 		delta_time /= CLOCKS_PER_SEC;
+; 283  : 		delta_time /= CLOCKS_PER_SEC;
 
-  01247	f3 0f 10 05 00
+  0114f	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR _delta_time
-  0124f	f3 0f 5e 05 00
+  01157	f3 0f 5e 05 00
 	00 00 00	 divss	 xmm0, DWORD PTR __real@447a0000
-  01257	f3 0f 11 05 00
+  0115f	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR _delta_time, xmm0
 
-; 293  : 		if (key_input[SDL_SCANCODE_F]) {
+; 284  : 		if (key_input[SDL_SCANCODE_F]) {
 
-  0125f	b8 01 00 00 00	 mov	 eax, 1
-  01264	6b c8 09	 imul	 ecx, eax, 9
-  01267	8b 95 f8 fc ff
+  01167	b8 01 00 00 00	 mov	 eax, 1
+  0116c	6b c8 09	 imul	 ecx, eax, 9
+  0116f	8b 95 f8 fc ff
 	ff		 mov	 edx, DWORD PTR _key_input$[ebp]
-  0126d	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
-  01271	85 c0		 test	 eax, eax
-  01273	74 1d		 je	 SHORT $LN45@SDL_main
+  01175	0f b6 04 0a	 movzx	 eax, BYTE PTR [edx+ecx]
+  01179	85 c0		 test	 eax, eax
+  0117b	74 1d		 je	 SHORT $LN45@SDL_main
 
-; 294  : 			printf("time:%f\n", delta_time);
+; 285  : 			printf("time:%f\n", delta_time);
 
-  01275	f3 0f 5a 05 00
+  0117d	f3 0f 5a 05 00
 	00 00 00	 cvtss2sd xmm0, DWORD PTR _delta_time
-  0127d	83 ec 08	 sub	 esp, 8
-  01280	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
-  01285	68 00 00 00 00	 push	 OFFSET ??_C@_08DINNBOH@time?3?$CFf?6@
-  0128a	e8 00 00 00 00	 call	 _printf
-  0128f	83 c4 0c	 add	 esp, 12			; 0000000cH
+  01185	83 ec 08	 sub	 esp, 8
+  01188	f2 0f 11 04 24	 movsd	 QWORD PTR [esp], xmm0
+  0118d	68 00 00 00 00	 push	 OFFSET ??_C@_08DINNBOH@time?3?$CFf?6@
+  01192	e8 00 00 00 00	 call	 _printf
+  01197	83 c4 0c	 add	 esp, 12			; 0000000cH
 $LN45@SDL_main:
 
-; 295  : 		}
-; 296  : 		
-; 297  : 	}	
+; 286  : 		}
+; 287  : 		
+; 288  : 	}	
 
-  01292	e9 47 f8 ff ff	 jmp	 $LN7@SDL_main
-$SHUTDOWN$58:
+  0119a	e9 eb f8 ff ff	 jmp	 $LN7@SDL_main
+$SHUTDOWN$57:
 
-; 298  : SHUTDOWN:
-; 299  : 	return 0;
+; 289  : SHUTDOWN:
+; 290  : 	return 0;
 
-  01297	33 c0		 xor	 eax, eax
+  0119f	33 c0		 xor	 eax, eax
 
-; 300  : }
+; 291  : }
 
-  01299	52		 push	 edx
-  0129a	8b cd		 mov	 ecx, ebp
-  0129c	50		 push	 eax
-  0129d	8d 15 00 00 00
-	00		 lea	 edx, DWORD PTR $LN57@SDL_main
-  012a3	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
-  012a8	58		 pop	 eax
-  012a9	5a		 pop	 edx
-  012aa	5f		 pop	 edi
-  012ab	5e		 pop	 esi
-  012ac	8b 4d fc	 mov	 ecx, DWORD PTR __$ArrayPad$[ebp]
-  012af	33 cd		 xor	 ecx, ebp
-  012b1	e8 00 00 00 00	 call	 @__security_check_cookie@4
-  012b6	8b e5		 mov	 esp, ebp
-  012b8	5d		 pop	 ebp
-  012b9	8b e3		 mov	 esp, ebx
-  012bb	5b		 pop	 ebx
-  012bc	c3		 ret	 0
-  012bd	0f 1f 00	 npad	 3
-$LN57@SDL_main:
-  012c0	07 00 00 00	 DD	 7
-  012c4	00 00 00 00	 DD	 $LN56@SDL_main
+  011a1	52		 push	 edx
+  011a2	8b cd		 mov	 ecx, ebp
+  011a4	50		 push	 eax
+  011a5	8d 15 00 00 00
+	00		 lea	 edx, DWORD PTR $LN56@SDL_main
+  011ab	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
+  011b0	58		 pop	 eax
+  011b1	5a		 pop	 edx
+  011b2	5f		 pop	 edi
+  011b3	5e		 pop	 esi
+  011b4	8b 4d fc	 mov	 ecx, DWORD PTR __$ArrayPad$[ebp]
+  011b7	33 cd		 xor	 ecx, ebp
+  011b9	e8 00 00 00 00	 call	 @__security_check_cookie@4
+  011be	8b e5		 mov	 esp, ebp
+  011c0	5d		 pop	 ebp
+  011c1	8b e3		 mov	 esp, ebx
+  011c3	5b		 pop	 ebx
+  011c4	c3		 ret	 0
+  011c5	0f 1f 00	 npad	 3
 $LN56@SDL_main:
-  012c8	dc ff ff ff	 DD	 -36			; ffffffdcH
-  012cc	04 00 00 00	 DD	 4
-  012d0	00 00 00 00	 DD	 $LN49@SDL_main
-  012d4	d0 ff ff ff	 DD	 -48			; ffffffd0H
-  012d8	04 00 00 00	 DD	 4
-  012dc	00 00 00 00	 DD	 $LN50@SDL_main
-  012e0	c4 ff ff ff	 DD	 -60			; ffffffc4H
-  012e4	02 00 00 00	 DD	 2
-  012e8	00 00 00 00	 DD	 $LN51@SDL_main
-  012ec	b0 fd ff ff	 DD	 -592			; fffffdb0H
-  012f0	00 02 00 00	 DD	 512			; 00000200H
-  012f4	00 00 00 00	 DD	 $LN52@SDL_main
-  012f8	40 fd ff ff	 DD	 -704			; fffffd40H
-  012fc	40 00 00 00	 DD	 64			; 00000040H
-  01300	00 00 00 00	 DD	 $LN53@SDL_main
-  01304	b8 fc ff ff	 DD	 -840			; fffffcb8H
-  01308	38 00 00 00	 DD	 56			; 00000038H
-  0130c	00 00 00 00	 DD	 $LN54@SDL_main
-  01310	a0 fc ff ff	 DD	 -864			; fffffca0H
-  01314	10 00 00 00	 DD	 16			; 00000010H
-  01318	00 00 00 00	 DD	 $LN55@SDL_main
+  011c8	06 00 00 00	 DD	 6
+  011cc	00 00 00 00	 DD	 $LN55@SDL_main
 $LN55@SDL_main:
-  0131c	74		 DB	 116			; 00000074H
-  0131d	6d		 DB	 109			; 0000006dH
-  0131e	70		 DB	 112			; 00000070H
-  0131f	5f		 DB	 95			; 0000005fH
-  01320	73		 DB	 115			; 00000073H
-  01321	72		 DB	 114			; 00000072H
-  01322	65		 DB	 101			; 00000065H
-  01323	63		 DB	 99			; 00000063H
-  01324	74		 DB	 116			; 00000074H
-  01325	00		 DB	 0
+  011d0	dc ff ff ff	 DD	 -36			; ffffffdcH
+  011d4	04 00 00 00	 DD	 4
+  011d8	00 00 00 00	 DD	 $LN49@SDL_main
+  011dc	d0 ff ff ff	 DD	 -48			; ffffffd0H
+  011e0	04 00 00 00	 DD	 4
+  011e4	00 00 00 00	 DD	 $LN50@SDL_main
+  011e8	c4 ff ff ff	 DD	 -60			; ffffffc4H
+  011ec	02 00 00 00	 DD	 2
+  011f0	00 00 00 00	 DD	 $LN51@SDL_main
+  011f4	b0 fd ff ff	 DD	 -592			; fffffdb0H
+  011f8	00 02 00 00	 DD	 512			; 00000200H
+  011fc	00 00 00 00	 DD	 $LN52@SDL_main
+  01200	40 fd ff ff	 DD	 -704			; fffffd40H
+  01204	40 00 00 00	 DD	 64			; 00000040H
+  01208	00 00 00 00	 DD	 $LN53@SDL_main
+  0120c	b8 fc ff ff	 DD	 -840			; fffffcb8H
+  01210	38 00 00 00	 DD	 56			; 00000038H
+  01214	00 00 00 00	 DD	 $LN54@SDL_main
 $LN54@SDL_main:
-  01326	65		 DB	 101			; 00000065H
-  01327	76		 DB	 118			; 00000076H
-  01328	65		 DB	 101			; 00000065H
-  01329	6e		 DB	 110			; 0000006eH
-  0132a	74		 DB	 116			; 00000074H
-  0132b	5f		 DB	 95			; 0000005fH
-  0132c	68		 DB	 104			; 00000068H
-  0132d	61		 DB	 97			; 00000061H
-  0132e	6e		 DB	 110			; 0000006eH
-  0132f	64		 DB	 100			; 00000064H
-  01330	6c		 DB	 108			; 0000006cH
-  01331	65		 DB	 101			; 00000065H
-  01332	00		 DB	 0
+  01218	65		 DB	 101			; 00000065H
+  01219	76		 DB	 118			; 00000076H
+  0121a	65		 DB	 101			; 00000065H
+  0121b	6e		 DB	 110			; 0000006eH
+  0121c	74		 DB	 116			; 00000074H
+  0121d	5f		 DB	 95			; 0000005fH
+  0121e	68		 DB	 104			; 00000068H
+  0121f	61		 DB	 97			; 00000061H
+  01220	6e		 DB	 110			; 0000006eH
+  01221	64		 DB	 100			; 00000064H
+  01222	6c		 DB	 108			; 0000006cH
+  01223	65		 DB	 101			; 00000065H
+  01224	00		 DB	 0
 $LN53@SDL_main:
-  01333	6f		 DB	 111			; 0000006fH
-  01334	72		 DB	 114			; 00000072H
-  01335	74		 DB	 116			; 00000074H
-  01336	68		 DB	 104			; 00000068H
-  01337	6f		 DB	 111			; 0000006fH
-  01338	00		 DB	 0
+  01225	6f		 DB	 111			; 0000006fH
+  01226	72		 DB	 114			; 00000072H
+  01227	74		 DB	 116			; 00000074H
+  01228	68		 DB	 104			; 00000068H
+  01229	6f		 DB	 111			; 0000006fH
+  0122a	00		 DB	 0
 $LN52@SDL_main:
-  01339	62		 DB	 98			; 00000062H
-  0133a	75		 DB	 117			; 00000075H
-  0133b	66		 DB	 102			; 00000066H
-  0133c	66		 DB	 102			; 00000066H
-  0133d	00		 DB	 0
+  0122b	62		 DB	 98			; 00000062H
+  0122c	75		 DB	 117			; 00000075H
+  0122d	66		 DB	 102			; 00000066H
+  0122e	66		 DB	 102			; 00000066H
+  0122f	00		 DB	 0
 $LN51@SDL_main:
-  0133e	66		 DB	 102			; 00000066H
-  0133f	6f		 DB	 111			; 0000006fH
-  01340	72		 DB	 114			; 00000072H
-  01341	6d		 DB	 109			; 0000006dH
-  01342	61		 DB	 97			; 00000061H
-  01343	74		 DB	 116			; 00000074H
-  01344	00		 DB	 0
+  01230	66		 DB	 102			; 00000066H
+  01231	6f		 DB	 111			; 0000006fH
+  01232	72		 DB	 114			; 00000072H
+  01233	6d		 DB	 109			; 0000006dH
+  01234	61		 DB	 97			; 00000061H
+  01235	74		 DB	 116			; 00000074H
+  01236	00		 DB	 0
 $LN50@SDL_main:
-  01345	63		 DB	 99			; 00000063H
-  01346	68		 DB	 104			; 00000068H
-  01347	61		 DB	 97			; 00000061H
-  01348	6e		 DB	 110			; 0000006eH
-  01349	6e		 DB	 110			; 0000006eH
-  0134a	65		 DB	 101			; 00000065H
-  0134b	6c		 DB	 108			; 0000006cH
-  0134c	73		 DB	 115			; 00000073H
-  0134d	00		 DB	 0
+  01237	63		 DB	 99			; 00000063H
+  01238	68		 DB	 104			; 00000068H
+  01239	61		 DB	 97			; 00000061H
+  0123a	6e		 DB	 110			; 0000006eH
+  0123b	6e		 DB	 110			; 0000006eH
+  0123c	65		 DB	 101			; 00000065H
+  0123d	6c		 DB	 108			; 0000006cH
+  0123e	73		 DB	 115			; 00000073H
+  0123f	00		 DB	 0
 $LN49@SDL_main:
-  0134e	66		 DB	 102			; 00000066H
-  0134f	72		 DB	 114			; 00000072H
-  01350	65		 DB	 101			; 00000065H
-  01351	71		 DB	 113			; 00000071H
-  01352	00		 DB	 0
+  01240	66		 DB	 102			; 00000066H
+  01241	72		 DB	 114			; 00000072H
+  01242	65		 DB	 101			; 00000065H
+  01243	71		 DB	 113			; 00000071H
+  01244	00		 DB	 0
 _SDL_main ENDP
 _TEXT	ENDS
 ; Function compile flags: /Odtp /RTCsu /ZI

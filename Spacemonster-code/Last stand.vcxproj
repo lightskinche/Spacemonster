@@ -153,6 +153,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="glad\glad.c" />
+    <ClCompile Include="src\game.c" />
+    <ClCompile Include="src\lua.c" />
+    <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\render.c" />
+  </ItemGroup>
+  <ItemGroup>
     <Text Include="fragment1.txt" />
     <Text Include="fragment2.txt" />
     <Text Include="vertex1.txt" />
@@ -164,13 +171,6 @@
   <ItemGroup>
     <ClInclude Include="include\linkedlist_h.h" />
     <ClInclude Include="include\main_h.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="glad\glad.c" />
-    <ClCompile Include="src\game.c" />
-    <ClCompile Include="src\lua.c" />
-    <ClCompile Include="src\main.c" />
-    <ClCompile Include="src\render.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

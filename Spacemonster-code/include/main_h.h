@@ -118,7 +118,7 @@ extern void RENDER_List(const linkedList* const list);
 extern GLint shader_texturedobj;
 extern GLint shader_colored;
 //texture list
-extern GLint texture[6];
+extern GLint texture[5];
 
 //enemys
 typedef struct personMale personMale;

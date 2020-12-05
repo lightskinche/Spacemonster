@@ -154,7 +154,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 75ef36c... Cleaned up stuff
     <ClCompile Include="game.c" />
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="glmc\affine.c" />
@@ -181,6 +184,14 @@
     <ClCompile Include="lua.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="render.c" />
+<<<<<<< HEAD
+=======
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="glmc\config.h" />
+    <ClInclude Include="linkedlist_h.h" />
+    <ClInclude Include="main_h.h" />
+>>>>>>> parent of 75ef36c... Cleaned up stuff
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glmc\config.h" />
@@ -198,6 +209,7 @@
     <None Include="resources\lua\scripts\test.lua" />
   </ItemGroup>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <ItemGroup>
     <ClInclude Include="include\linkedlist_h.h" />
     <ClInclude Include="include\main_h.h" />
@@ -209,6 +221,8 @@
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\render.c" />
   </ItemGroup>
+=======
+>>>>>>> parent of 75ef36c... Cleaned up stuff
 =======
 >>>>>>> parent of 75ef36c... Cleaned up stuff
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1714,7 +1714,11 @@ $LN5@CompileSha:
 $LN3@CompileSha:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ; 321  : 		shader_data[size - linebreak_amount] = '\0'; //not really sure why it works but it does
+=======
+; 312  : 		shader_data[size - linebreak_amount] = '\0';
+>>>>>>> parent of 75ef36c... Cleaned up stuff
 =======
 ; 312  : 		shader_data[size - linebreak_amount] = '\0';
 >>>>>>> parent of 75ef36c... Cleaned up stuff

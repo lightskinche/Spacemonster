@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (3DRendC.vcxproj, Neon.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   main.c
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
@@ -29,4 +30,7 @@ C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(325,64): warni
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(326,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(333,21): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\main.c(335,21): warning C4047: '=': 'int *' differs in levels of indirection from 'int'
+=======
+﻿  LINK : C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe not found or not built by the last incremental link; performing full link
+>>>>>>> parent of 6a478d9... fixed?
   Last stand.vcxproj -> C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe

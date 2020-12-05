@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\shaders">
       <UniqueIdentifier>{39c984db-be68-425c-8778-55a9bb0e1def}</UniqueIdentifier>
     </Filter>
@@ -21,6 +17,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="glmc\affine.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
@@ -112,6 +109,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+=======
+>>>>>>> parent of 6a478d9... fixed?
     <Text Include="fragment1.txt">
       <Filter>Source Files\shaders</Filter>
     </Text>
@@ -130,4 +129,32 @@
       <Filter>Source Files\lua</Filter>
     </None>
   </ItemGroup>
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <ClInclude Include="include\linkedlist_h.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\main_h.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="glad\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lua.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+>>>>>>> parent of 6a478d9... fixed?
 </Project>

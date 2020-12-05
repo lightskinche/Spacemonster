@@ -17,100 +17,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <ClCompile Include="glmc\affine.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\affine2d.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\bezier.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\box.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\cam.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\curve.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\ease.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\euler.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\frustum.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\io.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\mat2.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\mat3.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\mat4.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\plane.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\project.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\quat.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\ray.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\sphere.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\vec2.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\vec3.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glmc\vec4.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="glad\glad.c">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="render.c">
+    <ClCompile Include="src\game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game.c">
+    <ClCompile Include="src\lua.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lua.c">
+    <ClCompile Include="src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glmc\config.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="main_h.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="linkedlist_h.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-=======
->>>>>>> parent of 6a478d9... fixed?
     <Text Include="fragment1.txt">
       <Filter>Source Files\shaders</Filter>
     </Text>
@@ -129,8 +52,6 @@
       <Filter>Source Files\lua</Filter>
     </None>
   </ItemGroup>
-<<<<<<< HEAD
-=======
   <ItemGroup>
     <ClInclude Include="include\linkedlist_h.h">
       <Filter>Header Files</Filter>
@@ -139,22 +60,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="glad\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\lua.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
->>>>>>> parent of 6a478d9... fixed?
 </Project>

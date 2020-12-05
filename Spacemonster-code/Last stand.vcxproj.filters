@@ -34,6 +34,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="fragment1.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="vertex1.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="fragment2.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+    <Text Include="vertex2.txt">
+      <Filter>Source Files\shaders</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="resources\lua\scripts\test.lua">
       <Filter>Source Files\lua</Filter>
     </None>
@@ -45,19 +59,5 @@
     <ClInclude Include="include\main_h.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="resources\shaders\fragment1.txt">
-      <Filter>Source Files\shaders</Filter>
-    </Text>
-    <Text Include="resources\shaders\fragment2.txt">
-      <Filter>Source Files\shaders</Filter>
-    </Text>
-    <Text Include="resources\shaders\vertex1.txt">
-      <Filter>Source Files\shaders</Filter>
-    </Text>
-    <Text Include="resources\shaders\vertex2.txt">
-      <Filter>Source Files\shaders</Filter>
-    </Text>
   </ItemGroup>
 </Project>

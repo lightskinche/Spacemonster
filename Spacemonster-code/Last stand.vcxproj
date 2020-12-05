@@ -160,17 +160,17 @@
     <ClCompile Include="src\render.c" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="fragment1.txt" />
+    <Text Include="fragment2.txt" />
+    <Text Include="vertex1.txt" />
+    <Text Include="vertex2.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="resources\lua\scripts\test.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\linkedlist_h.h" />
     <ClInclude Include="include\main_h.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="resources\shaders\fragment1.txt" />
-    <Text Include="resources\shaders\fragment2.txt" />
-    <Text Include="resources\shaders\vertex1.txt" />
-    <Text Include="resources\shaders\vertex2.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

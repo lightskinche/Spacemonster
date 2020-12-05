@@ -1,0 +1,14 @@
+#version 330 compatibility
+
+layout (location = 0) in vec3 pos; 
+layout (location = 1) in vec3 color;
+
+out vec4 vertexColor;
+uniform vec3 global_light;
+
+void main()
+{
+    gl_Position = vec4(pos, 1.0);
+    vertexColor = vec4(color * global_light, 1.0); 
+
+}

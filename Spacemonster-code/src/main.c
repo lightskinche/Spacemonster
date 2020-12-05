@@ -137,6 +137,7 @@ int main(void) {
 	}
 	shader_texturedobj = glCreateProgram();
 	shader_colored = glCreateProgram();
+	char buf[512];
 	{
 		GLint shader_vertex;
 		GLint shader_fragment;
@@ -146,6 +147,10 @@ int main(void) {
 		glAttachShader(shader_texturedobj, shader_fragment);
 		glDeleteShader(shader_vertex);
 		glDeleteShader(shader_fragment);
+		glGetShaderInfoLog(shader_vertex, 512, NULL, buf);
+		puts(buf);
+		glGetShaderInfoLog(shader_fragment, 512, NULL, buf);
+		puts(buf);
 	}        
 	{
 		GLint shader_vertex;
@@ -159,6 +164,8 @@ int main(void) {
 	}
 	glLinkProgram(shader_texturedobj);
 	glLinkProgram(shader_colored);
+	glGetProgramInfoLog(shader_texturedobj,512,NULL,buf);
+	puts(buf);
 	if (glGetError()) {
 		printf("Failed to initilize shaders, %x\n", glGetError());
 	}
@@ -166,10 +173,10 @@ int main(void) {
 	{
 		glUseProgram(shader_colored);
 		GLint loc = glGetUniformLocation(shader_colored, "global_light");
-		glUniform3f(loc, 1, 1, 1);
+		glUniform3f(loc, 1.0, 1.0, 1.0);
 		glUseProgram(shader_texturedobj);
 		loc = glGetUniformLocation(shader_texturedobj, "global_light");
-		glUniform3f(loc, 1, 1, 1);
+		glUniform3f(loc, 1.0, 1.0, 1.0);
 		if (glGetError()) {
 			printf("Failed to initilize shader uniforms, %x\n", glGetError());
 		}
@@ -306,7 +313,8 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 				++linebreak_amount;
 			}
 		}
-		shader_data[size - linebreak_amount] = '\0'; //not really sure why it works but it does
+		//add a space at the end of each shader or this causes a problem
+		shader_data[size - 1] = '\0'; //not really sure why it works but it does
 		//printf("%s", shader_data);
 		//printf("%d", size);
 		//for debugging

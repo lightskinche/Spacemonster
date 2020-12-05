@@ -13,14 +13,14 @@ unsigned int texturesizeswh[2];
 int reserve = 0;
 
 //openGL stuff
-GLint texture[5];
+GLint texture[6];
 GLint VAO;
 GLint VERTEXES_VBO;
 
 //audio
 Mix_Chunk* overtime_bell_audio;
-//text renderering
 
+//text renderering
 SDL_Color white = { 255,255,255,255 };
 TTF_Font* font_1;
 text_quad wave_text_quad = { 0,1,0,0.1 };
@@ -35,17 +35,18 @@ GLint shader_colored;
 
 //player stuff
 text_quad player_quad;
-quad source_rect_nothing = { 0,0,1,1 };
+text_quad player_tongue;
 float player_wasd_speed = 1.35;
-
+unsigned int powerups = 0;
 //syncing
 float delta_time = 0;
-float start;
+float start; //for delta_time caluclation
 //misc
 
 float background_vertexes[32] = { -1,1,0,1,1,1,0,0, 1,1,0,1,1,1,1,0, 1,-1,0,1,1,1,1,1, -1,-1,0,1,1,1,0,1 };
 SDL_Cursor* mouse_opened;
 SDL_Cursor* mouse_closed;
+quad source_rect_nothing = { 0,0,1,1 };
 
 //Prototypes
 GLint CompileShader(char* shader_fname, GLenum type);
@@ -184,11 +185,17 @@ int main(void) {
 	active_en |= FEDERATION_SCOUT;
 	GAME_WaveInit();
 	//other misc texture init
+	//set up player stuff
 	player_quad.x = -1.0, player_quad.y = 1.0, player_quad.w = 0.05, player_quad.h = 0.1;
 	player_quad.textid = texture[0];
-	wave_text_quad.textid = texture[3];
+	//player tongue
+	player_tongue.x = -1.0, player_tongue.y = 1.0, player_tongue.w = 0.05, player_tongue.h = 0.1;
+	player_quad.textid = texture[1];
+	//set up the wave counter
+	wave_text_quad.textid = texture[4];
 	wave_num[0] = '0', wave_num[1] = '1';
-	overtime_quad.textid = texture[4];
+	//over time bell text
+	overtime_quad.textid = texture[5];
 	glClearColor(0, 0, 0, 1);
 	//Stuff that needs to be outside of the while loop
 	Uint8* key_input = SDL_GetKeyboardState(NULL);
@@ -216,7 +223,7 @@ int main(void) {
 		if (background_vertexes[6] > 1)
 			background_vertexes[6] = 0, background_vertexes[14] = 1, background_vertexes[22] = 1, background_vertexes[30] = 0;
 		glBufferSubData(GL_ARRAY_BUFFER, NULL, 32 * sizeof(float), background_vertexes);
-		glBindTexture(GL_TEXTURE_2D, texture[1]);
+		glBindTexture(GL_TEXTURE_2D, texture[2]);
 		glDrawArrays(GL_QUADS, 0, 4);
 		//input processing
 		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
@@ -266,6 +273,8 @@ int main(void) {
 		GAME_AddEnemies();
 		GAME_HandleEnemies(&enemies);
 		RENDER_List(&enemies);
+		quad tmp_srect = { 0,0,128,12 };
+		RENDER_TexturedQuadSheet(player_tongue, tmp_srect, 1, 1, 1, false, false);
 		RENDER_TexturedQuad(player_quad, 1, 1, 1, false);
 		RENDER_TexturedQuad(wave_text_quad, 1, 0.1, 0.1, false);
 		if (reserve < 0) {
@@ -352,35 +361,42 @@ void Init_GL(void) {
 	glEnableVertexAttribArray(2);
 	//textures, player texture
 	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(4, texture);
+	glGenTextures(6, texture);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_quad.texw, &player_quad.texh);
-	//first bacground
-	tmp_surface = IMG_Load("resources/background_2.png");
+	//player tongue texture
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
-	tmp_surface = IMG_Load("resources/fed_scout.png");
+	CreateTexture2D(tmp_surface, GL_RGBA, true, &player_tongue.texw, &player_tongue.texh);
+	//first bacground
+	tmp_surface = IMG_Load("resources/background_2.png");
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
+	tmp_surface = IMG_Load("resources/fed_scout.png");
 	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL); //but we want to keep the surface around so we can change the text after every wave
+	CreateTexture2D(tmp_surface, GL_RGBA, true, NULL, NULL);
 	glBindTexture(GL_TEXTURE_2D, texture[4]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	CreateTexture2D(wave_text, GL_RGBA, true, NULL, NULL); //but we want to keep the surface around so we can change the text after every wave
+	glBindTexture(GL_TEXTURE_2D, texture[5]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

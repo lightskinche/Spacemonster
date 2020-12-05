@@ -351,7 +351,7 @@ _GAME_AddEnemies PROC					; COMDAT
   0004d	0f 57 c0	 xorps	 xmm0, xmm0
   00050	0f 2f 05 00 00
 	00 00		 comiss	 xmm0, DWORD PTR ?timer@?1??GAME_AddEnemies@@9@9
-  00057	0f 82 27 02 00
+  00057	0f 82 28 02 00
 	00		 jb	 $LN2@GAME_AddEn
   0005d	b9 09 00 00 00	 mov	 ecx, 9
   00062	2b 0d 00 00 00
@@ -360,11 +360,11 @@ _GAME_AddEnemies PROC					; COMDAT
   0006b	33 d2		 xor	 edx, edx
   0006d	f7 f1		 div	 ecx
   0006f	85 d2		 test	 edx, edx
-  00071	0f 85 0d 02 00
+  00071	0f 85 0e 02 00
 	00		 jne	 $LN2@GAME_AddEn
   00077	83 3d 00 00 00
 	00 00		 cmp	 DWORD PTR _reserve, 0
-  0007e	0f 8e 00 02 00
+  0007e	0f 8e 01 02 00
 	00		 jle	 $LN2@GAME_AddEn
 $ADDEN$14:
 
@@ -424,7 +424,7 @@ $LN4@GAME_AddEn:
 $LN5@GAME_AddEn:
 
 ; 44   : 
-; 45   : 		text_quad tmp_text_quad = { 0.9,PIXEL_TO_NDCY((float)(rand() % window_height), window_height),0.175,0.125,texture[2],0,0 }; //texture width and height not relevant... yet
+; 45   : 		text_quad tmp_text_quad = { 0.9,PIXEL_TO_NDCY((float)(rand() % window_height), window_height),0.175,0.125,texture[3],0,0 }; //texture width and height not relevant... yet
 
   000e8	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3f666666
@@ -496,144 +496,144 @@ $LN5@GAME_AddEn:
 	00 00 00	 movss	 xmm0, DWORD PTR __real@3e000000
   001e8	f3 0f 11 45 c8	 movss	 DWORD PTR _tmp_text_quad$2[ebp+12], xmm0
   001ed	b8 04 00 00 00	 mov	 eax, 4
-  001f2	d1 e0		 shl	 eax, 1
-  001f4	8b 88 00 00 00
-	00		 mov	 ecx, DWORD PTR _texture[eax]
-  001fa	89 4d cc	 mov	 DWORD PTR _tmp_text_quad$2[ebp+16], ecx
-  001fd	c7 45 d0 00 00
+  001f2	6b c8 03	 imul	 ecx, eax, 3
+  001f5	8b 91 00 00 00
+	00		 mov	 edx, DWORD PTR _texture[ecx]
+  001fb	89 55 cc	 mov	 DWORD PTR _tmp_text_quad$2[ebp+16], edx
+  001fe	c7 45 d0 00 00
 	00 00		 mov	 DWORD PTR _tmp_text_quad$2[ebp+20], 0
-  00204	c7 45 d4 00 00
+  00205	c7 45 d4 00 00
 	00 00		 mov	 DWORD PTR _tmp_text_quad$2[ebp+24], 0
 
 ; 46   : 		enemy* tmp_enemy = calloc(1, sizeof(enemy));
 
-  0020b	8b f4		 mov	 esi, esp
-  0020d	6a 28		 push	 40			; 00000028H
-  0020f	6a 01		 push	 1
-  00211	ff 15 00 00 00
+  0020c	8b f4		 mov	 esi, esp
+  0020e	6a 28		 push	 40			; 00000028H
+  00210	6a 01		 push	 1
+  00212	ff 15 00 00 00
 	00		 call	 DWORD PTR __imp__calloc
-  00217	83 c4 08	 add	 esp, 8
-  0021a	3b f4		 cmp	 esi, esp
-  0021c	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  00221	89 45 b0	 mov	 DWORD PTR _tmp_enemy$1[ebp], eax
+  00218	83 c4 08	 add	 esp, 8
+  0021b	3b f4		 cmp	 esi, esp
+  0021d	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00222	89 45 b0	 mov	 DWORD PTR _tmp_enemy$1[ebp], eax
 
 ; 47   : 		tmp_enemy->sprite = tmp_text_quad, tmp_enemy->health = 20 * tmp_bitshift, tmp_enemy->score = 10 * tmp_bitshift * 3, tmp_enemy->id = tmp_bitshift;
 
-  00224	b9 07 00 00 00	 mov	 ecx, 7
-  00229	8d 75 bc	 lea	 esi, DWORD PTR _tmp_text_quad$2[ebp]
-  0022c	8b 7d b0	 mov	 edi, DWORD PTR _tmp_enemy$1[ebp]
-  0022f	f3 a5		 rep movsd
-  00231	6b 45 e0 14	 imul	 eax, DWORD PTR _tmp_bitshift$3[ebp], 20
-  00235	8b 4d b0	 mov	 ecx, DWORD PTR _tmp_enemy$1[ebp]
-  00238	89 41 1c	 mov	 DWORD PTR [ecx+28], eax
-  0023b	6b 55 e0 0a	 imul	 edx, DWORD PTR _tmp_bitshift$3[ebp], 10
-  0023f	6b c2 03	 imul	 eax, edx, 3
-  00242	8b 4d b0	 mov	 ecx, DWORD PTR _tmp_enemy$1[ebp]
-  00245	89 41 20	 mov	 DWORD PTR [ecx+32], eax
-  00248	8b 55 b0	 mov	 edx, DWORD PTR _tmp_enemy$1[ebp]
-  0024b	8b 45 e0	 mov	 eax, DWORD PTR _tmp_bitshift$3[ebp]
-  0024e	89 42 24	 mov	 DWORD PTR [edx+36], eax
+  00225	b9 07 00 00 00	 mov	 ecx, 7
+  0022a	8d 75 bc	 lea	 esi, DWORD PTR _tmp_text_quad$2[ebp]
+  0022d	8b 7d b0	 mov	 edi, DWORD PTR _tmp_enemy$1[ebp]
+  00230	f3 a5		 rep movsd
+  00232	6b 45 e0 14	 imul	 eax, DWORD PTR _tmp_bitshift$3[ebp], 20
+  00236	8b 4d b0	 mov	 ecx, DWORD PTR _tmp_enemy$1[ebp]
+  00239	89 41 1c	 mov	 DWORD PTR [ecx+28], eax
+  0023c	6b 55 e0 0a	 imul	 edx, DWORD PTR _tmp_bitshift$3[ebp], 10
+  00240	6b c2 03	 imul	 eax, edx, 3
+  00243	8b 4d b0	 mov	 ecx, DWORD PTR _tmp_enemy$1[ebp]
+  00246	89 41 20	 mov	 DWORD PTR [ecx+32], eax
+  00249	8b 55 b0	 mov	 edx, DWORD PTR _tmp_enemy$1[ebp]
+  0024c	8b 45 e0	 mov	 eax, DWORD PTR _tmp_bitshift$3[ebp]
+  0024f	89 42 24	 mov	 DWORD PTR [edx+36], eax
 
 ; 48   : 		LIST_AddElement(&enemies, tmp_enemy);
 
-  00251	8b 45 b0	 mov	 eax, DWORD PTR _tmp_enemy$1[ebp]
-  00254	50		 push	 eax
-  00255	68 00 00 00 00	 push	 OFFSET _enemies
-  0025a	e8 00 00 00 00	 call	 _LIST_AddElement
-  0025f	83 c4 08	 add	 esp, 8
+  00252	8b 45 b0	 mov	 eax, DWORD PTR _tmp_enemy$1[ebp]
+  00255	50		 push	 eax
+  00256	68 00 00 00 00	 push	 OFFSET _enemies
+  0025b	e8 00 00 00 00	 call	 _LIST_AddElement
+  00260	83 c4 08	 add	 esp, 8
 
 ; 49   : 		reserve -= tmp_bitshift;
 
-  00262	a1 00 00 00 00	 mov	 eax, DWORD PTR _reserve
-  00267	2b 45 e0	 sub	 eax, DWORD PTR _tmp_bitshift$3[ebp]
-  0026a	a3 00 00 00 00	 mov	 DWORD PTR _reserve, eax
+  00263	a1 00 00 00 00	 mov	 eax, DWORD PTR _reserve
+  00268	2b 45 e0	 sub	 eax, DWORD PTR _tmp_bitshift$3[ebp]
+  0026b	a3 00 00 00 00	 mov	 DWORD PTR _reserve, eax
 
 ; 50   : 		printf("reserve:%d\n", reserve);
 
-  0026f	a1 00 00 00 00	 mov	 eax, DWORD PTR _reserve
-  00274	50		 push	 eax
-  00275	68 00 00 00 00	 push	 OFFSET ??_C@_0M@JGOKHPLJ@reserve?3?$CFd?6@
-  0027a	e8 00 00 00 00	 call	 _printf
-  0027f	83 c4 08	 add	 esp, 8
+  00270	a1 00 00 00 00	 mov	 eax, DWORD PTR _reserve
+  00275	50		 push	 eax
+  00276	68 00 00 00 00	 push	 OFFSET ??_C@_0M@JGOKHPLJ@reserve?3?$CFd?6@
+  0027b	e8 00 00 00 00	 call	 _printf
+  00280	83 c4 08	 add	 esp, 8
 
 ; 51   : 	}
 
-  00282	eb 45		 jmp	 SHORT $LN8@GAME_AddEn
+  00283	eb 45		 jmp	 SHORT $LN8@GAME_AddEn
 $LN2@GAME_AddEn:
 
 ; 52   : 	else if (time_withoutreserve >= 100 && !(time % 1) && timer <= 0) {
 
-  00284	83 3d 00 00 00
+  00285	83 3d 00 00 00
 	00 64		 cmp	 DWORD PTR ?time_withoutreserve@?1??GAME_AddEnemies@@9@9, 100 ; 00000064H
-  0028b	7c 26		 jl	 SHORT $LN6@GAME_AddEn
-  0028d	8b 45 f8	 mov	 eax, DWORD PTR _time$[ebp]
-  00290	25 00 00 00 80	 and	 eax, -2147483648	; 80000000H
-  00295	79 05		 jns	 SHORT $LN13@GAME_AddEn
-  00297	48		 dec	 eax
-  00298	83 c8 ff	 or	 eax, -1
-  0029b	40		 inc	 eax
+  0028c	7c 26		 jl	 SHORT $LN6@GAME_AddEn
+  0028e	8b 45 f8	 mov	 eax, DWORD PTR _time$[ebp]
+  00291	25 00 00 00 80	 and	 eax, -2147483648	; 80000000H
+  00296	79 05		 jns	 SHORT $LN13@GAME_AddEn
+  00298	48		 dec	 eax
+  00299	83 c8 ff	 or	 eax, -1
+  0029c	40		 inc	 eax
 $LN13@GAME_AddEn:
-  0029c	85 c0		 test	 eax, eax
-  0029e	75 13		 jne	 SHORT $LN6@GAME_AddEn
-  002a0	0f 57 c0	 xorps	 xmm0, xmm0
-  002a3	0f 2f 05 00 00
+  0029d	85 c0		 test	 eax, eax
+  0029f	75 13		 jne	 SHORT $LN6@GAME_AddEn
+  002a1	0f 57 c0	 xorps	 xmm0, xmm0
+  002a4	0f 2f 05 00 00
 	00 00		 comiss	 xmm0, DWORD PTR ?timer@?1??GAME_AddEnemies@@9@9
-  002aa	72 07		 jb	 SHORT $LN6@GAME_AddEn
+  002ab	72 07		 jb	 SHORT $LN6@GAME_AddEn
 
 ; 53   : 		goto ADDEN;
 
-  002ac	e9 d3 fd ff ff	 jmp	 $ADDEN$14
+  002ad	e9 d2 fd ff ff	 jmp	 $ADDEN$14
 
 ; 54   : 	}
 
-  002b1	eb 16		 jmp	 SHORT $LN8@GAME_AddEn
+  002b2	eb 16		 jmp	 SHORT $LN8@GAME_AddEn
 $LN6@GAME_AddEn:
 
 ; 55   : 	else if (reserve <= 0) {
 
-  002b3	83 3d 00 00 00
+  002b4	83 3d 00 00 00
 	00 00		 cmp	 DWORD PTR _reserve, 0
-  002ba	7f 0d		 jg	 SHORT $LN8@GAME_AddEn
+  002bb	7f 0d		 jg	 SHORT $LN8@GAME_AddEn
 
 ; 56   : 		time_withoutreserve = time_withoutreserve + 1;
 
-  002bc	a1 00 00 00 00	 mov	 eax, DWORD PTR ?time_withoutreserve@?1??GAME_AddEnemies@@9@9
-  002c1	83 c0 01	 add	 eax, 1
-  002c4	a3 00 00 00 00	 mov	 DWORD PTR ?time_withoutreserve@?1??GAME_AddEnemies@@9@9, eax
+  002bd	a1 00 00 00 00	 mov	 eax, DWORD PTR ?time_withoutreserve@?1??GAME_AddEnemies@@9@9
+  002c2	83 c0 01	 add	 eax, 1
+  002c5	a3 00 00 00 00	 mov	 DWORD PTR ?time_withoutreserve@?1??GAME_AddEnemies@@9@9, eax
 $LN8@GAME_AddEn:
 
 ; 57   : 	}
 ; 58   : 
 ; 59   : 	--timer;
 
-  002c9	f3 0f 10 05 00
+  002ca	f3 0f 10 05 00
 	00 00 00	 movss	 xmm0, DWORD PTR ?timer@?1??GAME_AddEnemies@@9@9
-  002d1	f3 0f 5c 05 00
+  002d2	f3 0f 5c 05 00
 	00 00 00	 subss	 xmm0, DWORD PTR __real@3f800000
-  002d9	f3 0f 11 05 00
+  002da	f3 0f 11 05 00
 	00 00 00	 movss	 DWORD PTR ?timer@?1??GAME_AddEnemies@@9@9, xmm0
 
 ; 60   : }
 
-  002e1	52		 push	 edx
-  002e2	8b cd		 mov	 ecx, ebp
-  002e4	50		 push	 eax
-  002e5	8d 15 00 00 00
+  002e2	52		 push	 edx
+  002e3	8b cd		 mov	 ecx, ebp
+  002e5	50		 push	 eax
+  002e6	8d 15 00 00 00
 	00		 lea	 edx, DWORD PTR $LN12@GAME_AddEn
-  002eb	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
-  002f0	58		 pop	 eax
-  002f1	5a		 pop	 edx
-  002f2	5f		 pop	 edi
-  002f3	5e		 pop	 esi
-  002f4	5b		 pop	 ebx
-  002f5	81 c4 3c 01 00
+  002ec	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
+  002f1	58		 pop	 eax
+  002f2	5a		 pop	 edx
+  002f3	5f		 pop	 edi
+  002f4	5e		 pop	 esi
+  002f5	5b		 pop	 ebx
+  002f6	81 c4 3c 01 00
 	00		 add	 esp, 316		; 0000013cH
-  002fb	3b ec		 cmp	 ebp, esp
-  002fd	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  00302	8b e5		 mov	 esp, ebp
-  00304	5d		 pop	 ebp
-  00305	c3		 ret	 0
-  00306	66 90		 npad	 2
+  002fc	3b ec		 cmp	 ebp, esp
+  002fe	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00303	8b e5		 mov	 esp, ebp
+  00305	5d		 pop	 ebp
+  00306	c3		 ret	 0
+  00307	90		 npad	 1
 $LN12@GAME_AddEn:
   00308	01 00 00 00	 DD	 1
   0030c	00 00 00 00	 DD	 $LN11@GAME_AddEn
@@ -881,14 +881,14 @@ $LN6@GAME_WaveI:
   001d3	83 c4 0c	 add	 esp, 12			; 0000000cH
   001d6	a3 00 00 00 00	 mov	 DWORD PTR _wave_text, eax
 
-; 27   : 	glBindTexture(GL_TEXTURE_2D, texture[3]);
+; 27   : 	glBindTexture(GL_TEXTURE_2D, texture[4]);
 
   001db	b8 04 00 00 00	 mov	 eax, 4
-  001e0	6b c8 03	 imul	 ecx, eax, 3
+  001e0	c1 e0 02	 shl	 eax, 2
   001e3	8b f4		 mov	 esi, esp
-  001e5	8b 91 00 00 00
-	00		 mov	 edx, DWORD PTR _texture[ecx]
-  001eb	52		 push	 edx
+  001e5	8b 88 00 00 00
+	00		 mov	 ecx, DWORD PTR _texture[eax]
+  001eb	51		 push	 ecx
   001ec	68 e1 0d 00 00	 push	 3553			; 00000de1H
   001f1	ff 15 00 00 00
 	00		 call	 DWORD PTR _glad_glBindTexture

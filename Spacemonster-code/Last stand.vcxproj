@@ -97,7 +97,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cglm.lib;lua5.1.lib;SDL2_mixer.lib;SDL2_ttf.lib;SDL2_image.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua5.1.lib;SDL2_mixer.lib;SDL2_ttf.lib;SDL2_image.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +119,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cglm.lib;lua5.1.lib;SDL2_mixer.lib;SDL2_ttf.lib;SDL2_image.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lua5.1.lib;SDL2_mixer.lib;SDL2_ttf.lib;SDL2_image.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -153,11 +153,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="game.c" />
     <ClCompile Include="glad\glad.c" />
-    <ClCompile Include="src\game.c" />
-    <ClCompile Include="src\lua.c" />
-    <ClCompile Include="src\main.c" />
-    <ClCompile Include="src\render.c" />
+    <ClCompile Include="glmc\affine.c" />
+    <ClCompile Include="glmc\affine2d.c" />
+    <ClCompile Include="glmc\bezier.c" />
+    <ClCompile Include="glmc\box.c" />
+    <ClCompile Include="glmc\cam.c" />
+    <ClCompile Include="glmc\curve.c" />
+    <ClCompile Include="glmc\ease.c" />
+    <ClCompile Include="glmc\euler.c" />
+    <ClCompile Include="glmc\frustum.c" />
+    <ClCompile Include="glmc\io.c" />
+    <ClCompile Include="glmc\mat2.c" />
+    <ClCompile Include="glmc\mat3.c" />
+    <ClCompile Include="glmc\mat4.c" />
+    <ClCompile Include="glmc\plane.c" />
+    <ClCompile Include="glmc\project.c" />
+    <ClCompile Include="glmc\quat.c" />
+    <ClCompile Include="glmc\ray.c" />
+    <ClCompile Include="glmc\sphere.c" />
+    <ClCompile Include="glmc\vec2.c" />
+    <ClCompile Include="glmc\vec3.c" />
+    <ClCompile Include="glmc\vec4.c" />
+    <ClCompile Include="lua.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="render.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="glmc\config.h" />
+    <ClInclude Include="linkedlist_h.h" />
+    <ClInclude Include="main_h.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragment1.txt" />
@@ -167,10 +193,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\lua\scripts\test.lua" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\linkedlist_h.h" />
-    <ClInclude Include="include\main_h.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

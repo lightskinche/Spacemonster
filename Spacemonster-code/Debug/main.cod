@@ -219,7 +219,7 @@ PUBLIC	??_C@_0BM@BIBBAEFM@resources?1overtime_bell?4wav@ ; `string'
 PUBLIC	??_C@_0DH@KMMOBPG@Frequerncy?3?$CFd?0?5audio?5format?3?$CFx?0@ ; `string'
 PUBLIC	??_C@_0BN@EIBEKPEG@Something?5bad?5happened?4?4?4?$CFs?6@ ; `string'
 PUBLIC	??_C@_02CBLLGHLK@r?$CL@				; `string'
-PUBLIC	??_C@_0BP@IAPMJAI@resources?1lua?1scripts?1test?4lua@ ; `string'
+PUBLIC	??_C@_0BB@IAGCIDNA@scripts?1test?4lua@		; `string'
 PUBLIC	??_C@_04HJPCFDOP@line@				; `string'
 PUBLIC	??_C@_03OFAPEBGM@?$CFs?6@			; `string'
 PUBLIC	??_C@_02BOGAIONP@ab@				; `string'
@@ -230,10 +230,10 @@ PUBLIC	??_C@_0BI@LCLIEIFC@Window?5creation?5failed?$CB@ ; `string'
 PUBLIC	??_C@_0BJ@DJNHDOCB@SDL?1OPENGL?5thing?5failed?$CB@ ; `string'
 PUBLIC	??_C@_0BG@EDNFGKPI@Failed?5to?5load?5openGL@	; `string'
 PUBLIC	??_C@_0CA@LJEHIPHK@Failed?5to?5initilize?5openGL?0?5?$CFx?6@ ; `string'
-PUBLIC	??_C@_0BO@HPNKKGGC@resources?1shaders?1vertex1?4txt@ ; `string'
-PUBLIC	??_C@_0CA@DHKGOHOF@resources?1shaders?1fragment1?4txt@ ; `string'
-PUBLIC	??_C@_0BO@PJEONEMM@resources?1shaders?1vertex2?4txt@ ; `string'
-PUBLIC	??_C@_0CA@LBDCJFEL@resources?1shaders?1fragment2?4txt@ ; `string'
+PUBLIC	??_C@_0BE@KDGKNGIG@shaders?1vertex1?4txt@	; `string'
+PUBLIC	??_C@_0BG@FNLBHMIB@shaders?1fragment1?4txt@	; `string'
+PUBLIC	??_C@_0BE@CFPOKECI@shaders?1vertex2?4txt@	; `string'
+PUBLIC	??_C@_0BG@NLCFAOCP@shaders?1fragment2?4txt@	; `string'
 PUBLIC	??_C@_0CB@PBDJAGDB@Failed?5to?5initilize?5shaders?0?5?$CFx@ ; `string'
 PUBLIC	??_C@_0N@OBNOHIMB@global_light@			; `string'
 PUBLIC	??_C@_0CJ@BNBGEEPM@Failed?5to?5initilize?5shader?5unif@ ; `string'
@@ -509,25 +509,21 @@ CONST	SEGMENT
 ??_C@_0CB@PBDJAGDB@Failed?5to?5initilize?5shaders?0?5?$CFx@ DB 'Failed to'
 	DB	' initilize shaders, %x', 0aH, 00H		; `string'
 CONST	ENDS
-;	COMDAT ??_C@_0CA@LBDCJFEL@resources?1shaders?1fragment2?4txt@
+;	COMDAT ??_C@_0BG@NLCFAOCP@shaders?1fragment2?4txt@
 CONST	SEGMENT
-??_C@_0CA@LBDCJFEL@resources?1shaders?1fragment2?4txt@ DB 'resources/shad'
-	DB	'ers/fragment2.txt', 00H			; `string'
+??_C@_0BG@NLCFAOCP@shaders?1fragment2?4txt@ DB 'shaders/fragment2.txt', 00H ; `string'
 CONST	ENDS
-;	COMDAT ??_C@_0BO@PJEONEMM@resources?1shaders?1vertex2?4txt@
+;	COMDAT ??_C@_0BE@CFPOKECI@shaders?1vertex2?4txt@
 CONST	SEGMENT
-??_C@_0BO@PJEONEMM@resources?1shaders?1vertex2?4txt@ DB 'resources/shader'
-	DB	's/vertex2.txt', 00H				; `string'
+??_C@_0BE@CFPOKECI@shaders?1vertex2?4txt@ DB 'shaders/vertex2.txt', 00H ; `string'
 CONST	ENDS
-;	COMDAT ??_C@_0CA@DHKGOHOF@resources?1shaders?1fragment1?4txt@
+;	COMDAT ??_C@_0BG@FNLBHMIB@shaders?1fragment1?4txt@
 CONST	SEGMENT
-??_C@_0CA@DHKGOHOF@resources?1shaders?1fragment1?4txt@ DB 'resources/shad'
-	DB	'ers/fragment1.txt', 00H			; `string'
+??_C@_0BG@FNLBHMIB@shaders?1fragment1?4txt@ DB 'shaders/fragment1.txt', 00H ; `string'
 CONST	ENDS
-;	COMDAT ??_C@_0BO@HPNKKGGC@resources?1shaders?1vertex1?4txt@
+;	COMDAT ??_C@_0BE@KDGKNGIG@shaders?1vertex1?4txt@
 CONST	SEGMENT
-??_C@_0BO@HPNKKGGC@resources?1shaders?1vertex1?4txt@ DB 'resources/shader'
-	DB	's/vertex1.txt', 00H				; `string'
+??_C@_0BE@KDGKNGIG@shaders?1vertex1?4txt@ DB 'shaders/vertex1.txt', 00H ; `string'
 CONST	ENDS
 ;	COMDAT ??_C@_0CA@LJEHIPHK@Failed?5to?5initilize?5openGL?0?5?$CFx?6@
 CONST	SEGMENT
@@ -572,10 +568,9 @@ CONST	ENDS
 CONST	SEGMENT
 ??_C@_04HJPCFDOP@line@ DB 'line', 00H			; `string'
 CONST	ENDS
-;	COMDAT ??_C@_0BP@IAPMJAI@resources?1lua?1scripts?1test?4lua@
+;	COMDAT ??_C@_0BB@IAGCIDNA@scripts?1test?4lua@
 CONST	SEGMENT
-??_C@_0BP@IAPMJAI@resources?1lua?1scripts?1test?4lua@ DB 'resources/lua/s'
-	DB	'cripts/test.lua', 00H			; `string'
+??_C@_0BB@IAGCIDNA@scripts?1test?4lua@ DB 'scripts/test.lua', 00H ; `string'
 CONST	ENDS
 ;	COMDAT ??_C@_02CBLLGHLK@r?$CL@
 CONST	SEGMENT
@@ -3061,11 +3056,11 @@ $LN14@SDL_main:
   00356	e8 00 00 00 00	 call	 _luaL_openlibs
   0035b	83 c4 04	 add	 esp, 4
 
-; 104  : 	FILE* fp = fopen("resources/lua/scripts/test.lua", "r+");
+; 104  : 	FILE* fp = fopen("scripts/test.lua", "r+");
 
   0035e	8b f4		 mov	 esi, esp
   00360	68 00 00 00 00	 push	 OFFSET ??_C@_02CBLLGHLK@r?$CL@
-  00365	68 00 00 00 00	 push	 OFFSET ??_C@_0BP@IAPMJAI@resources?1lua?1scripts?1test?4lua@
+  00365	68 00 00 00 00	 push	 OFFSET ??_C@_0BB@IAGCIDNA@scripts?1test?4lua@
   0036a	ff 15 00 00 00
 	00		 call	 DWORD PTR __imp__fopen
   00370	83 c4 08	 add	 esp, 8
@@ -3444,19 +3439,19 @@ $LN19@SDL_main:
 ; 143  : 	{
 ; 144  : 		GLint shader_vertex;
 ; 145  : 		GLint shader_fragment;
-; 146  : 		shader_vertex = CompileShader("resources/shaders/vertex1.txt", GL_VERTEX_SHADER);
+; 146  : 		shader_vertex = CompileShader("shaders/vertex1.txt", GL_VERTEX_SHADER);
 
   006dc	68 31 8b 00 00	 push	 35633			; 00008b31H
-  006e1	68 00 00 00 00	 push	 OFFSET ??_C@_0BO@HPNKKGGC@resources?1shaders?1vertex1?4txt@
+  006e1	68 00 00 00 00	 push	 OFFSET ??_C@_0BE@KDGKNGIG@shaders?1vertex1?4txt@
   006e6	e8 00 00 00 00	 call	 _CompileShader
   006eb	83 c4 08	 add	 esp, 8
   006ee	89 85 2c fb ff
 	ff		 mov	 DWORD PTR _shader_vertex$5[ebp], eax
 
-; 147  : 		shader_fragment = CompileShader("resources/shaders/fragment1.txt", GL_FRAGMENT_SHADER);
+; 147  : 		shader_fragment = CompileShader("shaders/fragment1.txt", GL_FRAGMENT_SHADER);
 
   006f4	68 30 8b 00 00	 push	 35632			; 00008b30H
-  006f9	68 00 00 00 00	 push	 OFFSET ??_C@_0CA@DHKGOHOF@resources?1shaders?1fragment1?4txt@
+  006f9	68 00 00 00 00	 push	 OFFSET ??_C@_0BG@FNLBHMIB@shaders?1fragment1?4txt@
   006fe	e8 00 00 00 00	 call	 _CompileShader
   00703	83 c4 08	 add	 esp, 8
   00706	89 85 20 fb ff
@@ -3572,19 +3567,19 @@ $LN19@SDL_main:
 ; 157  : 	{
 ; 158  : 		GLint shader_vertex;
 ; 159  : 		GLint shader_fragment;
-; 160  : 		shader_vertex = CompileShader("resources/shaders/vertex2.txt", GL_VERTEX_SHADER);
+; 160  : 		shader_vertex = CompileShader("shaders/vertex2.txt", GL_VERTEX_SHADER);
 
   007ec	68 31 8b 00 00	 push	 35633			; 00008b31H
-  007f1	68 00 00 00 00	 push	 OFFSET ??_C@_0BO@PJEONEMM@resources?1shaders?1vertex2?4txt@
+  007f1	68 00 00 00 00	 push	 OFFSET ??_C@_0BE@CFPOKECI@shaders?1vertex2?4txt@
   007f6	e8 00 00 00 00	 call	 _CompileShader
   007fb	83 c4 08	 add	 esp, 8
   007fe	89 85 14 fb ff
 	ff		 mov	 DWORD PTR _shader_vertex$3[ebp], eax
 
-; 161  : 		shader_fragment = CompileShader("resources/shaders/fragment2.txt", GL_FRAGMENT_SHADER);
+; 161  : 		shader_fragment = CompileShader("shaders/fragment2.txt", GL_FRAGMENT_SHADER);
 
   00804	68 30 8b 00 00	 push	 35632			; 00008b30H
-  00809	68 00 00 00 00	 push	 OFFSET ??_C@_0CA@LBDCJFEL@resources?1shaders?1fragment2?4txt@
+  00809	68 00 00 00 00	 push	 OFFSET ??_C@_0BG@NLCFAOCP@shaders?1fragment2?4txt@
   0080e	e8 00 00 00 00	 call	 _CompileShader
   00813	83 c4 08	 add	 esp, 8
   00816	89 85 08 fb ff

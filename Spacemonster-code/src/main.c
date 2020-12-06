@@ -101,7 +101,7 @@ int main(void) {
 	//initilize lua and load scripts
 	L = lua_open();
 	luaL_openlibs(L);
-	FILE* fp = fopen("resources/lua/scripts/test.lua", "r+");
+	FILE* fp = fopen("scripts/test.lua", "r+");
 	char buff[512];
 	int error;  
 	while (fgets(buff, sizeof(buff), fp) != NULL) {
@@ -143,8 +143,8 @@ int main(void) {
 	{
 		GLint shader_vertex;
 		GLint shader_fragment;
-		shader_vertex = CompileShader("resources/shaders/vertex1.txt", GL_VERTEX_SHADER);
-		shader_fragment = CompileShader("resources/shaders/fragment1.txt", GL_FRAGMENT_SHADER);
+		shader_vertex = CompileShader("shaders/vertex1.txt", GL_VERTEX_SHADER);
+		shader_fragment = CompileShader("shaders/fragment1.txt", GL_FRAGMENT_SHADER);
 		glAttachShader(shader_texturedobj, shader_vertex);
 		glAttachShader(shader_texturedobj, shader_fragment);
 		glDeleteShader(shader_vertex);
@@ -157,8 +157,8 @@ int main(void) {
 	{
 		GLint shader_vertex;
 		GLint shader_fragment;
-		shader_vertex = CompileShader("resources/shaders/vertex2.txt", GL_VERTEX_SHADER);
-		shader_fragment = CompileShader("resources/shaders/fragment2.txt", GL_FRAGMENT_SHADER);
+		shader_vertex = CompileShader("shaders/vertex2.txt", GL_VERTEX_SHADER);
+		shader_fragment = CompileShader("shaders/fragment2.txt", GL_FRAGMENT_SHADER);
 		glAttachShader(shader_colored, shader_vertex);
 		glAttachShader(shader_colored, shader_fragment);
 		glDeleteShader(shader_vertex);
@@ -317,8 +317,7 @@ GLint CompileShader(char* shader_fname, GLenum type) {
 		shader_data = calloc(1, size + 1);
 		fread(shader_data, 1, size, fp);
 		fclose(fp);
-		//add a space at the end of each shader or this causes a problem
-		shader_data[size] = '\0'; //not really sure why it works but it does
+		shader_data[size] = '\0'; 
 		//printf("%s", shader_data);
 		//printf("%d", size);
 		//for debugging

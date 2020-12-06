@@ -1,20 +1,67 @@
-﻿  render.c
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI'
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(76,2): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared
-C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(81,2): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared
+﻿  game.c
+  lua.c
+  main.c
+  render.c
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition (compiling source file src\main.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI' (compiling source file src\main.c)
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition (compiling source file src\render.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI' (compiling source file src\render.c)
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition (compiling source file src\lua.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI' (compiling source file src\lua.c)
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\corecrt_math_defines.h(22,1): warning C4005: 'M_PI': macro redefinition (compiling source file src\game.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\SDL_stdinc.h(508): message : see previous definition of 'M_PI' (compiling source file src\game.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(76,2): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared (compiling source file src\main.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(81,2): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared (compiling source file src\main.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(76,2): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared (compiling source file src\render.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(81,2): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared (compiling source file src\render.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(76,2): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared (compiling source file src\game.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(81,2): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared (compiling source file src\game.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(26,40): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(3,36): warning C4028: formal parameter 1 different from declaration
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(27,41): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(5,29): warning C4013: 'LIST_At' undefined; assuming extern returning int
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(10,18): warning C4013: 'LIST_RemoveAt' undefined; assuming extern returning int
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(38,42): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(5,1): warning C4047: 'initializing': 'enemy *' differs in levels of indirection from 'int'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\game.c(28,17): warning C4013: 'CreateTexture2D' undefined; assuming extern returning int
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(41,31): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(20,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(20,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(58,16): warning C4026: function declared with formal parameter list
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\game.c(48,18): warning C4013: 'LIST_AddElement' undefined; assuming extern returning int
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(27,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(77,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\game.c(45,1): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(77,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(27,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(78,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(78,126): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\game.c(63,29): warning C4013: 'LIST_At' undefined; assuming extern returning int
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(43,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\game.c(63,1): warning C4047: 'initializing': 'enemy *' differs in levels of indirection from 'int'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(43,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(51,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(201,65): warning C4305: '=': truncation from 'double' to 'float'
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(51,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(201,86): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(213,18): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(60,39): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(222,44): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
 C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\render.c(60,35): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(222,74): warning C4244: 'function': conversion from 'Sint32' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(76,2): warning C4091: 'extern ': ignored on left of 'listNode' when no variable is declared (compiling source file src\lua.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(234,40): warning C4047: 'function': 'GLintptr' differs in levels of indirection from 'void *'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\include\main_h.h(81,2): warning C4091: 'extern ': ignored on left of 'linkedList' when no variable is declared (compiling source file src\lua.c)
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(234,36): warning C4024: 'glad_glBufferSubData': different types for formal and actual parameter 2
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(287,45): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(287,50): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(289,45): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(289,50): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(210,1): warning C4090: 'initializing': different 'const' qualifiers
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(334,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(335,64): warning C4244: 'function': conversion from 'GLfloat' to 'GLint', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(339,93): warning C4028: formal parameter 4 different from declaration
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(339,103): warning C4028: formal parameter 5 different from declaration
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(342,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\src\main.c(344,22): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Last stand.vcxproj -> C:\Users\Light\source\repos\Spacemonster\Spacemonster-code\Debug\SpaceMonster.exe

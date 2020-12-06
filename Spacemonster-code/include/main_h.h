@@ -13,10 +13,10 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <cglm.h>
-#include <lua/luaconf.h>
-#include <lua/lua.h>
-#include <lua/lauxlib.h>
-#include <lua/lualib.h>
+#include <luaconf.h>
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
 #endif
 
 //window size stuff
